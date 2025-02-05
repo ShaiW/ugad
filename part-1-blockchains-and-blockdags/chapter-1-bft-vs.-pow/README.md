@@ -8,4 +8,4 @@ Imagine everyone's surprise then, when in 2009 the psudonymous Satoshi Nakamoto 
 
 Not at all. There are two factors that allowed Satoshi to break the one-third consensus barrier. First, he assumed that we can use cryptography to _prove the passage of time_, and showed how proof-of-work can implement such a capability. Second, he _relaxed_ the security requirements: instead of requiring that there is a fixed number of rounds after which a transaction will _certainly_ never revert, he "compromised" for "just" having the probability of revert decrease very very fast as rounds (which can now be converted to time, thanks to the first assumption) pass.
 
-In this first chapter, we will start at PSL's algorithm. Studying it will give us a handle on how BFT protocols 
+In this first chapter, we will start at PSL's algorithm. Studying it will give us a handle on how BFT protocols  fff
