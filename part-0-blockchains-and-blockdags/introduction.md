@@ -8,3 +8,12 @@ That being said, this is _not_ a historical review. While I do point out major m
 
 I am hopeful that _any_ reader could better appreciate cryptocurrencies and the struggles they are facing with the tools and thought frameworks in this volume, even if they do not decide to apply this insight to study GHOSTDAG.
 
+# Overview
+
+Our journey will be divided into six chapters. In the first, we visit the place where it all began: the Byzantine generals problem, and consider Byzantine fault tolerance and where it stands with regards to proof-of-work.
+
+The second chapter will be all about block _chain_ protocols, starting from a systemic framework for describing them as _chain selection rules_ and culminating with the two most ubiquitous examples: the Heaviest Chain Rule and GHOST.
+
+In the third chapter, we dive deep into security, of blockchains and in general. We discuss what a security property even _is_ before isolating the common security properties used for block chains. We will describe safety, liveness, and confirmation time and, for the mathier audience, we will also sketch the proof of Bitcoin's security.
+
+In the fourth chapter we will expend the ideas of the second chapter to define the blockDAG paradigm by replacing _selection_ rules with _ordering_ rules, and generalize some of the security discussion of the third chapter to this extended context.
