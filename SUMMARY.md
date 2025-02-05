@@ -6,7 +6,7 @@
 ## Part 0: BlockChains and BlockDAGs
 
 * [Introduction](part-0-blockchains-and-blockdags/introduction.md)
-* [Chapter 1: BFT Vs. PoW](part-0-blockchains-and-blockdags/chapter-1-bft-vs.-pow/README.md)
+* [Chapter 1: From BFT to PoW](part-0-blockchains-and-blockdags/chapter-1-bft-vs.-pow/README.md)
   * [Byzantine Fault Tolerance](part-0-blockchains-and-blockdags/chapter-1-bft-vs.-pow/byzantine-fault-tolerance.md)
   * [Proof-of-Work](part-0-blockchains-and-blockdags/chapter-1-bft-vs.-pow/proof-of-work.md)
   * [BFT Vs. PoW](part-0-blockchains-and-blockdags/chapter-1-bft-vs.-pow/bft-vs.-pow.md)
