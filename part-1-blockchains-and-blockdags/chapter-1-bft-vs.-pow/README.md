@@ -1,9 +1,11 @@
-# Chapter 1: BFT Vs. PoW
+# Chapter 1: from BFT to PoW
 
 To set the stage and get warmed up, we start where most tours of consensus theory start: the Byzantine generals problem (BGT), which is considered by many as the birthplace of consensus theory. Coming up with solutions to BGT led to the development of the first distributed protocols for reaching consensus and, not less crucially, proving impossibility results.
 
-BGT was inaugurated by Pease, Shostak and Lamport in their seminal 1980 paper [Reaching Agreement in the Presence of Faults](https://lamport.azurewebsites.net/pubs/reaching.pdf). In this paper, the provide the first protocol that can handle $$f$$ faulty generals, given there are at least $$3f+1$$ generals (which can be slightly improved to $$3f$$, assuming the existence of digital signatures). They also prove that it is _impossible_ to construct a protocol that can handle more faulty nodes. This result has since become known as the $$3f+1$$ test test test
+BGT was inaugurated by Pease, Shostak and Lamport (PSL) in their seminal 1980 paper [Reaching Agreement in the Presence of Faults](https://lamport.azurewebsites.net/pubs/reaching.pdf). In this paper, the provide the first protocol that can handle $$f$$ faulty generals, given there are at least $$3f+1$$ generals (which can be slightly improved to $$3f$$, assuming the existence of digital signatures). They also prove that it is _impossible_ to construct a protocol that can handle more faulty nodes. This result has since become known as the $$3f+1$$ theorem, or simply the statement that it is impossible to reach a distributed consensus secure against more than a third of the nodes being faulty and/or adversarial.
 
+Imagine everyone's surprise then, when in 2009 the psudonymous Satoshi Nakamoto published the [Bitcoin Whitepaper](https://lamport.azurewebsites.net/pubs/reaching.pdf), exhibiting a brand new form of consensus that maintains impressive security properties as long as at least _half_ of the nodes are following the protocol. What is going on here? Did Satoshi prove PSL wrong? Is the $$3f+1$$ theorem false?
 
+Not at all. There are two factors that allowed Satoshi to break the one-third consensus barrier. First, he assumed that we can use cryptography to _prove the passage of time_, and showed how proof-of-work can implement such a capability. Second, he _relaxed_ the security requirements: instead of requiring that there is a fixed number of rounds after which a transaction will _certainly_ never revert, he "compromised" for "just" having the probability of revert decrease very very fast as rounds (which can now be converted to time, thanks to the first assumption) pass.
 
-&#x20;
+In this first chapter, we will start at PSL's algorithm. Studying it will give us a handle on how BFT protocols 
