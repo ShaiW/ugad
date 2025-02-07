@@ -1,6 +1,7 @@
 # Table of contents
 
-* [Preface](README.md)
+* [Welcome!](README.md)
+* [Preface](<README (1).md>)
 * [Introduction](introduction.md)
 
 ## Part 0: BlockChains and BlockDAGs
