@@ -104,7 +104,29 @@ Upon the contradictions regarding Ringo's position, Paul will again carry out th
 
 But wait, you might ask, the Beetle who thinks Ringo prefers Rubber soul _is Ringo_, shouldn't that account for something? Maybe, but the ability to override Ringo is exactly what protects us from Ringo playing a double game, telling each Beetle they have a different preference in an attempt to split the consensus. It is the _crux_ of the protocol and how it works.
 
-This protocol can be extended to&#x20;
+This protocol can be extended to $$n=3f+1$$ Beetles (or any other coleopterans) by adding more rounds. So by the end of the say fourth round John will hold messages such as
+
+> <mark style="color:orange;">George</mark> said that <mark style="color:red;">Ringo</mark> said that said that <mark style="color:purple;">Paul</mark> said that <mark style="color:purple;background-color:green;">Yoko</mark> wants to call the album <mark style="background-color:purple;">Let it Be</mark>
+
+One can prove by way of induction that if at most $$f$$ of the nodes are faulty, then the protocol is _guaranteed_ to provide consensus within $$f$$ rounds.
+
+## Practical BFT\*
+
+A BFT protocol is not only measured by its security. Fault tolerance is an important feature, but your fault tolerant protocol isn't going to help anyone if it requires a trillion rounds or terabytes of RAM. The _communication complexity_ is the number of rounds the protocol requires, the _space complexity_ is how much data it has to keep track of, and the _time_ complexity is the amount of processing required to compute the result from the received messages. One might wonder whether the length of the messages should play a part, and it does: it manifests itself in the time complexity, as we consider reading the messages a part of the work.
+
+In the PSL protocol, the number of rounds is a third of the nodes. That's already less than ideal. For example, the Ethereum network has more than 750,000 validators, so using the PSL protocol on this network would require 250,000 rounds per block.
+
+However, it is the runtime complexity where the real problem shows. To see that, it suffices just to look at how many times a Beetle is named in each message.&#x20;
+
+Let us assume there are $$n=3f+1$$ Beetles and consider the messages Paul sends John. In the first round, Paul just sends his messages, so he names no Beetles. In the second round, Paul _lists all Beetles besides Paul and John (and their alleged preferences_), making him name $$n-2$$ Beetles.
+
+What happens in the third round? Well, consider Ringo. For any Beetle X, Paul's message will include a line starting with "Ringo says that X wants", where there are $$n-3$$ options for X, as it could be any Beetle beside John, Paul, or Ringo. This means that we have $$n-3$$ lines starting with "Ringo said that". However, we don't really have to name Ringo in each and every line, as we can only write "Ringo says" once, and then list everything he told us. The total number of Beetle names is $$n-2$$. But wait, that's just Ringo! We have a similar list for _all_ $$n-2$$ Beetles besides Paul and John, making us name a total of $$(n-2)^2$$ Beetles.&#x20;
+
+By the time we reach round $$f=\frac{n-1}{3}$$ we find that each message contains $$(n-2)^{(n-1)/3}$$ Beetle names, which is _a lot_. Even if we assume storing the name of Beetle only requires _one bit_, we get that if there are $$20$$ Beetles, _each message_ in the last round is more than 10 megabytes. Doesn't sound like a lot? Well, for $$30$$ Beetles the message size would surpass 10 &#x74;_&#x65;ra&#x62;_&#x79;tes, for $$40$$ we succeed 344 _ex&#x61;_&#x62;yte, and $$50$$ Beetles will topple two _bront&#x6F;_&#x62;yte, a unit of storage so large I never heard of it before writing this paragraph, and even my spell checker does not recognize. And what about 750,000 Ethereum validators? Well, the number is so large you would need about 170 kilobytes just to write down _how many digits it has_.
+
+Fortunately, BFT protocols only started with PSL's work. In 1999, Miguel Castro and Barbara Liskov introduced the[ Parctical Byzantine Fault Tolerance](https://pmg.csail.mit.edu/papers/osdi99.pdf) (PBFT) protocol. PBFT most significant contribution is actually in terms we have not defined here: synchronicity model. Roughly, a synchronicity model models message latency. In the PSL analysis, there is an implicit assumption of _full synchronicity_. That is, all participants know when each round starts and when it ends. Full synchronicity is _not_ how networks such as the internet naturally behave, and imposing it incurs large overheads. The internet is best modeled as admitting _partial synchronicity_, where we _don't know_ how long it takes messages to transmit, but we do have an _upper bound_. Castro and Liskov's protocol is the first to provide $$1/3$$ fault-tolerance in the partially synchronous model. But more than that, it reduces the complexity to $$O(n^2)$$. Several improvements of various sorts succeeded PBFT, such as Zyzzyva and ABsTRACTs who provide improved performence, Aaardvark who provides improved robustness, and Adapt that switches between protocols to respond to changing conditions. More recent protocols such as HotStuff and Marlin further reduce the complexity to linear, and we should probably also mention BFT protocols crafted specifically for proof-of-stake such as Alphabet and Tendermint.
+
+
 
 
 
