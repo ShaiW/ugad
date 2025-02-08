@@ -17,10 +17,9 @@
 
 * [Page 2](part-1-the-ghostdag-protocol/page-2.md)
 
-***
+## Math Appendix
 
-* [Math Appendix](math-appendix/README.md)
-  * [Probability Theory](math-appendix/probability-theory.md)
+* [Probability Theory](math-appendix/probability-theory.md)
 
 ## Computer Science Appendix
 
