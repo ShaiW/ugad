@@ -17,11 +17,9 @@
 
 * [Page 2](part-1-the-ghostdag-protocol/page-2.md)
 
-## Math Appendix
+## Supplementary Material
 
-* [Probability Theory](math-appendix/probability-theory.md)
-
-## Computer Science Appendix
-
-* [Cryptography](computer-science-appendix/page-3/README.md)
-  * [Random Oracles](computer-science-appendix/page-3/random-oracles.md)
+* [Math](supplementary-material/math/README.md)
+  * [Probability Theory](supplementary-material/math/probability-theory.md)
+* [Computer Science](supplementary-material/computer-science/README.md)
+  * [Cryptography](supplementary-material/computer-science/page-3.md)

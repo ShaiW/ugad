@@ -1,4 +1,6 @@
-# Random Oracles
+# Cryptography
+
+## Random Oracles
 
 In computer science, an _oracle_ is a magic being that performs some task for us. Oracles have _many_ uses, one of them is to assume we can perform some computation without bothering ourselves with the details. Instead, we reason in an alternate universe where a magical oracle does the computation for us. This way we can _divide the work_ with someone working to _implement_ a random oracle. _hash functions_ such as SHA-256, Keccak, or k-HeavyHash are an implementation of a certain kind of oracle called a _random oracle_. The random oracle model has a nice mathematical description that is oblivious to how the hash function is actually implemented.
 
@@ -18,6 +20,8 @@ The only way to get information from the oracle is by making queries. But due to
 The consequences are that the best way to solve the problem is by querying on different strings until you stumble backwards into one that gives the correct answer. Now, how long this should take? If the output length is $$n$$ bits, then there are $$2^n$$ possible outputs. Recall that the oracle always chooses the string _uniformly_. Hence, the probability a query produces the desired result is one in $$2^n$$. That is, it would take about $$2^n$$ attempts.
 
 At a trillion attempts per second, inverting a 256 bits hash function will take over three billion trillion trillion trillion trillion years.
+
+
 
 
 
