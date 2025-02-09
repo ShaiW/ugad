@@ -20,6 +20,8 @@
 ## Supplementary Material
 
 * [Math](supplementary-material/math/README.md)
-  * [Probability Theory](supplementary-material/math/probability-theory.md)
+  * [Probability Theory](supplementary-material/math/probability-theory/README.md)
+    * [Probability Spaces](supplementary-material/math/probability-theory/probability-spaces.md)
+    * [Random Variables](supplementary-material/math/probability-theory/random-variables.md)
 * [Computer Science](supplementary-material/computer-science/README.md)
   * [Cryptography](supplementary-material/computer-science/page-3.md)
