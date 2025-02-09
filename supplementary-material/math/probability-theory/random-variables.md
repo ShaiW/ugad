@@ -16,5 +16,71 @@ We will introduce the definition of a random variable specifically for [discrete
 
 Recall that in such a space is defined over a _sample space_ $$\Omega$$ of atomic events. A _random variable_ $$X$$ is simply a function that assigns to each atomic event a _real number_. What does that number represent? Whatever we want!
 
-In the die toss case (where $$\Omega = \{\omega_1,\ldots,\omega_6\}$$)
+In the die toss case (where $$\Omega = \{\omega_1,\ldots,\omega_6\}$$), if we care about the _result_ we can set $$X(\omega_n)=n$$. But we can do a whole lot of other stuff. For example, we can consider $$\Omega$$ to be the set of all possible results of flipping a coin $$100$$ times. Each atomic event $$\omega \in \Omega$$ corresponds to one of the $$2^{100}$$ possible lists of length $$100$$ of "heads" and "tails". If we only care about the _amount_ of heads we can define $$X(\omega)$$ to be the number of heads (regardless of where they appear in the list). Then a complex event such as "the probability that between 27 and 34 flips landed on heads" admits the succinct description $$\{27\le X\le 34\}$$.
 
+We can define variables $$X$$ as complex as the imagination would let us, for example $$X(\omega)$$ could be the length of the longest succession of identical results in $$\omega$$, if that's what we're interested in.
+
+## Expectation
+
+Given a random variable $$X$$, we define its _expectation_ as the average value it could get, _weighted_ by their probability.
+
+For example, say that we flip a coin. The probability space is $$\Omega=\{H,T\}$$ (which stand for _heads_ and _tails_ respectively). Say that we consider $$H$$ the desired result. We can model this by defining a random variable $$X$$ satisfying $$X(H) = 1$$ and $$X(T) = 0$$.
+
+If our coin is fair, the _expectation_ of $$X$$, denoted $$\mathbb{E}[X]$$, is intuitively one half, because there is a one half chance that it is zero and a one half chance that it is one. In math:
+
+$$
+\begin{aligned}\mathbb{E}\left[X\right] & =\mathbb{P}\left[H\right]\cdot X\left(H\right)+\mathbb{P}\left[T\right]\cdot X\left(T\right)\\
+ & =\frac{1}{2}\cdot1+\frac{1}{2}\cdot0\\
+ & =\frac{1}{2}
+\end{aligned}
+$$
+
+More generally speaking, if $$X$$ is a random variable over some discrete probability space $$(\Omega,\mathbb{P})$$ we have the general formula
+
+$$
+\mathbb{E}\left[X\right]=\sum_{\omega\in\Omega}\mathbb{P}\left[\omega\right]\cdot X\left(\omega\right)
+$$
+
+So for example, if $$X$$ is the result of tossing a fair die, we have that
+
+$$
+\begin{aligned}\mathbb{E}\left[X\right] & =\sum_{n=1}^{6}\mathbb{P}\left[\omega_{n}\right]\cdot X\left(\omega_{n}\right)\\
+ & =\sum_{n=1}^{6}\frac{1}{6}\cdot n\\
+ & =3\frac{1}{2}
+\end{aligned}
+$$
+
+Let us work out a more complicated example. Say that we have an unfair day with the following properties: all odd results are equally likely, all even results are equally likely, but an even result is three times as likely as an odd result, What is the expected value of tossing the die?
+
+Let $$X$$ be the random variable describing the die. If we denote $$\mathbb{P}\left[X\text{ is odd}\right]=x$$ we get that $$\mathbb{P}\left[X\text{ is even}\right]=3x$$. However, since a die is _always either_ odd or even _but never both_, we get that
+
+$$
+\begin{aligned}1 & =\mathbb{P}\left[X\text{ is odd or even}\right]\\
+ & =\mathbb{P}\left[X\text{ is odd}\right]+\mathbb{P}\left[X\text{ is even}\right]\\
+ & =x+3x\\
+ & =4x
+\end{aligned}
+$$
+
+From which we get that $$\mathbb{P}\left[X\text{ is odd}\right]=\frac{1}{4}$$.
+
+However, since we assumed that all odd outcomes are equally likely, we get that $$\mathbb{P}[\omega_1] = \mathbb{P}[\omega_3] = \mathbb{P}[\omega_5]$$ and it follows that
+
+$$
+\begin{aligned}\frac{1}{4} & =\mathbb{P}\left[X\text{ is odd}\right]\\
+ & =\mathbb{P}\left[\omega_{1}\right]+\mathbb{P}\left[\omega_{3}\right]+\mathbb{P}\left[\omega_{5}\right]\\
+ & =3\cdot\mathbb{P}\left[\omega_{1}\right]
+\end{aligned}
+$$
+
+from which it follows that $$\mathbb{P}[\omega_1] = \mathbb{P}[\omega_3] = \mathbb{P}[\omega_5]= \frac{1}{12}$$, and we can similarly prove that $$\mathbb{P}[\omega_2] = \mathbb{P}[\omega_4] = \mathbb{P}[\omega_6]= \frac{1}{4}$$. We then get that
+
+$$
+\begin{aligned}\mathbb{E}\left[X\right] & =\sum_{n=1}^{6}\mathbb{P}\left[\omega_{n}\right]\cdot X\left(\omega_{n}\right)\\
+ & =\frac{1}{12}\cdot1+\frac{1}{4}\cdot2+\frac{1}{12}\cdot3+\frac{1}{4}\cdot4+\frac{1}{12}\cdot5+\frac{1}{4}\cdot6\\
+ & =\frac{1+3+5}{12}+\frac{2+4+6}{4}\\
+ & =3\frac{3}{4}
+\end{aligned}
+$$
+
+For a spicier example, we can ask what is the expected number of times we need to flip a fair coin before we get heads. We already modeled this&#x20;

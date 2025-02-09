@@ -42,7 +42,7 @@ $$
 \mathbb{P}[A]=\mathbb{P}[\omega_{1}\cup\omega_{2}\cup\omega_{3}]=\mathbb{P}[\omega_{1}]+\mathbb{P}[\omega_{2}]+\mathbb{P}[\omega_{3}]=\frac{1}{6}+\frac{1}{6}+\frac{1}{6}=\frac{1}{2}
 $$
 
-With a bit of thought, one can convince herself that if $$\Omega$$ is finite then any probability space over $$\Omega$$ is discrete. However, a space can be discrete also if $$\Omega$$ is infinite. For example, lets say I flip a fair coin util it lands on head, how many flips would it take? Well, for any positive integer $$n$$ there is _some_ probability that it will take $$n$$ attempts. So our sample space is has an event for _any positive natural_ numbe $$\Omega = \{\omega_1,\omega_22,\ldots\}$$.
+With a bit of thought, one can convince herself that if $$\Omega$$ is finite then any probability space over $$\Omega$$ is discrete. However, a space can be discrete also if $$\Omega$$ is infinite. For example, lets say I flip a fair coin util it lands on head, how many flips would it take? Well, for any positive integer $$n$$ there is _some_ probability that it will take $$n$$ attempts. So our sample space is has an event for _any positive natural_ numbe $$\Omega = \{\omega_1,\omega_2,\ldots\}$$.
 
 The probability that a single flip of a fair coin will land on head is $$1/2$$. For it to take _exactly_ two attempts means that the first flip landed on tails and the second landed on heads, which has a probability $$1/4$$ (as it is one of four equally likely results of flipping two coins). It would take _exactly three_ attempts with probability $$1/8$$ and so on. The pattern is quite obvious: the probability it would take exactly $$n$$ flips is $$\left(\frac{1}{2}\right)^n$$, which we can more comfortable write as $$2^{-n}$$.
 
