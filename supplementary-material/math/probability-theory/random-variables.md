@@ -83,4 +83,59 @@ $$
 \end{aligned}
 $$
 
-For a spicier example, we can ask what is the expected number of times we need to flip a fair coin before we get heads. We already modeled this&#x20;
+For a spicier example, we can ask what is the expected number of times we need to flip a fair coin before we get heads. We already [modeled this](https://shai-deshe.gitbook.io/understanding-blockdags-and-ghostdag/supplementary-material/math/probability-theory/probability-spaces#finite-and-discrete-probability-spaces) with the sample space $$\Omega = \{\omega_1,\omega_2,\ldots\}$$ and the probability function $$\mathbb{P}[\omega_n] = 2^{-n}$$. The random variable $$X(\omega_n) = n$$ maps each atomic event to the number of coin flips it implies, and its expectation is
+
+$$
+\begin{aligned}\mathbb{E}\left[X\right] & =\sum_{n=1}^{\infty}\mathbb{P}\left[\omega_{n}\right]\cdot X\left(\omega_{n}\right)\\
+ & =\sum_{n=1}^{\infty}\frac{n}{2^{n}}\\
+ & =2
+\end{aligned}
+$$
+
+where the last equality is not hard to show, but requires a bit of calculus.
+
+<details>
+
+<summary>Proving the equality*</summary>
+
+We use the fact that if $$|x|<1$$ then the sequence $$\sum_{n=0}^{\infty}x^{n}$$ absolutely converges around $$x$$. This means we are allowed to change the order of summation and differentiation, getting
+
+$$\begin{aligned}\sum_{x=1}^{\infty}nx^{n} & =x\sum_{x=1}^{\infty}nx^{n-1} &  & =x\sum_{x=0}^{\infty}\left(n+1\right)x^{n}\\  & =x\sum_{x=0}^{\infty}\frac{d}{dx}x^{n+1} &  & =x\frac{d}{dx}\sum_{x=0}^{\infty}x^{n+1}\\  & =x\frac{d}{dx}x\sum_{x=0}^{\infty}x^{n} &  & =x\frac{d}{dx}\frac{x}{1-x}\\  & =\frac{x}{\left(1-x\right)^{2}} \end{aligned}$$\\
+
+and setting $$x=1/2$$ we get the desired result.
+
+</details>
+
+We can generalize this to unfair coins, to show that if a coin lands on head with probability $$p$$, the expected number of times we'd have to flip it before seeing heads is $$1/p$$.
+
+This is a _very important result_! It tells that the amount of attempts before we are successful at something is inversely proportional to how likely we are to succeed each time (at least when talking about stuff like participating in a raffle, that we can't _improve_ at and increase our chances over time).
+
+## The Distribution of a Random Variable
+
+What's nice about a random variable is that we often _don't really care_ about the sample space its defined above. We really only care how it _distributes_. Often times, we can tell very different origin stories for random variables, but find out that they are exactly the same.
+
+For example, consider we flip a fair coin until we get tails, and let $$X(\omega_n)$$ be zero of $$n$$ is even or one if $$n$$ is odd. Consider that we toss a fair die once, and let $$Y(\omega_n)$$ be zero for $$n=1,2$$ or one for $$n=3,\ldots,6$$. We've already seen that $$\mathbb{P}[X = 1]$$ is $$2/3$$ and you should be able to see that $$\mathbb{P}[Y = 1]$$ is $$2/3$$ as well. Since both could only be $$0$$ or $$1$$ we get that $$\mathbb{P}[X = 0]=\mathbb{P}[Y=0]$$.
+
+In other words, $$X$$ and $$Y$$ distribute equally. They might have a very different origin story, but they are _identical_ as random variables. We denote this as $$X\sim Y$$.
+
+This notation is also very powerful, as it allows to consider a few ubiquitous random variables, and exploring them in the abstract would give useful results for any random variable we run into that distributes the same.
+
+The simplest random variable is a _Bernoulli experiment_. The sample space is $$\Omega=\{\omega_0,\omega_1\}$$ and we set the random variable $$X(\omega_b)=b$$. We typically call the event $$\omega_0$$ _failure_ and the event $$\omega_1$$ _success_. Any probability function on $$\Omega$$ is defined by the _success probability_: a single number $$0<p<1$$ satisfying $$\mathbb{P}[\omega_1] = p$$. It immediately follows that $$\mathbb{P}[\omega_0] = 1-p$$.
+
+We call the resulting $$X$$ a _Poisson variable with parameter p_ and denote it $$Poi(p)$$.
+
+With this language in hand, if $$X$$ is the random variable defined on a fair die as $$X(\omega_1)=X(\omega_2) = 0$$ and $$X(\omega_3)=X(\omega_4)=X(\omega_5)=X(\omega_6)=1$$ then we have that $$X\sim Poi(p)$$.
+
+Another important variable is a _Binomial variable_. Say we repeat a Poisson experiment with parameter $$p$$ for $$n$$ times, and let $$X$$ be the random variable that counts how many of the repetitions were successful. What is the probability that $$X=k$$? Clearly, for $$k>n$$ it is zero, because we can't have flipped more heads than we flipped coins. How many sequences there are for which _exactly_ $$k$$ flips are heads? Well, there were a total of $$n$$ flips, and we have to _choose_ $$k$$ of them. The number of ways to make this choice is the [binomial coefficient](../elementary-math/binomial-coefficients.md) $${n \choose k}$$. And what is the probability of each such sequence? Well, for each coin that landed on heads, it did so with probability $$p$$. Since there are $$k$$ of those, the probability they _all_ landed on heads is $$p^k$$. Similarly, all the remaining $$n-k$$ coins landed on tails, which happens with probability $$(1-p)$$. Multiplying all of this together we get that
+
+$$
+\mathbb{P}\left[X=k\right]={n \choose k}p^{k}\left(1-p\right)^{n-k}
+$$
+
+This leads us to the following definition: if $$X$$ is a random variable, we say that $$X$$ _distributes binomially with parameters_ $$n,p$$, and denote $$X\sim \mathcal{B}(n,p)$$, if for any $$k=0,\ldots,n$$ we have that
+
+$$
+\mathbb{P}\left[X=k\right]={n \choose k}p^{k}\left(1-p\right)^{n-k}
+$$
+
+**Exercise**: verify that $$\sum_{k=0}^n \mathbb{P}[\mathcal{B}(n,p)=k] = 1$$

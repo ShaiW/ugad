@@ -20,6 +20,8 @@
 ## Supplementary Material
 
 * [Math](supplementary-material/math/README.md)
+  * [Elementary Math](supplementary-material/math/elementary-math/README.md)
+    * [Binomial Coefficients](supplementary-material/math/elementary-math/binomial-coefficients.md)
   * [Probability Theory](supplementary-material/math/probability-theory/README.md)
     * [Probability Spaces](supplementary-material/math/probability-theory/probability-spaces.md)
     * [Random Variables](supplementary-material/math/probability-theory/random-variables.md)
