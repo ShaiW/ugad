@@ -156,3 +156,30 @@ $${n \choose k}k=\frac{n!}{k!\left(n-k\right)!}k=\frac{\left(n-1\right)!n}{k\lef
 
 </details>
 
+## Laws of Large Numbers
+
+What is the meaning of expectation? What motivates this definition?
+
+We claimed that expectation is what happens in the "average case", but why is this proclamation justified? It certainly isn't something that's obvious from the definition.
+
+Consider for example a fair coin toss, and say that if it lands on heads I win one dollar, but if it lands on tails I get nothing. That is, my profit is described by the random variable $$X$$ satisfying $$X(H)=1$$ and $$X(T)=0$$. We know how to compute that $$\mathbb{E}[X]=1/2$$, but why is that the "average"?
+
+Well, say I repeat the game $$10$$ times, what is the probability that I got, say, less than three heads? The number of heads distributes like $$\mathcal{Bin}(10,1/2)$$, and we know that
+
+$$
+\begin{aligned}\mathbb{P}\left[\mathcal{Bin}\left(10,1/2\right)\le3\right] & =\mathbb{P}\left[\mathcal{Bin}\left(10,1/2\right)=0\right]+\mathbb{P}\left[\mathcal{Bin}\left(10,1/2\right)=1\right]\\
+ & +\mathbb{P}\left[\mathcal{Bin}\left(10,1/2\right)=2\right]+\mathbb{P}\left[\mathcal{Bin}\left(10,1/2\right)=3\right]\\
+ & =\frac{1}{2^{10}}\left({10 \choose 0}+{10 \choose 1}+{10 \choose 2}+{10 \choose 3}\right)\\
+ & =\frac{176}{1024}\approx17.2\%
+\end{aligned}
+$$
+
+Using the symmetry of the problem (the probability of exactly 3 heads is exactly like the probability of exactly 3 tails, which is the same as the probability of exactly 7 heads), we can conclude that we will flip between four and six heads (that is, will be at distance at most one from the average) with a probability of about $$65.4\%$$. We already see the concentration around the half, with less than a third of the options getting almost two thirds of the probability.
+
+Using a binomial distribution to understand how this progresses as $$n$$ becomes larger is possible, but a bit tiresome. Instead, we appeal to one of computer science's most beloved secret weapon: [the Chernoff bound](https://en.wikipedia.org/wiki/Chernoff_bound).
+
+There is no reason to describe the bound here, I will just tell you that it is an extremely powerful weapon to the "scattering" of repeating many independent (though not necessarily identical!) experiments. Applying Chernoff to coin tossing, one can prove that if we toss a coin $$n$$ times, the probablity to see more than $$n/2+\sqrt{6n\cdot\ln n}$$ flips of the same result is less than $$2/n^4$$. By plugging numbers we can see, for example, that if we flip a thousand independent fair coins, the probability that get the same result more than $$700$$ times is less than one in $$500$$ billion, and if we flip a _million_ such coins, the number of heads will be within $$1000$$ flips from half a million with probability above $$99.99999999999999999998\%$$.
+
+This is a special example of a _law of large numbers_. Such laws give us conditions under which _repeating experiments and averaging_ will _converge to the expectation_ as we average more and more experiments. To demonstrate it, I had my computer flip ten thousand random coins, and averaged the difference between heads and tails. I repeated the experiment five times, and plotted each. This is the result:
+
+<figure><img src="../../../.gitbook/assets/image (2).png" alt=""><figcaption><p>Flipping ten thousand coins and tracking the result. The <span class="math">x</span> axis is the number of repetitions, the <span class="math">y</span> axis is the difference between heads and tails over the number of repetitions. We see that while the paths start very differently, they converge very quickly to <span class="math">0</span>.</p></figcaption></figure>
