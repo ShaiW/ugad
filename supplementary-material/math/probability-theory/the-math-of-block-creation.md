@@ -89,10 +89,12 @@ This is described by what we call an _exponential distribution_ $$Exp(\lambda)$$
 It turns out that if blocks are created according to the distribution $$Poi(1/\lambda)$$, then we have that the probability we have to wait between $$a$$ and $$b$$ block delays is given by
 
 $$
-\mathbb{P}\left[a\lambda\le Exp\left(\lambda\right)\le b\lambda\right]=e^{-b}-e^{-a}
+\mathbb{P}\left[a\lambda\le Exp\left(\lambda\right)\le b\lambda\right]=e^{-a}-e^{-b}
 $$
 
-**Exercise\***: Prove it!
+Note that we are allowed to put $$a=0$$ and $$b=\infty$$ with the understanding that $$e^{-\infty}=0$$.
+
+**Exercise\***: Prove this formula
 
 <details>
 
@@ -120,7 +122,20 @@ $$
 With a bit of work, one can show that the exponential distribution we described above is the _only_ one that has this property.
 {% endhint %}
 
+So what does this tell us about block distribution? Let's start with an easy one: what is the probability we wait more than an hour to the next Bitcoin block?
 
+To compute this, we plug in $$a=6$$ (as there are six Bitcoin block delay in one hour) and $$b=\infty$$ (as we want to know the probability we waited _any_ time longer than an hour) to get the result $$e^{-6}\approx 0.2\%$$. This means that we should see such delays about once per 500 blocks, or twice a week.
 
+A good next question is what is the probability that the next block is created _within_ a block delay. Let us compute:
 
+$$
+\mathbb{P}\left[0\le Exp\left(\lambda\right)\le\lambda\right]=e^{-0}-e^{-1}=1-\frac{1}{e}\approx63\%
+$$
 
+We see that almost _two thirds_ of the time, the delay between blocks will be _shorter than expected_.
+
+A good next question is how fast do the majority of blocks arrive. In other words, how long do we have to wait so that the probability we see a block is exactly half. We already know this should be _less_ than a block delay. To get an exact answer we need to solve for $$a$$ the equation $$\frac{1}{2}=\mathbb{P}\left[0\le Exp\left(\lambda\right)\le a\lambda\right]$$, and I'll leave it to you to verify that the answer is $$a=\log\left(2\right)\approx0.69$$. Nice! We get that _half_ of the blocks arrive within 6.9 seconds. That is, a majority of blocks are _significantly_ earlier than expected. This sheds a bit of light on why Bitcoin's block delay has to be so long!
+
+So how bad is the problem? How short is short enough that, say, $$99\%$$ of the time, the block delay will be longer? To work this out we solve for $$b$$ the equation $$\mathbb{P}\left[Exp\left(\lambda\right)\le b\lambda\right]=\frac{1}{100}$$ to find that the answer is just above $$0.01$$ block delays, or six seconds! That's right, one in 100 Bitcoin blocks will be discovered within _six seconds_, despite the block delay being 10 minutes.
+
+There are many more things that can be worked out using these simple yet powerful formula, and it is always good to have them in your toolbox. I hope that I at least convinced you that there is a concrete reason why many people are concerned with reducing block times in Bitcoin.
