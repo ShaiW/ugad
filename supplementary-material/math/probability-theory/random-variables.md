@@ -138,4 +138,21 @@ $$
 \mathbb{P}\left[X=k\right]={n \choose k}p^{k}\left(1-p\right)^{n-k}
 $$
 
-**Exercise**: verify that $$\sum_{k=0}^n \mathbb{P}[\mathcal{B}(n,p)=k] = 1$$
+**Exercise**: Verify that $$\sum_{k=0}^n \mathbb{P}[\mathcal{B}(n,p)=k] = 1$$
+
+**Exercise**: Show that $$\mathbb{E}\left[\mathcal{B}\left(n,p\right)\right]$$, namely that if we flip a $p$-coin $n$ times, we expect $pn$ coins to land on heads.
+
+<details>
+
+<summary>Solution</summary>
+
+Using the [binomial formula](../elementary-math/binomial-coefficients.md):
+
+$$\begin{aligned}\mathbb{E}\left[\mathcal{B}\left(n,p\right)\right] & =\sum_{k=0}^{n}{n \choose k}p^{k}\left(1-p\right)^{n-k}k\\  & =n\sum_{k=1}^{n}{n-1 \choose k-1}p^{k}\left(1-p\right)^{n-k}\\  & =n\sum_{k=0}^{n-1}{n-1 \choose k}p^{k+1}\left(1-p\right)^{n-\left(k+1\right)}\\  & =np\sum_{k=0}^{n-1}{n-1 \choose k}p^{k}\left(1-p\right)^{\left(n-1\right)-k}\\  & =np \end{aligned}$$
+
+where in the second equality we used the fact that
+
+$${n \choose k}k=\frac{n!}{k!\left(n-k\right)!}k=\frac{\left(n-1\right)!n}{k\left(k-1\right)!\left(n-k\right)}={n-1 \choose k-1}n$$
+
+</details>
+

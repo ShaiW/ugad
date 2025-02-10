@@ -16,6 +16,28 @@ $$
 \mathbb{P}[A\cup B] = \mathbb{P}[A] + \mathbb{P}[B] - \mathbb{P}[A\cap B]\text{.}
 $$
 
+<details>
+
+<summary>Solution</summary>
+
+Intuitively, we have that $$A\cap B$$ is all the events that are in both $$A$$ and $$B$$, so we count them once in $$\mathbb{P}[A]$$ and a second time in $$\mathbb{P}[B]$$, so we have to subtract them once to balance out the double counting.
+
+Formally, we can write $$A' = A \setminus B$$  (that is $$A'$$ is the event that $$A$$ happened and $$B$$ _didn't_), So $$A\cup B = A' \cup B$$ but $$A'$$ and $$B$$ are _disjoint_, so we have:
+
+$$\mathbb{P}[A\cup B] = \mathbb{P}[A' \cup B] = \mathbb{P}[A'] + \mathbb{P}[B]$$
+
+However, we also have that $$A = A' \cup (A\cap B)$$, where the union is also disjoint, so we have that $$\mathbb{P}[A] = \mathbb{P}[A'] + \mathbb{P}[A\cap B]$$, or equivalently that $$\mathbb{P}[A'] = \mathbb{P}[A] - \mathbb{P}[A\cap B]$$.
+
+Substituting this into the equation above we get
+
+$$\mathbb{P}[A\cup B] = \mathbb{P}[A' ]  + \mathbb{P}[B] = \mathbb{P}[A]  + \mathbb{P}[B]-\mathbb{P}[A\cap B]$$
+
+as needed.
+
+</details>
+
+
+
 ## Atomic Events
 
 We say that an event $$A$$ _contains_ another event $$B$$, and denote $$B\subseteq A$$, if $$A$$ is _guaranteed_ to happen _given_ that $$B$$ happens. For example, the event $$X=4$$ is contained in the event that $$X$$ is even. An event is called _atomic_ if it has positive probability, but it does not contain any other event that has positive probability. For example, a fair die has six atomic events, for each $$n=1,\ldots,6$$ we have the atomic event $$X=n$$.
