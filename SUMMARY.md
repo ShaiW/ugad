@@ -11,7 +11,7 @@
   * [Byzantine Fault Tolerance](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/byzantine-fault-tolerance.md)
   * [Proof-of-Work (PoW)](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/proof-of-work.md)
   * [How PoW Works\*](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md)
-  * [BFT Vs. PoW](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/bft-vs.-pow.md)
+  * [PoS Vs. PoW](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/bft-vs.-pow.md)
 
 ## Part 2: The GHOSTDAG Protocol
 
@@ -27,4 +27,6 @@
     * [Random Variables](supplementary-material/math/probability-theory/random-variables.md)
     * [The Math of Block Creation](supplementary-material/math/probability-theory/the-math-of-block-creation.md)
 * [Computer Science](supplementary-material/computer-science/README.md)
-  * [Cryptography](supplementary-material/computer-science/page-3.md)
+  * [Cryptography](supplementary-material/computer-science/page-3/README.md)
+    * [Random Oracles](supplementary-material/computer-science/page-3/random-oracles.md)
+    * [Merkle Trees](supplementary-material/computer-science/page-3/merkle-trees.md)

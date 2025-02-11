@@ -26,7 +26,18 @@ At this point, a harsh statement is unfortunately in order: Sybilness is serious
 
 ## PoW as a Global Timer
 
+I obviously don't know what went through Satoshi's pseudonymous mind at a time, but if I had to guess what was his _eureka!_ moment, I would guess that it would be the realization that PoW can use to prove the _passage of time_.
 
+Satoshi, and the cypherpunks that preceded him, imagined a global ledger that _anyone_ can append to. The problem is, of course, that two different messages could be appended at the same time, causing inconsistencies and disagreements.
 
+Satoshi's thought was presumeably along the lines of "what if we can somehow _force_ the message to be so far apart that this never could happen? Too bad there is no way to enforce such a policy... _or is there_?" The key realization here is that be requiring enough work, we can guarantee that enough time passed...
 
+...to an extent. There are several issues with this idea:
 
+First, it cannot _actually_ _guarantee_ how much time it took to create the block. The guarantee is quite weaker: that the _average_ time between blocks is some predefined interval. In fact, [the math shows](../../supplementary-material/math/probability-theory/the-math-of-block-creation.md) that the block creation process is very noisy, which is likely what caused Satoshi to choose such a long block delay.
+
+Second, it actually cannot guarantee even _that_. To use PoW as an accurate timer, one must know _exactly_ how many hashes are computed per unit of time, a quantity that _constantly changes_ and is _impossible to measure_. PoW chains are forced to handle this by using a _difficulty adjustment algorithm_: a way to approximate the changes in global hashrates through changes in block creation rates. These algorithms are hard to implement (in part, because we can't really _know_ when a block was created, since it is impossible to authenticate timestamps), and can enable new attack vectors.
+
+Third, is that this kind of consensus doesn't fit nicely into the theoretical framework that existed at the time. Until Bitcoin, consensus algorithms were expected to provide _deterministic finality_, some line in the sand after which it is _guaranteed_ that a transaction will not revert. Bitcoin can "only" provide _probabilistic_ finality, the guarantee that the probability a transaction reverts becomes negligible very fast. This sounds a bit scary to muggles, but a cryptographer knows that essentially _all modern cryptography_ relies on "up to a negligible security" (I mean, it doesn't matter how secure a cryptosystem is, there is always _some chance_ that a hacker guess your secret-key through sheer luck).
+
+For me, that third observation is a source of great joy. It initiated a brand new theory of _probabilistic consensus_ that is still in its formative stage. It caused decade old models to be revised and refined, and made the theory much more interdisciplinary. I would say that the main reason I found myself in the field to begin with is that _I love probability theory_. If consensus was to remain deterministic and boring, this book might have never been written. Accordingly, the rest of the chapters in Part 1 are dedicated to guiding the reader through this brave, new, world. But before that, we finish the current chapter, and our discussion of PoW vs. BFT.

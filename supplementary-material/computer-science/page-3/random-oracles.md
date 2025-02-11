@@ -1,6 +1,6 @@
-# Cryptography
+# Random Oracles
 
-## Random Oracles
+TODO: this section is poorly written, improve.
 
 In computer science, an _oracle_ is a magic being that performs some task for us. Oracles have _many_ uses, one of them is to assume we can perform some computation without bothering ourselves with the details. Instead, we reason in an alternate universe where a magical oracle does the computation for us. This way we can _divide the work_ with someone working to _implement_ a random oracle. _hash functions_ such as SHA-256, Keccak, or k-HeavyHash are an implementation of a certain kind of oracle called a _random oracle_. The random oracle model has a nice mathematical description that is oblivious to how the hash function is actually implemented.
 
