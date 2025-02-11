@@ -12,6 +12,7 @@
   * [Proof-of-Work (PoW)](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/proof-of-work.md)
   * [How PoW Works\*](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md)
   * [PoS Vs. PoW](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/bft-vs.-pow.md)
+  * [Exercises](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/exercises.md)
 
 ## Part 2: The GHOSTDAG Protocol
 
