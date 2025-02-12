@@ -13,6 +13,16 @@
   * [How PoW Works\*](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md)
   * [PoS Vs. PoW](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/bft-vs.-pow.md)
   * [Exercises](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/exercises.md)
+* [Chapter 2: the Block Chain Paradigm](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/README.md)
+  * [A Graph Theory Primer](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/a-graph-theory-primer.md)
+  * [Chain Selection Rules](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/chain-selection-rules.md)
+  * [Security Notions](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/security-notions.md)
+  * [Safety](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/safety.md)
+  * [Liveness](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/liveness.md)
+  * [Confirmation Times](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/confirmation-times.md)
+  * [Selfish Mining](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/selfish-mining.md)
+  * [Proving Bitcoin's Security\*](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/proving-bitcoins-security.md)
+  * [Exercises](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/exercises.md)
 
 ## Part 2: The GHOSTDAG Protocol
 

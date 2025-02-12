@@ -57,6 +57,6 @@ Currently around $$1/4$$ of Ethereum is constantly staked, but if we assume this
 
 Assuming these conditions remain constant (not a very realistic assumption, but we are just trying to feel out the growth rate here), we can reiterate the formula above to see how the fraction of a collusion that currently holds a fraction $$f$$ of the coin for some $$f<1/4$$. I simulated $$50$$ years of accumulation for initial values of $$f=0.1,0.13,0.16,0.19,0.22$$, and these are the results
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption><p>Growth of a stake-holder staking their entire bag for 50 years assuming the parameters above</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (11).png" alt=""><figcaption><p>Growth of a stake-holder staking their entire bag for 50 years assuming the parameters above</p></figcaption></figure>
 
 Now, 50 years is a _long_ time, even longer if you literally stake _all_ your money. But this growth is still alarming business. After all, we _are_ talking about systems with presumptions to replace at least a part of the backbone of global economy. Who can tell how much money it will be worth to coerce this system in the future.
