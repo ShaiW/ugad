@@ -1,14 +1,22 @@
 # Chapter 2: the Block Chain Paradigm
 
-Now that we understand the [Sybil resistance provided by PoW](../chapter-1-bft-vs.-pow/proof-of-work.md#sybil-resistance), we turn to the next pressing question: how to apply it to create decentralized ledgers.
+Your mental image of Bitcoin is probably along these lines: miners discover blocks, either by hearing about them from their peers or by creating them. Whenever a miner discovers a block, they broadcast it to their peers and start mining over it. If two competing blocks are created, the miner keeps mining above the block they heard about first, unless the chain above the other block becomes longer, in which case they switch.
 
-It is at this point that my exposition diverges from more traditional ones. Instead of jumping right into Bitcoin and how it works, I want to present an _abstract framework_ called the _Block Chain paradigm_ that captures the general structure of a block chain. The abstract approach has many advantages:
+If you don't have a mental image of Bitcoin, and don't feel like unpacking this condensed description, I recommend this video:
+
+{% embed url="https://www.youtube.com/watch?v=bBC-nXj3Ng4" %}
+
+This description is not unreasonable, but it is rather clunky. It requires telling this story about entities, and take into consideration complex ideas like _time_. It also has a gaping hole: _why_ should miners follow the rules at all? What justifies this assumption?
+
+If you try to write a similar description for how a different protocol, say GHOST, works, you will find that, annoyingly enough, the description will be _exactly the same_ except this fragment of a sentence: "...unless the chain above the other block becomes longer...".
+
+The _only_ thing different between the Bitcoin protocol, the GHOST protocol, or any other block chain protocol, is the way they handle conflicts. The idea of the block chain paradigm is to make the tie breaking rule _abstract_, but the rest concrete. The block chain paradigm capitalizes on this observation. It provides a chassis to fit different chain selection rules into, and tools to quantify how well these chain selection rules achieve certain properties.
+
+The abstract approach has many advantages:
 
 * It draws a line between general properties of block chains, and properties unique to a specific block chain,
 * It allows us to define notions of security without appealing to a particular protocol or construction, we could then use these definitions to reason about _any_ block chain, and
 * It is readily generalizable, setting the ground for exploring the bloc&#x6B;_&#x44;AG_ paradigm in the next chapter.
-
-The idea of the block chain paradigm is that the differences between block chain protocols all reduce to a _chain selection rule_. The two most ubiquitous chain selection rules are Bitcoin's _heaviest chain_ rule and the GHOST rule, though there are others.
 
 Once we understand what a chain selection rule _is_, we provide definitions and framework to reason about their security. In particular, we will talk about safety, liveness, and transaction finality (a.k.a. confirmation times). But before that, we will spend a bit of time pontification on what security even _means_.
 

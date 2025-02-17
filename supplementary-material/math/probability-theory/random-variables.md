@@ -126,7 +126,7 @@ We call the resulting $$X$$ a _Poisson variable with parameter p_ and denote it 
 
 With this language in hand, if $$X$$ is the random variable defined on a fair die as $$X(\omega_1)=X(\omega_2) = 0$$ and $$X(\omega_3)=X(\omega_4)=X(\omega_5)=X(\omega_6)=1$$ then we have that $$X\sim Poi(p)$$.
 
-Another important variable is a _Binomial variable_. Say we repeat a Poisson experiment with parameter $$p$$ for $$n$$ times, and let $$X$$ be the random variable that counts how many of the repetitions were successful. What is the probability that $$X=k$$? Clearly, for $$k>n$$ it is zero, because we can't have flipped more heads than we flipped coins. How many sequences there are for which _exactly_ $$k$$ flips are heads? Well, there were a total of $$n$$ flips, and we have to _choose_ $$k$$ of them. The number of ways to make this choice is the [binomial coefficient](../elementary-math/binomial-coefficients.md) $${n \choose k}$$. And what is the probability of each such sequence? Well, for each coin that landed on heads, it did so with probability $$p$$. Since there are $$k$$ of those, the probability they _all_ landed on heads is $$p^k$$. Similarly, all the remaining $$n-k$$ coins landed on tails, which happens with probability $$(1-p)$$. Multiplying all of this together we get that
+Another important variable is a _Binomial variable_. Say we repeat a Poisson experiment with parameter $$p$$ for $$n$$ times, and let $$X$$ be the random variable that counts how many of the repetitions were successful. What is the probability that $$X=k$$? Clearly, for $$k>n$$ it is zero, because we can't have flipped more heads than we flipped coins. How many sequences there are for which _exactly_ $$k$$ flips are heads? Well, there were a total of $$n$$ flips, and we have to _choose_ $$k$$ of them. The number of ways to make this choice is the [binomial coefficient](../stuff-you-should-know/binomial-coefficients.md) $${n \choose k}$$. And what is the probability of each such sequence? Well, for each coin that landed on heads, it did so with probability $$p$$. Since there are $$k$$ of those, the probability they _all_ landed on heads is $$p^k$$. Similarly, all the remaining $$n-k$$ coins landed on tails, which happens with probability $$(1-p)$$. Multiplying all of this together we get that
 
 $$
 \mathbb{P}\left[X=k\right]={n \choose k}p^{k}\left(1-p\right)^{n-k}
@@ -146,7 +146,7 @@ $$
 
 <summary>Solution</summary>
 
-Using the [binomial formula](../elementary-math/binomial-coefficients.md):
+Using the [binomial formula](../stuff-you-should-know/binomial-coefficients.md):
 
 $$\begin{aligned}\mathbb{E}\left[\mathcal{B}\left(n,p\right)\right] & =\sum_{k=0}^{n}{n \choose k}p^{k}\left(1-p\right)^{n-k}k\\  & =n\sum_{k=1}^{n}{n-1 \choose k-1}p^{k}\left(1-p\right)^{n-k}\\  & =n\sum_{k=0}^{n-1}{n-1 \choose k}p^{k+1}\left(1-p\right)^{n-\left(k+1\right)}\\  & =np\sum_{k=0}^{n-1}{n-1 \choose k}p^{k}\left(1-p\right)^{\left(n-1\right)-k}\\  & =np \end{aligned}$$
 

@@ -15,12 +15,13 @@
   * [Exercises](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/exercises.md)
 * [Chapter 2: the Block Chain Paradigm](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/README.md)
   * [A Graph Theory Primer](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/a-graph-theory-primer.md)
-  * [Chain Selection Rules](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/chain-selection-rules.md)
+  * [The Paradigm](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/the-paradigm.md)
+  * [Honesty and Rationality](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/honesty-and-rationality.md)
+  * [Selfish Mining](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/selfish-mining.md)
   * [Security Notions](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/security-notions.md)
   * [Safety](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/safety.md)
   * [Liveness](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/liveness.md)
   * [Confirmation Times](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/confirmation-times.md)
-  * [Selfish Mining](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/selfish-mining.md)
   * [Proving Bitcoin's Security\*](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/proving-bitcoins-security.md)
   * [Exercises](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/exercises.md)
 
@@ -31,8 +32,9 @@
 ## Supplementary Material
 
 * [Math](supplementary-material/math/README.md)
-  * [Elementary Math](supplementary-material/math/elementary-math/README.md)
-    * [Binomial Coefficients](supplementary-material/math/elementary-math/binomial-coefficients.md)
+  * [Stuff You Should Know](supplementary-material/math/stuff-you-should-know/README.md)
+    * [Binomial Coefficients](supplementary-material/math/stuff-you-should-know/binomial-coefficients.md)
+    * [Geometric Series](supplementary-material/math/stuff-you-should-know/geometric-series.md)
   * [Probability Theory](supplementary-material/math/probability-theory/README.md)
     * [Probability Spaces](supplementary-material/math/probability-theory/probability-spaces.md)
     * [Random Variables](supplementary-material/math/probability-theory/random-variables.md)
