@@ -45,4 +45,4 @@ So, how do block rewards affect rational miners?
 
 One can prove that for Bitcoins heaviest chain rule (that we did not introduce yet), not mining over the selected tip reduces the chance of creating the next block, and thus the expected gain. This is true essentially since by not mining over the currently heaviest known chain, the miner competes against it from a disadvantage.
 
-OK, but what about not withholding blocks? Surely a rational miner would want to avoid that too, right? Well, not quite, as we will see in the next section.
+OK, but what about not withholding blocks? Surely a rational miner would want to avoid that too, right? Well, not quite. We will soon discuss a phenomenon called [selfish mining](selfish-mining.md), which shows that there is in fact _some_ divergence between the rational and honest strategies for bitcoin miners.
