@@ -4,7 +4,7 @@ The blockchain paradigm maintains that many interesting blocks differ only by th
 
 So to describe the paradigm, I owe you two things: an _abstract_ _definition_ of a chain selection rule, and a _concrete_ _description_ of what miners do with this chain selection rule. Then I also owe you a third thing: _why_ should miners follow the expected behavior?
 
-## Chain Selection Rule
+## Chain Selection Rules
 
 A _chain selection rule_ has a very simple task. It is given a [tree](a-graph-theory-primer.md#trees), and outputs a tip. Why do we call it a _chain selection rule_ if it outputs a tip? Well, recall that each tip of the tree defines a _unique_ chain to the root/genesis. So there is no difference.
 
