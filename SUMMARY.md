@@ -34,6 +34,7 @@
 
 * [Math](supplementary-material/math/README.md)
   * [Stuff You Should Know](supplementary-material/math/stuff-you-should-know/README.md)
+    * [Exponentials and Logarithms](supplementary-material/math/stuff-you-should-know/exponentials-and-logarithms.md)
     * [Binomial Coefficients](supplementary-material/math/stuff-you-should-know/binomial-coefficients.md)
     * [Geometric Series](supplementary-material/math/stuff-you-should-know/geometric-series.md)
   * [Probability Theory](supplementary-material/math/probability-theory/README.md)
@@ -41,6 +42,10 @@
     * [Random Variables](supplementary-material/math/probability-theory/random-variables.md)
     * [The Math of Block Creation](supplementary-material/math/probability-theory/the-math-of-block-creation.md)
 * [Computer Science](supplementary-material/computer-science/README.md)
+  * [Stuff you Should Know](supplementary-material/computer-science/stuff-you-should-know/README.md)
+    * [Asymptotic Notation](supplementary-material/computer-science/stuff-you-should-know/asymptotic-notation.md)
+    * [Negligible Functions](supplementary-material/computer-science/stuff-you-should-know/negligible-functions.md)
   * [Cryptography](supplementary-material/computer-science/page-3/README.md)
     * [Random Oracles](supplementary-material/computer-science/page-3/random-oracles.md)
     * [Merkle Trees](supplementary-material/computer-science/page-3/merkle-trees.md)
+    * [One Time Pads](supplementary-material/computer-science/page-3/one-time-pads.md)

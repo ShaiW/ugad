@@ -6,7 +6,7 @@ We are about to discuss several security notions that are defined for block chai
 
 The _longest_ chain rule is as simple as the name suggest. Given a tree, choose the tip that is furthest from the genesis block:
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
 
 However, the rule is called _heaviest_ chain, not _longest_ chain, which begs two questions: what makes a chain heavy, and why is it important.&#x20;
 
@@ -28,7 +28,7 @@ While in HCR you find the selected tip by starting from the tips and looking _ba
 
 More concretely, for any block $$B$$, we can define the _subtree rooted at_ $$B$$ to contain $$B$$ and all blocks from which $$B$$ is reachable (when we switch to DAG parlance, we will simply call this $$B.\overline{Future}$$):
 
-<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 We can define the _weight_ of each tree like we did in HCR, as the sum of reciprocals of difficulty targets of the blocks in the tree.
 
@@ -36,7 +36,7 @@ To find the selected tip of a given tree, we start from the Genesis block. We th
 
 Let us follow an example. Assume that all blocks weigh the same, and consider this tree:
 
-<figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
 
 The chain selection rule's job is to output one of the tips $$T_1,\ldots,T_5$$. You are welcome to check that $$T_5$$ has the longest/heaviest chain below it, so this is the tip that HCR will return. What about GHOST?
 
@@ -98,9 +98,9 @@ Note that just because block $$B$$ has more weight than block $$A$$ does not _gu
 Note that it would be unfair to call this property a _criticism_ of PoEM. It only establishes that PoEM can't guarantee something we already know HCR and GHOST can't guarantee either. In fact, _no_ chain selection rule can _guarantee_ which side of the fork is going to win, because that's a form of deterministic finality. In other words, the existence of a chain rule with such a strong guarantee will contradict the $$3f+1$$ theorem.
 {% endhint %}
 
+However, these benefits are not without costs, as we will see in the sequel.
 
+## Why Heaviest and Not Longest?\*
 
-
-
-
+TODO
 

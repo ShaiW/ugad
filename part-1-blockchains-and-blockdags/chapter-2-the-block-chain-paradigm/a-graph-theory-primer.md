@@ -8,18 +8,18 @@ Graphs are important to understand even for people who only seek cursory, inform
 
 A (directed) _graph_ is nothing but a bunch of circles called _nodes_ or _vertices,_ and a bunch of arrows between them called _edges_. For example:
 
-<figure><img src="../../.gitbook/assets/image (4).png" alt=""><figcaption><p>A whacky graph</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (4) (1).png" alt=""><figcaption><p>A whacky graph</p></figcaption></figure>
 
 We are usually interested in less whacky graphs, so we assume there are no _multiple arrows_ between _the two same vertices_, and no _loopy arrows_ going from a vertex to itself, for example:
 
-<figure><img src="../../.gitbook/assets/image (1) (1).png" alt=""><figcaption><p>a simple graph</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1) (1).png" alt=""><figcaption><p>a simple graph</p></figcaption></figure>
 
 This is called a _simple_ (directed) graph.
 
 In most textbooks, directed graphs are considered an intermediate topic, and the discussion start with _u&#x6E;_&#x64;irected graphs. These are graphs where for any two vertices $$A$$, $$B$$ there is an arrow from $$A$$ to $$B$$ if and only if there is an arrow from $$B$$ to $$A$$. In this case, the two arrows are compressed into a single, arrowless line. For example:\
 
 
-<figure><img src="../../.gitbook/assets/image (3) (1).png" alt=""><figcaption><p>an undirected graph</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (3) (1) (1).png" alt=""><figcaption><p>an undirected graph</p></figcaption></figure>
 
 Unlike most textbooks, we will be concerned almost exclusively with directed graphs, so we will employ a backward convention: a _graph_ is assumed to be _directed_ unless explicitly stated otherwise.
 
@@ -31,19 +31,19 @@ We want to use graphs to describe _causality_ or _chronology_. It makes sense th
 
 However, how will you understand the chronology described by this graph:
 
-<figure><img src="../../.gitbook/assets/image (4) (1).png" alt=""><figcaption><p>A closed timelike curve</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (4) (1) (1).png" alt=""><figcaption><p>A closed timelike curve</p></figcaption></figure>
 
 Does it say that event $$A$$ happened before event $$B$$ that happened before event $$C$$, that happened _before_ event $$A$$? Well, if we are being _completely_ honest, the existence of [closed timelike curves](https://en.wikipedia.org/wiki/Closed_timelike_curve) is still very much an open question. Nevertheless, we will make the assumption that our blockchain will never traverse such a loop. Let us carefully define what this means, the terms we introduce for that purpose will accompany us for the rest of the book.
 
 Given a simple directed graph, we say that the vertex $$B$$ is _reachable_ from the vertex $$A$$ if there is some way to get from $$A$$ to $$B$$ by only following arrows. For example:
 
-<figure><img src="../../.gitbook/assets/image (6).png" alt=""><figcaption><p><span class="math">A</span> and <span class="math">A'</span> are both reachable from <span class="math">B</span>. However, <span class="math">B</span> is reachable from <span class="math">A</span> but not from <span class="math">A'</span>.</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (6) (1).png" alt=""><figcaption><p><span class="math">A</span> and <span class="math">A'</span> are both reachable from <span class="math">B</span>. However, <span class="math">B</span> is reachable from <span class="math">A</span> but not from <span class="math">A'</span>.</p></figcaption></figure>
 
 Each way to reach $$B$$ from $$A$$ is called a _path_. A path is just a list of arrows such that the first arrow leaves $$A$$, the last arrow enters $$B$$, and any arrow in between leaves the vertex entered by the previous arrow.
 
 For example, in the graph above:
 
-<figure><img src="../../.gitbook/assets/image (8).png" alt=""><figcaption><p>There is a single path from <span class="math">A</span> to <span class="math">B</span> (red), but three different paths from <span class="math">B</span> to <span class="math">A'</span> (orange, blue, and green)</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (8) (1).png" alt=""><figcaption><p>There is a single path from <span class="math">A</span> to <span class="math">B</span> (red), but three different paths from <span class="math">B</span> to <span class="math">A'</span> (orange, blue, and green)</p></figcaption></figure>
 
 Note that in our convention, a path must have _at least one arrow_. Staying in place _doesn't count_. Under this convention, a _cycle_ is a path from any vertex $$A$$ to itself. Given the name, the following definition should not come as a surprise.
 

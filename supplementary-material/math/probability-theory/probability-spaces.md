@@ -76,7 +76,7 @@ $$
 
 I will not prove the last equality, but I can provide a beautiful visual intuition:
 
-<figure><img src="../../../.gitbook/assets/image (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (1) (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 We can now ask ourselves, say, what is the probability this would take _at most ten tries_, and compute that the result is
 
