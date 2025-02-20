@@ -102,5 +102,18 @@ However, these benefits are not without costs, as we will see in the sequel.
 
 ## Why Heaviest and Not Longest?\*
 
-TODO
+We stated above that the longest chain rule is not secure due to the [difficulty adjustment mechanism](../chapter-1-bft-vs.-pow/how-pow-works.md#difficulty-adjustment-in-bitcoin), that allows creating long (though not heavy) chains for cheap.
 
+Lets work out the math. Consider a blockchain that uses difficulty epochs like Bitcoin, say that the block delay is $$\lambda$$ and that there are $$N$$ blocks per epoch. Consider an attacker with $$\alpha$$ of the global hash rate. Also, let $$q$$ be the maximal _decrease_ in difficulty across difficulty windows. (recall that in Bitcoin we have $$\lambda = 10\text{ min}$$, $$N = 2016$$ (so $$\lambda\cdot N = 20160\text{ minutes} = 2\text{ weeks}$$), and $$q=\frac{1}{4}$$).
+
+Since the adversary only has a fraction $$\alpha$$ of the hash rate, before the difficulty has changed, it will take them $$\frac{1}{\alpha} \lambda$$ to create each block. So the first entire difficulty epoch will require $$\frac{1}{\alpha} \lambda\cdot N$$. After which, the adversary can reduce the difficulty by $$q$$ making the second difficulty epoch take $$\frac{1}{\alpha} \lambda\cdot N\cdot q$$, and similarly the third will take $$\frac{1}{\alpha} \lambda\cdot N\cdot q^2$$ and so on.
+
+Obviously, at some point the difficulty will be so low that other overhead will dominate the computation, but if we ignore this, we get that an adversary can create "infinitely many blocks" in a finite time, which we can compute using the [geometric series formula](../../supplementary-material/math/stuff-you-should-know/geometric-series.md) to be
+
+$$
+N\frac{\lambda}{\alpha}\sum_{n=0}^{\infty}q^{n}=\frac{1}{\alpha}\frac{\lambda\cdot N}{1-q}
+$$
+
+In particular, if we plug in the values for Bitcoin we get that $$\frac{\lambda\cdot N}{1-q} = 26880\text{ min}$$ which is less than $$20$$ days. So we get, for example, that a $$1\%$$ attacker would be able to create a longer chain in less than $$2000$$ days, or $$5.5$$ years, and a $$10\%$$ attacker could revert the entire Bitcoin chain in just six months.
+
+This becomes even worse if you consider adversaries that start their competing chain in the genesis block, where difficulty is already low.

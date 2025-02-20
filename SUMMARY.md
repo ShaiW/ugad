@@ -19,7 +19,7 @@
   * [Honesty and Rationality](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/honesty-and-rationality.md)
   * [Three Chain Selection Rules](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/three-chain-selection-rules.md)
   * [Security Notions](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/security-notions.md)
-  * [Selfish Mining](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/selfish-mining.md)
+  * [Selfish Mining in Bitcoin](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/selfish-mining-in-bitcoin.md)
   * [Safety](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/safety.md)
   * [Liveness](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/liveness.md)
   * [Confirmation Times](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/confirmation-times.md)
@@ -34,7 +34,7 @@
 
 * [Math](supplementary-material/math/README.md)
   * [Stuff You Should Know](supplementary-material/math/stuff-you-should-know/README.md)
-    * [Exponentials and Logarithms](supplementary-material/math/stuff-you-should-know/exponentials-and-logarithms.md)
+    * [Asymptotics, Growth, and Decay](supplementary-material/math/stuff-you-should-know/asymptotics-growth-and-decay.md)
     * [Binomial Coefficients](supplementary-material/math/stuff-you-should-know/binomial-coefficients.md)
     * [Geometric Series](supplementary-material/math/stuff-you-should-know/geometric-series.md)
   * [Probability Theory](supplementary-material/math/probability-theory/README.md)
