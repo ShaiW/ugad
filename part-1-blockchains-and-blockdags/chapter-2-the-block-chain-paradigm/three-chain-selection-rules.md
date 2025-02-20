@@ -28,7 +28,7 @@ While in HCR you find the selected tip by starting from the tips and looking _ba
 
 More concretely, for any block $$B$$, we can define the _subtree rooted at_ $$B$$ to contain $$B$$ and all blocks from which $$B$$ is reachable (when we switch to DAG parlance, we will simply call this $$B.\overline{Future}$$):
 
-<figure><img src="../../.gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 We can define the _weight_ of each tree like we did in HCR, as the sum of reciprocals of difficulty targets of the blocks in the tree.
 
@@ -36,7 +36,7 @@ To find the selected tip of a given tree, we start from the Genesis block. We th
 
 Let us follow an example. Assume that all blocks weigh the same, and consider this tree:
 
-<figure><img src="../../.gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (3) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 The chain selection rule's job is to output one of the tips $$T_1,\ldots,T_5$$. You are welcome to check that $$T_5$$ has the longest/heaviest chain below it, so this is the tip that HCR will return. What about GHOST?
 
