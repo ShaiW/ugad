@@ -50,20 +50,83 @@ All of the questions above are what defines a selfish mining strategy.
 
 ## The Eyal-Sirer Strategy\*
 
-The explicit strategy given by Eyal and Sirer goes like this:
+The Eyal-Sirer strategy goes like this:
 
-* As long as you have an advantage, keep going
-* If your advantage ever _decreases_ from two to one, _publish your chain_
-* If your advantage increased to one for a while, and then decreased back to zero, publish your chain
-* If you find yourself at a disadvantage, give up on your chain
+* Mine over the selected tip:\
+  \
+  ![](<../../.gitbook/assets/image (23).png>)
+* If the honest network found a block before you, restart the attack from the new tip:\
+  ![](<../../.gitbook/assets/image (22).png>)
+* Otherwise, you have a lead of one block over the honest network, good job! _Keep this block to yourself_ and _keep mining_!\
+  ![](<../../.gitbook/assets/image (24).png>)
+* If the honest network mined the next block, you are at an impasse:\
+  ![](<../../.gitbook/assets/image (25).png>)\
+  Release you block to the wild, and hope for the best. For future reference, let $$\gamma$$ be the probability you win in this situation (in a sense, $$\gamma$$ encodes how _well connected_ you are)
+*   Otherwise, you are already leading by two blocks, good job! Keep going!\
 
-Let us try to understand the success rates of this strategy. For this, let $$\alpha$$ be the hash rate fraction of the selfish miner, and let $$\gamma$$ represent the miner's _connectivity_, that is, the _probability that the selfish-miner's chain wins_ in the case that _it is the same length of the honest network_.
+
+    <figure><img src="../../.gitbook/assets/image (26).png" alt=""><figcaption></figcaption></figure>
+*   At some point, the honest network will start to catch up, and you will find that your advantage has shrunk to one block!\
 
 
+    <figure><img src="../../.gitbook/assets/image (27).png" alt=""><figcaption></figcaption></figure>
+
+    This is too close for comfort! Publish your chain. All the honest block created in this time will be orphaned, congratulations! Time to restart the attack
+
+Computing the consequences of this strategy is fun but a bit too involved for our purposes. The results are summarized in this graph:
+
+<figure><img src="../../.gitbook/assets/image (28).png" alt=""><figcaption><p>(Fig 2. from Eyal-Sirer) Effectiveness of the Eyal-Sirer strategy, for a single selfish miner/collusion working against an otherwise honest network. The <span class="math">x</span> axis represents the selfish hashrate, and the <span class="math">y</span> axis represents the fraction of blocks that they mine<span class="math">x</span></p></figcaption></figure>
+
+Here we see an interesting phenomenon: you do not need a majority of the hashrate to create a majority of the blocks! For $$\gamma = 0$$ (the weakest attacker) we see that a third of the hash power is enough to obtain an unfair advantage. For $$\gamma = 1$$, we see that _any_ fraction suffices to have an advantage, and a third suffices to mine _half_ of the blocks!
+
+These results are obviously striking, but some tend to misinterpret them to mean much more: that a majority of one third can double-spend. The argument is "a majority of one third creates more than half of the blocks, so they can create a competing chain and revert any transaction". But that's not really the case. If you watch the attack closely, you would see that it has to _piggyback_ on the honest network blocks and _interleave_ them with their blocks.
+
+A successful revert attack looks something like this:
+
+<figure><img src="../../.gitbook/assets/image (29).png" alt=""><figcaption></figcaption></figure>
+
+where as a successful selfish mining attack might look like this:
+
+<figure><img src="../../.gitbook/assets/image (31).png" alt=""><figcaption></figcaption></figure>
+
+Note that in the second image , the attacker created $$9$$ out of the $$17$$ chain blocks, which is a majority. However, the network created a total of $$13$$ blocks in this time, which are more than the attacker's $$9$$ blocks. If the attacker arranged her block in a chain, without orphaning the honest blocks, then it would have been a _shorter_ chain, and the effect would have failed.
+
+## Security Definitions
+
+One motivation for presenting selfish mining at this rose from the [discussion about security notions](selfish-mining-in-bitcoin.md#security-definitions), where we stressed that a security notion is only defined with respect to some goal. When talking about the security of Bitcoin, many become tunnel visioned on security against reverting a transaction. We already stressed that this property is _not quite enough_. The inability to revert a transaction is a property called _safety_, and together with the inability to _arbitrarily delay_ a decision, which we will call _liveness_, we get what is _usually_ called "the security" of Bitcoin.
+
+However, I made a hopefully fruitful effort that there is no such thing as "the security", as there could always be other malicious goals that furnish other security properties.
+
+One such example is a property known in the literature as _chain quality_, which informally captures the inability to mine more than your fair share. From this vantage, we can say that Eyal and Sirer were the first to note that a block chain can be secure _while not_ providing chain quality (despite the term _chain quality_ only coined a bit later).
+
+This is a striking example of how attackers (or worse, cryptographers!) can surprise you.
 
 ## Selfish Mining and Tie Breaking
 
+Recall the discussion about [tie breaking](the-paradigm.md#breaking-ties) in the block chain paradigm. We said in passing that selfish mining and tie breaking is related, and we can see why if we consider the strategy above. In particular with the number $$\gamma$$.
 
+We said that the number $$\gamma$$ measures how _well connected_ you are. But that's because we were following the Bitcoin "seen first" tie breaking rule. What would have happened if we chose a _deterministic_ tie breaking rule like lowest hash or [PoEM](three-chain-selection-rules.md#proof-of-entropy-minima-poem)?
 
+The answer is that we get some degree of control over $$\gamma$$. Seeing only our block, we can _compute the probability_ that another block will win a tie with us. For example, say we found a nonce for our block that produces a hash _ten times_ _smaller_ than required. I.e. such that $$\mathsf{H}(B[n]) \le T/10$$.
 
+The probability to find another nonce that satisfies this is _ten times smaller_ than required. So the probability that the next _honest_ block will have a lower tie is about $$10\%$$, which could considerably increaser $$\gamma$$! Worse yet, if I am currently _tied_ with the honest network, I can _know in advance_ would would win the tie!
 
+This connection between selfish mining and tie breaking was analyzed by Ren Zhang (from CKB) and Bart Preneel in their 2019 paper [Lay Down the Common Metrics: Evaluating Proof-of-Work Consensus Protocols' Security](https://ieeexplore.ieee.org/abstract/document/8835227), concluding that a deterministic tie-breaking law _must_ degrade chain quality.
+
+In PoEM this seems to even be slightly exacerbated: if the competing blocks has considerably less weight than mine, then I know that my advantage will be preserved for the remainder of the attack. PoEM allows to accumulate advantage, simply because it keeps tabs of _actual_ nonces and not just difficulty adjustment. I have not done the math (I don't think anyone has, at this time), but if I have to guess, I would say that PoEM is _slightly_ more vulnerable to selfish mining than lower-hash tie breaking.
+
+## Further Work
+
+Since Eyal and Sirer's initial observation, selfish mining has become a central theme in PoW research. Bitcoin is thankfully quite resilient to selfish mining, but this observation means that other protocols should be on their toes, providing at least some evidence that they are not susceptible to cheap selfish mining attacks. Unfortunately, some chains tend to ignore this issue, despite concerning evidence. One such example is the Kadena network, whose developers have yet to respond to an analysis by Wang et al. in their 2022 paper [An Analytical Study of Selfish Mining Attacks on Chainweb Blockchain](https://ieeexplore.ieee.org/abstract/document/9851985?casa_token=M0cuWNrr3AIAAAAA:RawM0LcFIQzkd7yF9RpDJB4YdWX6mq73Z2u-oqCxNYHS0aU9UwhhTzh_JfIUUcen2DM6E14spCbU), that provides evidence that selfish mining becomes easier as more chains are added.
+
+Following Eyal and Sirer's observation, A formal framework for studying selfish mining was given by Juan A. Garay, Aggelos Kiayias, and Nikos Leonardos in their 2014 paper [The Bitcoin Backbone Protocol: Analysis and Applications](https://eprint.iacr.org/2014/765.pdf). In that paper, they defined the _chain quality_ property as the fraction of blocks an αα-miner should expect to mine and noted that Eyal and Sirer‘s attack proves that Bitcoin’s chain quality is not ideal.
+
+In 2017, Ayelet Sapirshtein, Yonatan Sompolinsky, and Aviv Zohar published the paper [Optimal Selfish Mining Strategies in Bitcoin](https://link.springer.com/chapter/10.1007/978-3-662-54970-4_30), where they noted that Eyal and Sirer’s attack is not optimal and provided an optimal strategy. Their improvement is particularly interesting as it relies on optimization techniques: the authors noted that for any set of parameters α,γα,γ the optimal strategy is slightly different, and provided an efficient algorithm that computes the optimal policy from these parameters. They noted that the original selfish mining strategy coincides with theirs for γ=1γ=1 and small values of αα.
+
+In the 2018 paper [On Profitability of Selfish Mining](https://arxiv.org/abs/1805.08281), Cyril Grunspan and Ricardo Pérez-Marco provide a subtler analysis of selfish mining. They note that the assumption that γγ is constant is unrealistic (as γγ depends on how long it took to create each block), and show that when incorporating the time variance of γγ into the computation, the honest mining strategy becomes optimal. They conclude that selfish mining attacks are actually attacks on the difficulty adjustment algorithm. In particular, they conclude that a successful selfish mining attack on Bitcoin must persist over several difficulty windows, making it impractical.
+
+However, in the 2020 paper [Selfish Mining Re-Examined](https://link.springer.com/chapter/10.1007/978-3-030-51280-4_5), Kevin Negy, Peter Rizun, and Emin Gün Sirer pointed out a _mistake_ in the computation by Grunspan and Pérez-Marco. Fixing it, they found that selfish mining can be profitable in the constant difficulty setting. They carefully analyze selfish mining in scenarios of varying difficulty and find it is _even more_ confusing. A surprising property is that the attack is affected by how the difficulty adjustment works, and different approaches to adjusting difficulty furnish different efficacies for selfish mining attacks.
+
+A year before that, Guy Goren and Alexander Spiegelman published the paper [Mind the Mining](https://arxiv.org/pdf/1902.03899), where they revisit mining in face of variable difficulty. The attacks in this paper “complement” selfish mining, as they are based on the miner deliberately shutting off some of their hardware. This kind of attack has very different flavor than selfish mining, which assumes attackers have a fixed hash rate. In other words, the analysis of selfish mining implicitly ignores the expenses of the miner, and treat income as pure profit. Taking expenses into account, Goren and Spiegelman find that Bitcoin’s long difficulty epochs enable “win-win” situations: a miner can increase the profits of _all_ miners by reducing their mining efforts (where the reducing miner is “rewarded” in lower energy bills, while the rest are rewarded in higher mining income due to increased difficulty). The loser of this “win-win” is obviously the network itself, whose hash rate, and whereby security, is reduced.
+
+(My deepest gratitude to Ittay Elay for reviewing this post and making invaluable comments and suggestions)
