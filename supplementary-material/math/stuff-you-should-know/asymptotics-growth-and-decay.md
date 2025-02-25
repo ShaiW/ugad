@@ -58,12 +58,13 @@ Sometimes we don't care about _growth_ but about _decay_. That is, we want to kn
 
 ## Exponentials
 
-TODO: complete
-
 Exponentials and logarithms are how we typically describe things that are _la&#x72;_&#x67;e or _small_. Note that I did not end the latest sentence with "respectively", and this is no coincidence. When we talk about _growth_ (that is, how fast things go _to infinity_), exponential growth is large, while logarithmic growth is _very slow_ (and in between we have e.g. the _polynomial_ growth: linear, quadratic, quartic, etc...). When we talk about _decay_ (that is, how fast things go to _zero_), then exponential decay is _small_.
 
 As an example, consider generating a secret-key. In any encryption scheme, a secret-key can be represented as a _uniformly random_ string of bits, where the length is chosen by the user. Say we use a key of length $$n$$, then how many possible keys are there? The first bit is either $$0$$ or $$1$$, so two options. The second bit is either $$0$$ or $$1$$ too, so two more options _on top_ of each of these two options, leading to four options, and so on. It is easy to get convinced that the number of possible keys is $$2^n$$. Hence, the number of keys _grows exponentially with_ $$n$$.
 
 Now say I am trying to _guess_ your secret key. Since all the bits are uniformly random, we get that they are all _equally likely_, so that the probability I guess correctly (no matter how I guess) is one in $$2^n$$, that is, $$1/2^n$$ which is also commonly written as $$2^{-n}$$. So since the possible number of keys _grows exponentially_ (and the keys are uniform), then the probability to guess a key _decays exponentially_.
 
-To be more concrete, we say that a function is _exponential_ if it is of the form $$c^n$$ for some number $$c$$.
+To be more concrete, we say that $$f$$ is _exponential_ if there is some constant $$c>0$$ such that $$f=\theta(e^{cn})$$ where $$e$$ is the infamous [Euler's number](https://en.wikipedia.org/wiki/E_\(mathematical_constant\)). Why $$e$$ and not any other number? Because it is comfortable. The fact is that for any number $$b$$ there is a number $$c$$ such that $$b^n = e^{cn}$$. (This number $$c$$ is called the _natural logarithm_ of $$b$$, denoted $$\ln b$$, and we will discuss it shortly.) So you can replace $$e$$ with any positive number larger than $$1$$ and obtain a completely equivalent definition.
+
+**Exercise**: Let $$b>1$$, let $$f$$ satisfy that there is some $$c>0$$ such that $$f=\theta\left(b^{cn}\right)$$, prove that $$f$$ is exponential.
+

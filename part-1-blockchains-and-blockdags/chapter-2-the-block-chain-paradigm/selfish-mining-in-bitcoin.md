@@ -1,56 +1,67 @@
 # Selfish Mining in Bitcoin
 
-Recall that when we described the [block chain paradigm](the-paradigm.md) we said that we expect two things of honest miners: to mine over the selected tip, and to immediately rebroadcast any valid block they learn of. This naturally led to a discussion over what makes these assumptions justified. We addressed this by noting that the Bitcoin network places incentives such that a [_rational_ miner](honesty-and-rationality.md), seeking to maximize profit, will always choose to mine over the selected tip. And what about reporting all blocks immediately? Well, not quite...
+Recall that in [block chain paradigm](the-paradigm.md) we have two expectations of honest miners: mine over the selected tip, and immediately rebroadcast any valid block they learn of. We naturally asked ourselves what justifies these assumptions, and partially solved it by appealing to _rationality_ (in the game theoretic, non-judgmental meaning of the word). We defined a [_rational_ miner](honesty-and-rationality.md) as one seeking to maximize their mining revenue (and do not care about other incentives such as bribes or vindictiveness), and noted that such a miner is incentivized by Bitcoin's block rewards to always mine over the selected tip. The current section deals with the second expectation, that of not withholding blocks. It turns out that there are subtle and fascinating gaps between the honest and rational strategy.
 
-## The Rational Miner
+Those gaps are described as a strategy called _selfish mining_, that allows large enough miners to _increase_ their profit by _withholding_ blocks. Selfish mining was first reported by Ittay Eyal and Emin Gün Sirer in their 2013 paper [Majority is not Enough: Bitcoin Mining is Vulnerable](https://arxiv.org/pdf/1311.0243).
 
-We defined a _rational_ miner to be a miner seeking to increase profits from mining. Does that necessarily mean they seek to mine as many blocks as possible? Not exactly. A more accurate description is that they seek to mine the _largest fraction_ of _non-orphaned blocks_ possible. The subtlety, noticed by Ittay Eyal and Emin Gün Sirer in their 2013 paper [Majority is not Enough: Bitcoin Mining is Vulnerable](https://arxiv.org/pdf/1311.0243), is that _the above are not the same_, and that by _withholding blocks_ a miner can _increase their fraction_ by _increasing the chance competing blocks are orphaned_.
+{% hint style="info" %}
+Applying selfish mining is traditionally called _an attack_, as it very much resembles one: participants deviating from the protocol to obtain unwanted results. However, from a more modern mechanism design point of view, I find "attack" to be a bit of a misnomer, as it depicts participants maximizing the profit according to the incentives set for them by the protocol designer as nefarious. The term "selfish mining attack" is very commo in the literature, which is fine, but for didactive reasons I will just refer to it as a rational strategy.
+{% endhint %}
 
-I repeat the subtlety: the attack might _decrease_ the _number_ of non-orphaned blocks created by the adversary, but it causes _a larger increase_ in orphan rates of honest blocks, making the _fraction_ of the attacker grow.
+Consider a scenario where there are only two miners: Alice the honest, and Sally the selfish. Alice acts as expected while wants to maximize her profit. This simplification does not really harm generality (beyond the assumption of a _single_ selfish miner), since one large honest miner behaves exactly the same as many small honest miner (or any other division of hashing power among honest miner).
 
-How is it that the attacker actually wasted work, but increased is profit? Because he caused _more_ of the honest work to be wasted. Which brings us to why selfish mining is a concern: it is not only about miners getting more than their fair share, its that this strategy, that turns out to be rational, is _degrading the security by increasing orphan rates_.
+It turns out that by _withholding blocks_, Sally can increase the probability that blocks made by _Alice_ are orphaned. Some of Sally's blocks will also be orphaned in the process, but it turns out that if Sally is large and well connected enough, she can increase the _relative amount_ of Alice's blocks that get orphaned. In other words, Sally can increase her _own share_ of _non_-orphaned blocks.
 
-So the consequences of selfish mining are not only that the rational and honest strategies are not actually aligned, but that the actual rational strategy is detrimental. So how come Bitcoin is still running securely? Well, the good news are that a selfish miner needs a very large fraction of the global hash rate to be profitable, and that selfish mining attacks are detectable.
+Now, why is that a problem? If that's the rational strategy, why not just let all miners follow it? For many reasons, let us list two:
+
+1. It would create a disproportionate advantage for larger miners, making the fraction of a small miner even smaller.
+2. It _increases the orphan rates, degrading the security of the network_.
+
+Fortunately for Bitcoin, it seems that selfish mining is only feasible for very large miners, and selfish mining attacks (that are detectable by e.g. following orphan rate from the point of view of a non-selfish sufficiently large miner) have not been witnessed in the wild.
 
 ## Selfish Mining Strategies
 
-They key to a selfish mining attack is _withholding blocks_. We already considered another block withholding attack, a _double-spend attack_. In a double-spend attack, the adversary attempts to _reorg_ the chain. She withholds an _entire competing chain_ and only posts it once it is heavier than the honest chain. Selfish mining is a much more subtle version. You can think of it as constantly attempting to reorg the latest block, and trying again if you fail. Since you don't care _what_ block you want to reorg out, only that you reorg enough honest blocks to increase your fraction, you can always try again.
+They key to a selfish mining attack is _withholding blocks_. I assume the reader is familiar with double-spending attacks (if not, fret not. We will cover them very soon). If you think about it, a double-spend boils down to _orphaning_ a _particular_ block. The attacker attempts to accomplish this by mining and withholding a competing chain _starting below that blocks_, in the hopes that it will eventually be heavier than the honest chain. At this point she could reveal the withheld chain and orphan the targeted block. (Technically, she, as well as Sally the selfish, are allowed to reveal some of their blocks while the attack is still happening, but we will ignore this).
 
-Say that I am a rational miner, and that I just mined a block. Before broadcasting it to the world, this is my point of view:
+You can think of selfish mining as a refined version of this idea, exploiting the fact that Sally _doesn't care_ about _which_ of Alice's blocks are orphaned, just that sufficiently many of them are. This allows Sally to constantly restart a "shallow double-spend attack", targeting a different block each time. Lets see how this go.
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+Sally begins by normally mining over the current selected tip. As long as she did not mine a block. She will always update the tip as Alice produces more blocks (remember, Sally is _rational_, and we already know that rational miners mine above the latest tip). At some point, she will hit a block:
 
-An honest miner will report the private block right away, but since I am _rational_, I'd rather wait a little bit and see where the wind is going. Say after a little bit, the honest network created a parallel block, then we are in this situation:
+<figure><img src="../../.gitbook/assets/image (32).png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+Alice, in Sally's place, would have _honestly_ reported the block right away. But Sally thinks it is more _rational_ to wait a little and see where the wind blows. Say that the wind blew Alice's way, and she created the next block:
 
-If I keep mining, then there is _some_ chance that I create a block before the honest network, leading to this situation:
+<figure><img src="../../.gitbook/assets/image (35).png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+Sally is now at an impasse. She could either release her block, hoping that it would orphan Alice's block, or keep mining over it, hoping to make the next block, knowing that if she fails to beat Alice, there is a good chance that her blocks would be orphaned and Alice wouldn't.
 
-At this point I can finally publish the withheld blocks, and they will orphan the honest block:
+Say that Sally, in a gambling mood, decides to keep mining, and _does_ create the next block:
 
-<figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (40).png" alt=""><figcaption></figcaption></figure>
 
-The point is this: if I had published my first block the second I found it, the honest network would have considered it the selected tip and switched to mining above it. This would have deprived me of the ability to use my temporary advantage to orphan their work, getting a larger share.
+She can now keep mining her (now, heaviest) chain in secret, or she could publish both blocks, orphaning Alice's single block. The second option will lead us to this situation:
 
-However, I don't _have to_. I can try my luck at maybe creating a longer private chain, orphaning out more honest network blocks and further increasing my gain.
+<figure><img src="../../.gitbook/assets/image (41).png" alt=""><figcaption></figcaption></figure>
+
+The point is this: if Sally immediately published the first block, the honest network would have considered it the selected tip and switched to mining above it. Sally took the risk of orphaning her block, but the risk paid off, as she orphaned Alice's block instead, _increasing her own fraction of non-orphaned blocks_.
+
+But what if Sally hasn't published her chain and kept pushing? If Alice creates the next block, we are here:
+
+<figure><img src="../../.gitbook/assets/image (43).png" alt=""><figcaption></figcaption></figure>
 
 What if the honest network mined a block first, bringing us to this situation:
 
 <figure><img src="../../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
 
-Well, in that case it is also my choice. I can keep going, hoping to take the lead again, or I can release my private chain, which is the same length of the public chain, hoping that the network prefers my side. If I decide to keep mining, most chances that I will _not_ gain the next lead, and find myself in this situation:
+Sally again has a choice of publishing her blocks and hoping for the best, or pushing forward trying to beat Alice.
 
-<figure><img src="../../.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
+Whatever choices Sally makes, if she is smaller than Alice, she will eventually publish her blocks, either because she garnered an advantage too large to risk, or because she is at a disadvantage too large to recover from. She then restarts the entire thing from the _current_ selected tip, ad infinitum.
 
-So what do I do now? Do I give up on my private chain and restart the attack, or do I keep pushing?
-
-All of the questions above are what defines a selfish mining strategy.
+So the gaping question is: _what choices_ should have Sally made along the way to _maximize_ her profit? Is it possible that this strategy is more profitable than honest mining?
 
 ## The Eyal-Sirer Strategy\*
 
-The Eyal-Sirer strategy goes like this:
+In their paper, Eyal and Sirer analyzed a particular strategy. This strategy is _not_ optimal, but it is profitable enough to be very interesting. It goes like this:
 
 * Mine over the selected tip:\
   \
@@ -61,65 +72,91 @@ The Eyal-Sirer strategy goes like this:
   ![](<../../.gitbook/assets/image (24).png>)
 * If the honest network mined the next block, you are at an impasse:\
   ![](<../../.gitbook/assets/image (25).png>)\
-  Release you block to the wild, and hope for the best. For future reference, let $$\gamma$$ be the probability you win in this situation (in a sense, $$\gamma$$ encodes how _well connected_ you are)
+  Release your block to the wild, and hope for the best. For future reference, let $$\gamma$$ be the probability you win in this situation (in a sense, $$\gamma$$ encodes how _well connected_ you are)
 *   Otherwise, you are already leading by two blocks, good job! Keep going!\
 
 
     <figure><img src="../../.gitbook/assets/image (26).png" alt=""><figcaption></figcaption></figure>
-*   At some point, the honest network will start to catch up, and you will find that your advantage has shrunk to one block!\
+*   Assuming that you have _less than half_ of the total hashing power, at some point the honest network will start to catch up, and your advantage will have shrunk to one block!\
 
 
     <figure><img src="../../.gitbook/assets/image (27).png" alt=""><figcaption></figcaption></figure>
 
-    This is too close for comfort! Publish your chain. All the honest block created in this time will be orphaned, congratulations! Time to restart the attack
+    This is too close for comfort! Publish your chain. All the honest block created since we started will be orphaned, congratulations! Now restart everything from the top.
 
-Computing the consequences of this strategy is fun but a bit too involved for our purposes. The results are summarized in this graph:
+Computing the profitability of this strategy is a fun exercise, but one a bit too involved for our intents. The result of the computation is depicted in this graph:
 
 <figure><img src="../../.gitbook/assets/image (28).png" alt=""><figcaption><p>(Fig 2. from Eyal-Sirer) Effectiveness of the Eyal-Sirer strategy, for a single selfish miner/collusion working against an otherwise honest network. The <span class="math">x</span> axis represents the selfish hashrate, and the <span class="math">y</span> axis represents the fraction of blocks that they mine<span class="math">x</span></p></figcaption></figure>
 
-Here we see an interesting phenomenon: you do not need a majority of the hashrate to create a majority of the blocks! For $$\gamma = 0$$ (the weakest attacker) we see that a third of the hash power is enough to obtain an unfair advantage. For $$\gamma = 1$$, we see that _any_ fraction suffices to have an advantage, and a third suffices to mine _half_ of the blocks!
+Here we see an interesting phenomenon: Sally does not need a majority of the hash rate to create a majority of the blocks! For $$\gamma = 0$$ (poorly Connected sally) we see that sally needs to have _one third of the hash power_ (that is, she needs to be at least _half as large as Alice_) for _some_ increase to her profit. For $$\gamma = 1$$ (extremely well connected Sally), this strategy will benefit Sally _regardless_ of her fraction, and if she has one third of the fraction, she can create a _majority_ of the blocks.
 
-These results are obviously striking, but some tend to misinterpret them to mean much more: that a majority of one third can double-spend. The argument is "a majority of one third creates more than half of the blocks, so they can create a competing chain and revert any transaction". But that's not really the case. If you watch the attack closely, you would see that it has to _piggyback_ on the honest network blocks and _interleave_ them with their blocks.
+These results are obviously striking, but there is a common misconception that they imply something much more sinister: that a majority of one third can double-spend. The argument goes like "a majority of one third creates more than half of the blocks, so they can create a competing chain and revert any transaction". This mistake follows from not understanding the strategy. By watching closely one notes that Sally's block must _piggyback_ on Alice's, if she ever hopes to reorg some of them. This _interleaves_ Alice's and Sally's block along the chain.
 
-A successful revert attack looks something like this:
+A successful double spend attack looks something like this:
 
 <figure><img src="../../.gitbook/assets/image (29).png" alt=""><figcaption></figcaption></figure>
 
-where as a successful selfish mining attack might look like this:
+whereas successful selfish mining might look like this:
 
 <figure><img src="../../.gitbook/assets/image (31).png" alt=""><figcaption></figcaption></figure>
 
-Note that in the second image , the attacker created $$9$$ out of the $$17$$ chain blocks, which is a majority. However, the network created a total of $$13$$ blocks in this time, which are more than the attacker's $$9$$ blocks. If the attacker arranged her block in a chain, without orphaning the honest blocks, then it would have been a _shorter_ chain, and the effect would have failed.
+Note that in the second image , Sally created $$9$$ out of $$17$$ _non-orphaned_ blocks, which is a majority. However, Alice created a total of $$13$$ blocks in this time, which are more than the Sally's $$9$$ blocks. If the Sally had arranged her block in a chain, she would not have been able to orphan _any_ of Alice's blocks, and her chain would have been shorter.
 
 ## Security Definitions
 
-One motivation for presenting selfish mining at this rose from the [discussion about security notions](selfish-mining-in-bitcoin.md#security-definitions), where we stressed that a security notion is only defined with respect to some goal. When talking about the security of Bitcoin, many become tunnel visioned on security against reverting a transaction. We already stressed that this property is _not quite enough_. The inability to revert a transaction is a property called _safety_, and together with the inability to _arbitrarily delay_ a decision, which we will call _liveness_, we get what is _usually_ called "the security" of Bitcoin.
+In our vantage, the motivation for presenting selfish mining was twofold: to better understand rationality and the mechanism design of Bitcoin, and to give a concrete example to our [discussion about security notions](selfish-mining-in-bitcoin.md#security-definitions), where we stressed that a security notion is only defined with respect to some goal. When discussing the security of Bitcoin, many become tunnel visioned on security against double-spends. We already stressed that this property is _not quite enough_. The inability to double spend is a security property called _safety._ If we combine it with _another_ security property called _liveness_, that guarantees an attacker cannot _arbitrarily delay_ consensus, we get a security property that is, not confusingly at all, called _security_.
 
-However, I made a hopefully fruitful effort that there is no such thing as "the security", as there could always be other malicious goals that furnish other security properties.
+{% hint style="info" %}
+Do not read my last statement in a sardonic tone. It is very common and very useful to have, for the variety of cryptographic schemes, a _default_ security notion that is implicitly assumed to underwrite the statement that the primitive is secure. When someone talks about "the security of digital signatures", I automatically assume that they actually means a particular property that is actually called "universal unforgeability under a posteriory chosen message attack", unless the context dictates otherwise. Having these conventions follows naturally from having to navigate the jungle of security definitions, and is not a _bad_ habit. It's downside, though, is that it can be confusing to non-professionals, and impart inaccurate impressions such that "a blockchain (or any other primitive) that is _secure_ according to the standard formal definition is also _secure_ in any other sense that can be relevant to us". The antidote to falling for these too broad generalizations is to always make sure you understand what is hanging on the word "security".
+{% endhint %}
 
-One such example is a property known in the literature as _chain quality_, which informally captures the inability to mine more than your fair share. From this vantage, we can say that Eyal and Sirer were the first to note that a block chain can be secure _while not_ providing chain quality (despite the term _chain quality_ only coined a bit later).
+However, I made a hopefully fruitful effort to convince you that there is no such thing as "the security", as there could always be other malicious goals that furnish other security properties.
+
+Selfish mining is just that. A selfish miner _is not prohibited_ by the standard Bitcoin security definition. If we want to discuss the security implications of such a miner, we need _a suitable definition_.
+
+In their 2014 paper [The Bitcoin Backbone Protocol: Analysis and Applications](https://eprint.iacr.org/2014/765.pdf), Juan A. Garay, Aggelos Kiayias, and Nikos Leonardos proposed a model that called "the backbone protocol" that more accurately captures the Bitcoin protocol and provides a unified framework that can express many more of the subtleties of a blockchain. The proceeded to define two properties, the _common-prefix_ property, that is equivalent to what we just called "security", and the _chain quality_ property, that measures the fraction of blocks a miner with a fraction of $$\alpha$$ of the hash rate.
+
+We can recast Eyal and Sirer's work in the terminology later introduced by Garay et al.: Eyal and Sirer proved that Bitcoin is an example of a protocol that (assuming a honest majority) satisfies the common prefix property, but fails to satisfy the chain quality property.
+
+{% hint style="info" %}
+The statement above is a bit harsh, and that follows from my choice to present a security property as _binary_. Any protocol is either secure or insecure. In practice, security notions are often _parameterized_, where the parameter indicates _how secure_ the protocol is. We've actually already seen an example: recall that when we talked about [fault tolerance](../chapter-1-bft-vs.-pow/byzantine-fault-tolerance.md) we said that BFT can only provide $$1/3$$ fault tolerance, while Bitcoin can provide $$1/2$$ fault tolerance. We implicitly used the term "fault tolerance" as a parametrized security property.
+
+Garay et al. showed that Bitcoin does not have _perfect_ chain quality, but they also derived bounds on the profitability of a selfish miner. They showied that Bitcoin _does_ admit chain quality to an extent that is arguably sufficient (in particular, it is implied by they work that the Eyal-Sirer strategy is pretty close to optimal)
+{% endhint %}
 
 This is a striking example of how attackers (or worse, cryptographers!) can surprise you.
 
 ## Selfish Mining and Tie Breaking
 
-Recall the discussion about [tie breaking](the-paradigm.md#breaking-ties) in the block chain paradigm. We said in passing that selfish mining and tie breaking is related, and we can see why if we consider the strategy above. In particular with the number $$\gamma$$.
+Recall the discussion about [tie breaking](the-paradigm.md#breaking-ties) in the block chain paradigm. We said in passing that selfish mining and tie breaking is related, and we can see why if we consider the strategy above. In particular the number $$\gamma$$.
 
 We said that the number $$\gamma$$ measures how _well connected_ you are. But that's because we were following the Bitcoin "seen first" tie breaking rule. What would have happened if we chose a _deterministic_ tie breaking rule like lowest hash or [PoEM](three-chain-selection-rules.md#proof-of-entropy-minima-poem)?
 
-The answer is that we get some degree of control over $$\gamma$$. Seeing only our block, we can _compute the probability_ that another block will win a tie with us. For example, say we found a nonce for our block that produces a hash _ten times_ _smaller_ than required. I.e. such that $$\mathsf{H}(B[n]) \le T/10$$.
+Consider again this situation:
 
-The probability to find another nonce that satisfies this is _ten times smaller_ than required. So the probability that the next _honest_ block will have a lower tie is about $$10\%$$, which could considerably increaser $$\gamma$$! Worse yet, if I am currently _tied_ with the honest network, I can _know in advance_ would would win the tie!
+&#x20;
 
-This connection between selfish mining and tie breaking was analyzed by Ren Zhang (from CKB) and Bart Preneel in their 2019 paper [Lay Down the Common Metrics: Evaluating Proof-of-Work Consensus Protocols' Security](https://ieeexplore.ieee.org/abstract/document/8835227), concluding that a deterministic tie-breaking law _must_ degrade chain quality.
+<figure><img src="../../.gitbook/assets/image (35).png" alt=""><figcaption></figcaption></figure>
 
-In PoEM this seems to even be slightly exacerbated: if the competing blocks has considerably less weight than mine, then I know that my advantage will be preserved for the remainder of the attack. PoEM allows to accumulate advantage, simply because it keeps tabs of _actual_ nonces and not just difficulty adjustment. I have not done the math (I don't think anyone has, at this time), but if I have to guess, I would say that PoEM is _slightly_ more vulnerable to selfish mining than lower-hash tie breaking.
+To discuss the subtleties of tie breaking, we have to jettison the simplification that the entire honest network is a single entity called Alice, and think of them as many independent miners. Recall that $$\gamma$$ is the probability that if Sally releases her block, she would orphan the honest block. For the "first seen" tie breaking rule, $$\gamma$$ is directly connected to how well connected Sally is. It quantifies her ability to make sure that _most miners_ see her block first, despite the honest block already being in circulation.
+
+But if the tie breaking rule is _deterministic_, she knows that if her block is losing, then $$\gamma = 0$$ and if her block is winning, then $$\gamma$$ is very close to $$1$$. (It is not exactly $$1$$ because there are _some_ scenarios where she still loses, e.g. if by the time she releases her block, the honest network mines _another_ block, or if suddenly a _third_ parallel block joins the party that wins the tie break rule over _both_ other blocks). This can affect her decision in a way that can increase the profitability of a selfish mining attack.
+
+The impact of a deterministic selfish mining attack was analyzed by Ren Zhang and Bart Preneel in their 2019 paper [Lay Down the Common Metrics: Evaluating Proof-of-Work Consensus Protocols' Security](https://ieeexplore.ieee.org/abstract/document/8835227), concluding that a deterministic tie-breaking law _must_ degrade chain quality.
+
+In PoEM this seems to even be slightly exacerbated: if the competing block has considerably less weight than Sally's, she knows that her advantage will _carry over_ for the remainder of the attack. Say that Sally's block is _significantly heavier_ than the competing honest block:
+
+<figure><img src="../../.gitbook/assets/image (45).png" alt=""><figcaption></figcaption></figure>
+
+Then she knows that even if the honest network creates the next block, there's some chains that _both blocks together_ will be lighter than her block:
+
+<figure><img src="../../.gitbook/assets/image (47).png" alt=""><figcaption></figcaption></figure>
+
+The question is, _how probable_ these scenarios are, and _what is the expected profit increase_ when they occur. I haven't done the math, buy my educated guess is that it will reveal that PoEM allows a $$1/3$$ selfish miner to create a majority of the blocks _regardless_ of how well connected they are.&#x20;
 
 ## Further Work
 
 Since Eyal and Sirer's initial observation, selfish mining has become a central theme in PoW research. Bitcoin is thankfully quite resilient to selfish mining, but this observation means that other protocols should be on their toes, providing at least some evidence that they are not susceptible to cheap selfish mining attacks. Unfortunately, some chains tend to ignore this issue, despite concerning evidence. One such example is the Kadena network, whose developers have yet to respond to an analysis by Wang et al. in their 2022 paper [An Analytical Study of Selfish Mining Attacks on Chainweb Blockchain](https://ieeexplore.ieee.org/abstract/document/9851985?casa_token=M0cuWNrr3AIAAAAA:RawM0LcFIQzkd7yF9RpDJB4YdWX6mq73Z2u-oqCxNYHS0aU9UwhhTzh_JfIUUcen2DM6E14spCbU), that provides evidence that selfish mining becomes easier as more chains are added.
-
-Following Eyal and Sirer's observation, A formal framework for studying selfish mining was given by Juan A. Garay, Aggelos Kiayias, and Nikos Leonardos in their 2014 paper [The Bitcoin Backbone Protocol: Analysis and Applications](https://eprint.iacr.org/2014/765.pdf). In that paper, they defined the _chain quality_ property as the fraction of blocks an αα-miner should expect to mine and noted that Eyal and Sirer‘s attack proves that Bitcoin’s chain quality is not ideal.
 
 In 2017, Ayelet Sapirshtein, Yonatan Sompolinsky, and Aviv Zohar published the paper [Optimal Selfish Mining Strategies in Bitcoin](https://link.springer.com/chapter/10.1007/978-3-662-54970-4_30), where they noted that Eyal and Sirer’s attack is not optimal and provided an optimal strategy. Their improvement is particularly interesting as it relies on optimization techniques: the authors noted that for any set of parameters α,γα,γ the optimal strategy is slightly different, and provided an efficient algorithm that computes the optimal policy from these parameters. They noted that the original selfish mining strategy coincides with theirs for γ=1γ=1 and small values of αα.
 
