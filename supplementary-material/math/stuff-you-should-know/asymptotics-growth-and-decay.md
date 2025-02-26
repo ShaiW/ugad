@@ -68,3 +68,7 @@ To be more concrete, we say that $$f$$ is _exponential_ if there is some constan
 
 **Exercise**: Let $$b>1$$, let $$f$$ satisfy that there is some $$c>0$$ such that $$f=\theta\left(b^{cn}\right)$$, prove that $$f$$ is exponential.
 
+## Logarithms
+
+
+
