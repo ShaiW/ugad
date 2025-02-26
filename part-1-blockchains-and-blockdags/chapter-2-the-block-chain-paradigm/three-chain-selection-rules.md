@@ -108,7 +108,7 @@ Lets work out the math. Consider a blockchain that uses difficulty epochs like B
 
 Since the adversary only has a fraction $$\alpha$$ of the hash rate, before the difficulty has changed, it will take them $$\frac{1}{\alpha} \lambda$$ to create each block. So the first entire difficulty epoch will require $$\frac{1}{\alpha} \lambda\cdot N$$. After which, the adversary can reduce the difficulty by $$q$$ making the second difficulty epoch take $$\frac{1}{\alpha} \lambda\cdot N\cdot q$$, and similarly the third will take $$\frac{1}{\alpha} \lambda\cdot N\cdot q^2$$ and so on.
 
-Obviously, at some point the difficulty will be so low that other overhead will dominate the computation, but if we ignore this, we get that an adversary can create "infinitely many blocks" in a finite time, which we can compute using the [geometric series formula](../../supplementary-material/math/stuff-you-should-know/geometric-sums-and-series.md) to be
+Obviously, at some point the difficulty will be so low that other overhead will dominate the computation, but if we ignore this, we get that an adversary can create "infinitely many blocks" in a finite time, which we can compute using the [geometric series formula](../../supplementary-material/math/stuff-you-should-know/geometric-series.md) to be
 
 $$
 N\frac{\lambda}{\alpha}\sum_{n=0}^{\infty}q^{n}=\frac{1}{\alpha}\frac{\lambda\cdot N}{1-q}

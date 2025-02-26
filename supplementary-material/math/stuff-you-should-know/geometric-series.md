@@ -52,9 +52,26 @@ $$
 
 But wait, isn't Bitcoin emission supposed to end at some point? If so, when?
 
-Say that generally we have some $$\varepsilon > 0$$ such that we set the emission to stop once the reward goes below $$\varepsilon$$. Then what we are looking for is the _smallest_ $$n$$ such that $$R\cdot q^n < \varepsilon$$, this will tell us how many halvings are expected before the emission stops. If the block delay is $$\lambda$$, we will get that the length of each halving epoch is $$\lambda\cdot N$$ so the total time until emission ends is $$\lambda\cdot N \cdot n$$.
+Say that generally we have some $$\varepsilon > 0$$ such that we set the emission to stop once the reward goes below $$\varepsilon$$. Then what we are looking for is the _smallest_ $$n$$ such that $$R\cdot q^n \le \varepsilon$$, this will tell us how many halvings are expected before the emission stops. If the block delay is $$\lambda$$, we will get that the length of each halving epoch is $$\lambda\cdot N$$ so the total time until emission ends is $$\lambda\cdot N \cdot n$$.
 
-Solving the equation $$R\cdot q^n < \varepsilon$$ is not hard for anyone who knows logarithms.
+Solving the equation $$R\cdot q^n \le \varepsilon$$ is not hard for anyone who knows [logarithms](asymptotics-growth-and-decay.md#logarithms). By rearranging a bit we get the equation $$\frac{R}{\varepsilon}\le\left(\frac{1}{q}\right)^{n}$$, and taking the logarithm in base $$1/q$$ we get the inequality $$\log_{1/q}\frac{R}{\varepsilon}\le n$$
 
+(We use $$1/q$$ as the basis of our logarithm rather than $$q$$ because logarithms have confusing pathologies and inversions in a base smaller than $$1$$).
 
+Since the $$n$$ we are looking for is the _smallest_ integer satisfying this inequality, we can obtain it by simply _rounding up_ the expression in the left hand side, this is notated like this:
 
+$$
+n=\left\lceil \log_{1/q}\frac{R}{\varepsilon}\right\rceil
+$$
+
+Putting this all together we have shown
+
+**Proposition**: If a block chain has block delay $$\lambda$$, and an initial block reward $$R$$ which is reduced by a factor of $$q$$ once every $$N$$ blocks until it goes below $$\varepsilon$$, then the time it will take the emission to end is
+
+$$
+\lambda\cdot N\cdot\left\lceil \log_{1/q}\frac{R}{\varepsilon}\right\rceil
+$$
+
+In Bitcoin we have $$\lambda = 10\text{ min}$$, $$N=210,000$$, $$q=1/2$$, and $$R=50$$. The value $$\varepsilon$$ is the smallest representable Bitcoin value, a _staoshi_, that is worth one hundrendth of one millionth of a bitcoin. In other words, $$\varepsilon = 10^{-8}$$ qubits. We know that $$\lambda$$ and $$N$$ were chosen so that $$\lambda\cdot N = \text{ 4 years}$$. Finally, we can use a calculator to compute that $$\log_{1/q}\frac{R}{\varepsilon}=\log_{2}\left(50\cdot10^{8}\right)\approx32.2$$, so we get that $$n=33$$, so the emission will end after $$33\cdot 4 = 132$$ years. Since Bitcoin launched in 2009, we get that the emissions will end in 2041.
+
+But wait! Why is everyone saying it will end in 2040? Ahhh yes. This computation is only correct as long as $$\lambda$$ is correct. In practice, the [difficulty](../../../part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md#the-dumb-puzzle) of Bitcoin is constantly increasing, and in the time it takes the [difficulty adjustment](../../../part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md#difficulty-adjustment-in-bitcoin) to correct it, the block delays become ever so shorter. This difference is not very perceptible in our everyday usage of Bitcoin (it is far smaller than the [typical noisiness of block creation](../probability-theory/the-math-of-block-creation.md)), but it accumulates over time, reducing the estimate by a little bit.

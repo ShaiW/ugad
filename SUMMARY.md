@@ -37,7 +37,7 @@
     * [Asymptotics, Growth, and Decay](supplementary-material/math/stuff-you-should-know/asymptotics-growth-and-decay.md)
     * [Binomial Coefficients](supplementary-material/math/stuff-you-should-know/binomial-coefficients.md)
     * [The Binomial Formula](supplementary-material/math/stuff-you-should-know/the-binomial-formula.md)
-    * [Geometric Sums and Series](supplementary-material/math/stuff-you-should-know/geometric-sums-and-series.md)
+    * [Geometric Sums and Series](supplementary-material/math/stuff-you-should-know/geometric-series.md)
   * [Probability Theory](supplementary-material/math/probability-theory/README.md)
     * [Probability Spaces](supplementary-material/math/probability-theory/probability-spaces.md)
     * [Random Variables](supplementary-material/math/probability-theory/random-variables.md)
