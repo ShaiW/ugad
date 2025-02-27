@@ -6,11 +6,11 @@ If you don't have a mental image of Bitcoin, and don't feel like unpacking this 
 
 {% embed url="https://www.youtube.com/watch?v=bBC-nXj3Ng4" %}
 
-This description is not unreasonable, but it is rather clunky. It requires telling this story about entities, and take into consideration complex ideas like _time_. It also has a gaping hole: _why_ should miners follow the rules at all? What justifies this assumption?
+This description is not unreasonable, but it is rather _clunky_. It requires telling this story about entities, and take into consideration complex ideas like _time_. It also has a gaping hole: _why_ should miners follow the rules at all? What justifies this assumption?
 
 If you try to write a similar description for how a different protocol, say GHOST, works, you will find that, annoyingly enough, the description will be _exactly the same_ except this fragment of a sentence: "...unless the chain above the other block becomes longer...".
 
-The _only_ thing different between the Bitcoin protocol, the GHOST protocol, or any other block chain protocol, is the way they handle conflicts. The idea of the block chain paradigm is to make the tie breaking rule _abstract_, but the rest concrete. The block chain paradigm capitalizes on this observation. It provides a chassis to fit different chain selection rules into, and tools to quantify how well these chain selection rules achieve certain properties.
+The _only_ difference between the Bitcoin protocol, the GHOST protocol, or most other block _chain_ protocol, is the way they handle conflicts. The idea of the block chain paradigm is to make the tie breaking rule _abstract_, but the rest concrete. The block chain paradigm capitalizes on this observation. It provides a chassis to fit different chain selection rules into, and tools to quantify how well these chain selection rules achieve certain properties.
 
 The abstract approach has many advantages:
 
@@ -22,6 +22,6 @@ Once we understand what a chain selection rule _is_, we provide definitions and 
 
 Having built our understanding of the security of block chains in the abstract, we finally introduce the heaviest chain and GHOST rules, and discuss their security informally.
 
-At this point the reader might garner some confidence in their understanding of security. This is definitely a problem. We fix that problem by discussing _selfish mining_, a (then) unexpected attack vector on Bitcoin that shows that no matter how solid you think your understanding of security is, there could always be attack vectors that are not prohibited by the definition, and still have undesirable consequences. Hopefully, this should instill some humility into the reader, that they will pass along to anyone who claims this or that idea is "secure" without having done their due diligence.
+At this point the reader might garner some confidence in their understanding of security. This is definitely a problem. We fix that problem by discussing _selfish mining_, a (then) unexpected dynamic in Bitcoin that shows that no matter how solid you think your understanding of security is, there could always be attack vectors that are not prohibited by the definition, and still have undesirable consequences. Hopefully, this should instill some humility into the reader, that they will pass along to anyone who claims this or that idea or technology is "secure" without having done their due diligence.
 
 We conclude the chapter with a somewhat detailed sketch of the security proof of Bitcoin. This section is a bit more heavy on the math, but also completely skippable.

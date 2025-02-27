@@ -1,22 +1,22 @@
 # Security Notions
 
-I encourage you to do the following thought exercise before reading forward: put the book away, lie down on a comfy sofa or go for a short walk, and try to think how would _you_ define what makes a block chain secure. Try to challenge yourself, play devil's advocate, search for what makes a definition bad and how it can go wrong. Then come here and read my takes on the matter after making an attempt on your own.
+I encourage you to do the following thought exercise before reading forward: put the book away, lie down on a comfy sofa or go for a short walk, and try to think how would _you_ define what makes a block chain secure. Try to challenge yourself, play devil's advocate, search for what makes a definition bad and how it can go wrong. Then come here and read my takes on the matter _after_ attempting for yourself.
 
 Before we dive into the various security notions one can define for a block chain, it might be instructive for the non-cryptographer to take a step back to ponder what a security notion even _is_.
 
-Many people "know" that a block chain protocol such as Bitcoin is "secure" because "transactions cannot be reverted". More introspection raises two questions: what do you mean by "cannot", and who is to say that's the correct way to define security.
+Many people "know" that a block chain protocol such as Bitcoin is "secure" if "transactions cannot be reverted". More introspection raises two questions: what do you mean by "cannot", and who is to say that's the correct way to define security anyway?
 
-The purpose of this section is to convince you of a harsh truth: there is no _perfect_ notion of security. A security notion can only cover _limited_ attackers. If you assume an omnipotent adversary, then you do have little to do against them besides-roll up and cry. In particular, there are very few encryption schemes that can protect you from a [$5 wrench attack](https://xkcd.com/538/).
+The purpose of this section is to convince you of a harsh truth: there is no _perfect_ notion of security. A security notion can only cover _limited_ attackers. If you assume an omnipotent adversary, then you do have little to do against them other than roll-up and cry. In particular, you should not count on any encryption scheme to protect you from a [$5 wrench attack](https://xkcd.com/538/).
 
-But when you _do_ impose limitation on the adversary, you take the risk that a future adversary might rise above your limitations. A good security definition has to walk a very fine line: it must be _strong enough_ to prohibit as many attack vectors as possible, but _weak enough_ to actually be achievable.
+But when you _do_ impose limitations on the adversary, you take the risk that a future adversary might rise above your limitations. Defining a security notion is the art of walking this fine line: it must be _strong enough_ to prohibit as many attack vectors as possible, but _weak enough_ to actually be achievable.
 
 {% hint style="info" %}
-Those with some background might think that when I say an "omnipotent adversary" I mean "computationally unbounded" (a.k.a. "unconditional adversary"). That's not completely true. An unconditional adversary is an adversary that can make arbitrary complicated computations, even computations that we know are impossible in reality. But they are _not omnipotent_ in the sense that we can _keep secrets_ from them. The textbook simple example of an encryption scheme that is secure against unconditional attackers but not against all-knowing attackers is the [one-time pad](../../supplementary-material/computer-science/page-3/one-time-pads.md).
+Those with some background might think that when I say an "omnipotent adversary" I mean "computationally unbounded" (a.k.a. "unconditional") adversary. That's not completely. An unconditional adversary is an adversary that can make arbitrary complicated computations, even computations that we know are impossible in reality. But they are _not omniscient:_ we can _keep secrets_ from them. Sometimes, the ability to have a shared secret with someone is enough to handle attackers even if they have god tier computational abilities. The textbook simple example of an encryption scheme that is secure against unconditional attackers but not against all-knowing attackers is the [one-time pad](../../supplementary-material/computer-science/page-3/one-time-pads.md).
 {% endhint %}
 
 ## The Pizza Scandal (No, Not _That_ One)
 
-The Pentagon, obviously, works in extreme confidentiality, enforcing strict protocols to prevent data leakage. Yet, during the cold war, the soviets allegedly managed to obtain vital clues about the time when major events are about to happen. It took a while, but it was eventually revealed the used an OPSEC called PizzaInt (for _pizza intelligence_): by tracking the amount of pizzas delivered to the Pentagon, they could reliably detect periods of increased activity, which signaled that something is afoot.
+The Pentagon, obviously, works in extreme confidentiality, enforcing strict protocols to prevent data leakage. Yet, during the cold war, the soviets allegedly managed to obtain vital clues about the timing of future major events. It took a while, but it was eventually revealed they used an OPSEC called PizzaInt (for _pizza intelligence_): by tracking the amount of pizzas delivered to the Pentagon, they could reliably detect periods of increased activity, which signaled that something is afoot.
 
 This method of gauging levels of international crisis is since known as the "pizza meter". Famously, it was used by news desks to report about the Iraqi invasion of Kuweit the night before it happened.
 
@@ -28,15 +28,15 @@ This purpose of this story is not to tear down the CIA, but to illustrate just h
 
 As a quantum cryptographer who is constantly asked about post-quantum blockchains, there are few cryptography related stories I like more than that of the [_Falcon_ signature scheme](https://falcon-sign.info/).
 
-With the rising concerns of quantum computers breaking contemporary cryptographic schemes, the National Institute of Standrds and Technology (NIST) invited applied cryptographers to participate in a _competition_ to create the best encryption and signature schemes that are arguably secure against quantum attackers.
+With the rising concerns of quantum computers breaking contemporary cryptographic schemes, the National Institute of Standards and Technology (NIST) invited applied cryptographers to participate in a _competition_ to create the best encryption and signature schemes that are arguably secure against quantum attackers.
 
 The Falcon team did an amazing job, and indeed became one of the leading NIST candidates.
 
 However, soon after it was published, an [exploit was found](https://eprint.iacr.org/2021/772). Does this mean Falcon is broken? That it's analysis is wrong? Was it removed from the NIST competition? No.
 
-The vulnerability is in a category called _side channel attacks_. This means that the attack does not appeal to the protocol itself, but to information that _might_ leak by an implementation. The exploit notices that in a careless implementation of Falcon, a little bit of information can be recovered _making electromagnetic measurements of the signing device_, and noticing _how long_ some of the operations took (in a way that kind of resembles the [Heartbleed exploit](https://heartbleed.com/) found in OpenSSL in 2014). It turns out that this little bit of information is enough to forge Falcon signatures. They proceeded to show experimentally that there are implementations of Falcon that they are able to break this way.
+The vulnerability is in a category called _side channel attacks_. This means that the attack does not appeal to the protocol itself, but to information that _might_ leak by an _implementation_. The exploit notices that in a careless implementation of Falcon, a little bit of information can be recovered _making electromagnetic measurements of the signing device_, and noticing _how long_ some of the operations took (in a way that kind of resembles the [Heartbleed exploit](https://heartbleed.com/) found in OpenSSL in 2014). It turns out that this little bit of information is enough to forge Falcon signatures. They proceeded to show experimentally that there are implementations of Falcon that they are able to break this way.
 
-We hit the recurring theme again: it's not that the Falcon security analysis is sloppy, is that it has to make _assumptions_ about the information available to the adversary, and circumventing these assumptions allows to circumvent the security guaranteed by the protocol. In particular, Falcon remains completely secure when implemented on appropriate hardware (in particular, hardware with fixed time floating point arithmetic).
+We hit the recurring theme again: it's not that the Falcon security analysis is sloppy, it is that it has to make _assumptions_ about the information available to the adversary, and circumventing these assumptions allows to circumvent the security guaranteed by the protocol. As far as we know, Falcon remains completely secure when implemented on appropriate hardware (in particular, hardware with fixed time floating point arithmetic).
 
 The block chain Algorand prides itself on being quantum secure by merit of having [implemented Falcon signatures](https://algorand.co/blog/pioneering-falcon-post-quantum-technology-on-blockchain). Fortunately, as far as I can tell, there is currently no hardware wallet that supports these Falcon signatures, and that's a _good thing_. Appropriate hardware is more expensive and not typical for hardware wallets, who strive to be as lean as possible, and if the exploit was only discovered say, in 10 years, it could have compromised all Algorand holders.
 
@@ -56,7 +56,7 @@ This attack is obviously not _practical_ in any way. It just comes to show that 
 
 The _bad_ way to define a security notion is to require that a particular _attack_ does not work. Why is this bad? Because it does not prohibit _other_ attacks that achieve the _same goal_. Unfortunately, this reasoning of the "our protocol is secure because the attacks that we attempted don't work" ilk is quite common, mostly because it is _much easier_ to rule out a specific attack than a generic attack.
 
-A _good_ security definitions has three components:
+A _good_ security definition has three components:
 
 * Explicitly stated _limitations_ on the adversary (such as "computationally bounded" or "only has a minority of the hash power")
 * Explicitly stated assumptions about the _environment_ (honest majority, secret information, that kind of stuff)
@@ -72,7 +72,7 @@ Of course, there is a layer of formalism that I skipped for the sake of expositi
 
 ## Security Notions for Block Chains
 
-Let us go through the process of refining a security notion for block chains. In this discussion, I will deliberately break down many details that I will actually comfortably ignore for the rest of the book. The purpose is not that you remember each and every nook and cranny of the definition (though that definitely won't be bad for you!), but that you will see just how nuanced this process is, and keep it in mind, perhaps the next time the new project devs tell you that their protocol is secure because they "tested it".
+Let us go through the process of refining a security notion for block chains. In this discussion, I will deliberately break down many details that I will actually comfortably ignore for the rest of the book. The purpose is not that you remember each and every nook and cranny of the definition (though that definitely won't be bad for you!), but to demonstrate just how nuanced this process is, hoping that you keep it in mind, perhaps the next time the new project devs tell you that their protocol is secure because they "tested it".
 
 So how can we define when a blockchain is secure? Let us first concentrate on double-spending. We do not want reverting transactions to be possible, so what about this security notion:
 
@@ -84,15 +84,15 @@ A more decent attempt would be something like:&#x20;
 
 > Assuming that the rest of the network is [rational](honesty-and-rationality.md), an adversary with less than half of the global hash rate is not likely to revert a transaction
 
-That looks better, but that's still not quite there at all. First, what does "not likely" even mean? But more pressing, is this definition even possible to satisfy? Well, it isn't. We will soon see that a PoW network _can't_ be secure against attackers that can get arbitrarily _close_ to 50%. For example, in Bitcoin, a little of the hash rate to be wasted on orphan blocks, making it so that you "only" need 49.997% of the global hash rate to revert arbitrarily long transaction with accuracy. The reason this number is so close to 50% is because the way Bitcoin is _parameterized_. The block delay is much larger than the network delay, causing very low orphan rate that only translates to a marginal degradation of security. In particular, while we can never be secure against a 50% attack of the network, for any $$\delta>0$$ we _can_ set Bitcoin's parameters such that it will be secure against attackers with less than $$\frac{1}{2} -\delta$$ of the total hash rate. So let us encode this into the definition:
+That looks better, but that's still not quite there at all. First, what does "not likely" even mean? But more pressing, is this definition even possible to satisfy? Well, it isn't. We will soon see that a PoW network _can't_ be secure against attackers that can get arbitrarily _close_ to 50%. For example, in Bitcoin, a little of the hash rate to be wasted on orphan blocks, making it so that you "only" need 49.997% of the global hash rate to revert arbitrarily long transaction with accuracy. The reason this number is so close to 50% is because of the way Bitcoin is _parameterized_. The block delay is much larger than the network delay, causing very low orphan rate that only translates to a marginal degradation of security. In particular, while we can never be secure against a 50% attack of the network, for any $$\delta>0$$ we _can_ set Bitcoin's parameters such that it will be secure against attackers with less than $$\frac{1}{2} -\delta$$ of the total hash rate. So let us encode this into the definition:
 
 > For any $$\delta > 0$$, we can parameterize the network such that any adversary with less than $$\frac{1}{2}-\delta$$ of the global hash rate is not likely to revert a transaction
 
 Good! We have better defined the environment _and_ the limitations on the adversary. Are we done? Not really, because the goal seems kind of ill-defined. What does "revert a transaction" mean? It means a few things, but one necessary (yet not sufficient) such thing is to _change the selected chain to one that does not include the transaction_. In other words, what we would really want to prevent is _reorging a block_.
 
-So consider this situation: the block $$B$$ was the latest one to be created, and you want to reorg it. You have 30% of the hashing power. In order to reorg $$B$$ it is sufficient to create _two blocks_ before the honest network creates one block. How probable is that? Well, we will compute this [a bit later](confirmation-times.md), but I can tell you right now that the probability comes out about 49%! I believe we all agree that this does not full in the "not likely regime".
+So consider this situation: the block $$B$$ was the latest one to be created, and you want to reorg it. You have 30% of the hashing power. In order to reorg $$B$$ it is sufficient to create _two blocks_ before the honest network creates one block. How probable is that? Well, we will compute this [a bit later](confirmation-times.md), but I can tell you right now that the probability comes out about 49%! I believe that we could all agree that reverting a transaction with probability of almost one half is not in the "not likely" regime.
 
-Here is the thing, the probability to reorg a block decreases as _more blocks are added_. I will keep this a bit vague here and use the term negligible function, the idea is that if we look at how the probability of a successful revert changes as time passes, we see that it becomes very small very fast. Being only half formal, we can restate the definition as so:
+Here is the thing, the probability to reorg a block decreases as _more blocks are added_. The standard way to talk about fast decay is by requiring that it is what we call a negligible function.
 
 > For any $$\delta > 0$$, we can parameterize the network such that any if at least $$\frac{1}{2}+\delta$$ of the global hash is rational, then the probability a block created $$T$$ seconds ago is a negligible function of $$T$$
 

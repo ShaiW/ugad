@@ -2,7 +2,7 @@
 
 You have probably noticed that most of the mathematical exposition has been deferred to an [appendix](../../supplementary-material/math/). However, basic graph theory shall be the exception to the rule.
 
-Graphs are important to understand even for people who only seek cursory, informal understanding. They aren't just a theoretical instrument, but they underwrite all of the visual language used to illustrate and demonstrate pretty much everything throughout this book. Besides, they are easy and fun, so why not?
+Graphs are important to understand even for people who only seek cursory, informal understanding. They aren't just a theoretical instrument, they underwrite all of the _visual language_ used to illustrate and demonstrate pretty much every idea throughout this book. Understanding what they represent could be extremely valuable to the layperson. Besides, they are easy and fun, so why not?
 
 ## Graphs
 
@@ -16,14 +16,14 @@ We are usually interested in less whacky graphs, so we assume there are no _mult
 
 This is called a _simple_ (directed) graph.
 
-In most textbooks, directed graphs are considered an intermediate topic, and the discussion start with _u&#x6E;_&#x64;irected graphs. These are graphs where for any two vertices $$A$$, $$B$$ there is an arrow from $$A$$ to $$B$$ if and only if there is an arrow from $$B$$ to $$A$$. In this case, the two arrows are compressed into a single, arrowless line. For example:\
+In most textbooks, directed graphs are considered an intermediate topic, and the discussions start from _u&#x6E;_&#x64;irected graphs. These are graphs where for any two vertices $$A$$, $$B$$ there is an arrow from $$A$$ to $$B$$ if and only if there is an arrow from $$B$$ to $$A$$. In this case, the two arrows are compressed into a single, arrowless line. For example:\
 
 
 <figure><img src="../../.gitbook/assets/image (3) (1) (1) (1).png" alt=""><figcaption><p>an undirected graph</p></figcaption></figure>
 
 Unlike most textbooks, we will be concerned almost exclusively with directed graphs, so we will employ a backward convention: a _graph_ is assumed to be _directed_ unless explicitly stated otherwise.
 
-Usually undirected graphs are used to describe _reciprocal_ affinities: for example, the graph whose nodes are Facebook users, and there is an edge between any two people if and only if they are friends on Facebook, is undirected. That's because being friends on Facebook is subject to _mutual agreement_ and is thus reciprocal. In contrast, Twitter allows users to follow other users without being followed back, so a similar graph will be directed.
+Usually undirected graphs are used to describe _reciprocal_ affinities: for example, the graph whose nodes are Facebook users, and there is an edge between any two people if and only if they are friends on Facebook, is undirected. That's because being friends on Facebook is subject to _mutual agreement_ and is thus reciprocal. In contrast, Twitter allows users to follow other users without being followed back, and this lack of reciprocity is manifest in the directedness of the graph.
 
 ## DAGs
 
@@ -33,7 +33,9 @@ However, how will you understand the chronology described by this graph:
 
 <figure><img src="../../.gitbook/assets/image (4) (1) (1) (1).png" alt=""><figcaption><p>A closed timelike curve</p></figcaption></figure>
 
-Does it say that event $$A$$ happened before event $$B$$ that happened before event $$C$$, that happened _before_ event $$A$$? Well, if we are being _completely_ honest, the existence of [closed timelike curves](https://en.wikipedia.org/wiki/Closed_timelike_curve) is still very much an open question. Nevertheless, we will make the assumption that our blockchain will never traverse such a loop. Let us carefully define what this means, the terms we introduce for that purpose will accompany us for the rest of the book.
+Does it say that event $$A$$ happened before event $$B$$ that happened before event $$C$$, that happened _before_ event $$A$$?&#x20;
+
+If we are being _completely_ pedantic, the existence of [closed timelike curves](https://en.wikipedia.org/wiki/Closed_timelike_curve) is still very much an open question. Nevertheless, we very reasonably assume assumption that nodes running our blockchain will never traverse such a loop. Let us carefully define what this means, the terms we introduce for that purpose will accompany us for the rest of the book.
 
 Given a simple directed graph, we say that the vertex $$B$$ is _reachable_ from the vertex $$A$$ if there is some way to get from $$A$$ to $$B$$ by only following arrows. For example:
 
@@ -68,7 +70,7 @@ Given any node beside the root, we call the nodes it is pointing at its _parent.
 <figure><img src="../../.gitbook/assets/image (10).png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
-In any other graph theory book you open, you will find an opposite convention. Trees are either undirected, or directed with the arrows pointing _away from the root_, making the parents further from the root than the children. This is not because computer scientists think that trees grow from foliage to root, but because trees are often used to describe many possible routes that all converge to the same conclusion, and from this vantage the root is the "end of time" and not the "beginning of time". However, in this book we assume that the root is the oldest block, encouraging an inverse convention.
+In pretty much any graph theory book you open, you will find an _opposite_ convention. Trees are either undirected, or directed with the arrows pointing _away from the root_, making the parents further from the root than the children. This is not because computer scientists think that trees grow from foliage to root, but because trees are often used to describe many possible routes that all converge to the same conclusion, and from this vantage the root is the "end of time" and not the "beginning of time". However, in this book we assume that the root is the oldest block, encouraging an inverse convention.
 {% endhint %}
 
 Note that in a rooted tree there is only _one_ path from any (non-root) vertex to the root (in the exercises you will show the converse, that a rooted DAG where there's only one path from any non-root vertex to the root is a tree). We call this path the _chain_ of $$B$$, and denote it $$B.Chain$$.

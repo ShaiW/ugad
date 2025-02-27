@@ -1,6 +1,6 @@
 # PoS Vs. PoW
 
-I would like to conclude this section with some _opinions_ about how PoW compares to other, _intrinsic_ anti Sybil countermeasures. I chose to focus on the most ubiquitous one, proof-of-stake (PoS), but the criticism generalizes to any form of BFT that relies on intrinsic scarcity. In PoS, the scarcity is of the coin itself. There are many constellations for this kind of Sybilness, but the common ground is that the influence of any participant, and their compensation, is proportional to the amount of coin staked.
+We conclude this section with some _opinions_ about how PoW compares to other, _intrinsic_ anti Sybil countermeasures. I chose to focus on the most ubiquitous one, proof-of-stake (PoS), but the criticism generaliz&#x65;_&#x73;_ to any form of BFT that relies on intrinsic scarcity (coin share, reputation, etc.). In PoS, the scarcity is of the coin itself. There are many constellations for PoS Sybilness, but the common ground is that the influence of any participant, and their compensation, is proportional to the amount of coin staked.
 
 I will now list some unsavory properties of PoS. For me, these are more than enough to conclude that PoS is _unsuitable_ for a decentralized network. However, I stress that while the phenomenon I describe are a matter of objective fact, the latter _interpretation_ is _not_. Many people see things differently and have interesting arguments to back their interpretations (though none that I personally found convincing).
 
@@ -35,7 +35,7 @@ But why does someone accruing $$51\%$$ of the coin is even a concern? If the coi
 
 The problem in PoS is that staking more means earning more. Let's see how the math works out.
 
-What makes the analysis a bit confusing is that the total supply changes. We will call the supply at the start of the round the _old_ supply, and the supply at the end of the round the _new_ supply.
+What makes the analysis a bit confusing is that the total supply _changes_ each round. We will focus on a single round, and call the supply at the start of the round the _old_ supply, and the supply at the end of the round the _new_ supply.
 
 Say that the staking fee provides growth by $$\iota$$. That is, if you stake a fraction of $$f$$ of the coin, then after the round, the amount of coin you have is $$\iota\cdot f$$ of the _old_ supply. How much is this of the _new_ supply?
 
@@ -45,18 +45,18 @@ $$
 \frac{\left(\iota\cdot\beta+\left(1-\beta\right)\right)\cdot f}{\left(\iota\cdot\beta+\left(1-\beta\right)\right)\cdot f+\left(\iota\cdot\alpha+\left(1-\alpha\right)\right)\cdot\left(1-f\right)}=\frac{1}{1+\frac{\left(\iota-1\right)\left(\alpha-\beta\right)}{\left(\iota-1\right)\beta+1}\cdot\left(1-f\right)}f
 $$
 
-The left side is simply your coin (in old supply units) over _all_ coin (in the same units), the right side was arranged so that it will be clear under what conditions your fraction _increases_. For this, we need the ugly expression before $$f$$ to be larger than $$1$$, so we want its denominator to be smaller than $$1$$, and it is quite easy to see that this happens if and only if $$\beta > \alpha$$ (recall that since the minting fee is _positive_ we have that $$\iota > 1$$). On other words, if you stake a larger fraction than the rest of the network stakes, then your total fraction grows.
+The left side is simply your coin (in old supply units) over _all_ coin (in the same units), the right side was arranged so that it will be clear under what conditions your fraction _increases_. For this, we need the ugly expression before $$f$$ to be larger than $$1$$, so we want its denominator to be smaller than $$1$$, and it is quite easy to see that this happens if and only if $$\beta > \alpha$$ (recall that since the minting fee is _positive_ we have that $$\iota > 1$$). In other words, if your staked fraction is _larger_ than the fraction staked by the rest of the network (combined), then your total fraction of the supply _grows._
 
 By how much?
 
-Say that the staker stakes all of their coin, while the network consistently stakes a fraction of $$\alpha$$. Then if at the start of the round you held a fraction of $$f$$, by the end of the round, your fraction will incrase by a factor of $$1+\frac{\left(\iota-1\right)\left(1-\alpha\right)\left(1-f\right)}{\iota-\left(\iota-1\right)\left(1-\alpha\right)\left(1-f\right)}$$.
+Say that the staker stakes all of their coin, while the network consistently stakes a fraction of $$\alpha$$. Then if at the start of the round you held a fraction of $$f$$, by the end of the round, your fraction will have increased by a factor of $$1+\frac{\left(\iota-1\right)\left(1-\alpha\right)\left(1-f\right)}{\iota-\left(\iota-1\right)\left(1-\alpha\right)\left(1-f\right)}$$.
 
-We take Ethereum as a model. The staking fee is around 5% annually. Ethereum has $$206$$ rounds a day, so we set $$\iota = 1.05^{1/{(365\cdot 206)}}\approx 1.00000065$$.
+Let us apply this simple model to ethereum. The staking fee is around 5% annually. Ethereum has $$206$$ rounds a day, so we set $$\iota = 1.05^{1/{(365\cdot 206)}}\approx 1.00000065$$.
 
 Currently around $$1/4$$ of Ethereum is constantly staked, but if we assume this includes our rich trying to get richer, we get that the remaining fraction is $$1/4-f$$. So we set $$a = 1/4 -f$$ where $$f$$ is the _current_ fraction of the rich.
 
-Assuming these conditions remain constant (not a very realistic assumption, but we are just trying to feel out the growth rate here), we can reiterate the formula above to see how the fraction of a collusion that currently holds a fraction $$f$$ of the coin for some $$f<1/4$$. I simulated $$50$$ years of accumulation for initial values of $$f=0.1,0.13,0.16,0.19,0.22$$, and these are the results
+Assuming these conditions remain constant (not a very realistic assumption, but we are just trying to feel out the growth rate here), we can reiterate the formula above to see how the fraction of a collusion that currently holds a fraction $$f$$ of the coin for some $$f<1/4$$. I simulated $$50$$ years of accumulation for initial values of $$f=0.1,0.13,0.16,0.19,0.22$$, and these are the results:
 
 <figure><img src="../../.gitbook/assets/image (11).png" alt=""><figcaption><p>Growth of a stake-holder staking their entire bag for 50 years assuming the parameters above</p></figcaption></figure>
 
-Now, 50 years is a _long_ time, even longer if you literally stake _all_ your money. But this growth is still alarming business. After all, we _are_ talking about systems with presumptions to replace at least a part of the backbone of global economy. Who can tell how much money it will be worth to coerce this system in the future.
+Now, 50 years is a _long_ time to stake _all_ your money. Nevertheless, this growth is still alarming business. After all, we _are_ talking about systems with presumptions to replace at least a part of the backbone of global economy. Who can tell how much money it will be worth to coerce such a system in the future.
