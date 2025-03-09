@@ -1,16 +1,6 @@
 # Table of contents
 
-## Basics
-
-* [Markdown](README.md)
-* [Images & media](basics/images-and-media.md)
-* [Interactive blocks](basics/interactive-blocks.md)
-* [OpenAPI](basics/openapi.md)
-* [Integrations](basics/integrations.md)
-
-***
-
-* [Welcome!](<README (1).md>)
+* [Welcome!](README.md)
 * [Preface](<README (1) (1).md>)
 * [Introduction](introduction.md)
 
