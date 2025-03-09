@@ -6,13 +6,13 @@ So to describe the paradigm, I owe you two things: an _abstract_ _definition_ of
 
 ## Block Validity
 
-One issue we need to get out of the way is _block validity_. We all know that blocks can be invalid. They can have corrupt headers, illegal transaction, bad nonce, etc.. Obviously a part of the miner's work is to verify the validity of each block before even considering it.
+One issue we need to get out of the way is _block validity_. We all know that blocks can be invalid. They can have corrupt headers, illegal transactions, bad nonce, etc. Obviously a part of the miner's work is to verify the validity of each block before even considering it.
 
 Verifying block validity is not trivial, and we will have much to say about it, especially in the context of GHOSTDAG. But for now, we treat it as somebody else's problem and assume all blocks that arrive at our networks are validated for us, and discarded if they fail.
 
 ## Chain Selection Rules
 
-A _chain selection rule_ has a very simple task. It is given a [tree](a-graph-theory-primer.md#trees), and outputs a tip. Why do we call it a _chain selection rule_ if it outputs a tip? Well, recall that each tip $$B$$ of the tree defines a _unique_ chain $$B.Chain$$ to the root/genesis.
+A _chain selection rule_ has a very simple task. It is given a [tree](a-graph-theory-primer.md#trees) and outputs a tip. Why do we call it a _chain selection rule_ if it outputs a tip? Well, recall that each tip $$B$$ of the tree defines a _unique_ chain $$B.Chain$$ to the root/genesis.
 
 The tree we feed into this chain selection rule is the tree of blocks created by the network (or at least those available to us).
 
@@ -35,15 +35,15 @@ Monotonicity is equivalent to requiring that the chain selection rule returns a 
 
 ## Breaking Ties
 
-Chain selection rules sometimes run into _ties_. Situations where they have to make a decision between "equal" options. For example, consider a situation like this:
+Chain selection rules sometimes run into _ties_. Situations where they have to decide between "equal" options. For example, consider a situation like this:
 
 <figure><img src="../../.gitbook/assets/image (14).png" alt=""><figcaption></figcaption></figure>
 
 
 
-Which tip should the chain rule prefer, $$A$$ or $$B$$? For most of the chain rules we will see, there is no _natural_ way to choose between them. For example, we did not introduce the longest chain rule yet, but it does not require a wild stretch of the imagination to get convinced that the selected chains of $$A$$ and $$B$$ have the same length. So how should this tie be broken?
+Which tip should the chain rule prefer, $$A$$ or $$B$$? For most of the chain rules we will see, there is no _natural_ way to choose between them. For example, we have not introduced the longest chain rule yet, but it does not require a wild stretch of the imagination to get convinced that the selected chains of $$A$$ and $$B$$ have the same length. So how should this tie be broken?
 
-Like pretty much everything that has anything to do with block chains, choosing a tie-breaking rule might seem innocuous, but in practice, a bad tie-breaking rule could have adverse consequences. For example, if the rule is "gameable" (that is, there are ways for large miners to increase their probability of winning the tie break), it would exacerbate an already existing problem called [selfish mining](selfish-mining-in-bitcoin.md), that we will describe later in this chapter.
+Like pretty much everything that has anything to do with blockchains, choosing a tie-breaking rule might seem innocuous, but in practice, a bad tie-breaking rule could have adverse consequences. For example, if the rule is "gameable" (that is, there are ways for large miners to increase their probability of winning the tie break), it would exacerbate an already existing problem called [selfish mining](selfish-mining-in-bitcoin.md), that we will describe later in this chapter.
 
 A crucial observation is that the tie breaking rule itself _doesn't have to be in consensus_. The situation where miners "split" to mine over different blocks is unavoidable. For example, in the situation depicted in the illustration above, there will plausibly be some nodes that heard of $$A$$ first and other nodes that heard of $$B$$ first. **It is impossible to avoid these situations**. The chain rule provides us with a consensus of the winner _after the tie has been broken_. But who shall this winner be? That's anybody's game.
 
