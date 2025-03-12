@@ -44,6 +44,16 @@ $$
 \begin{aligned}1+q+q^{2}+\ldots=\sum_{n=0}^{\infty}q^{n}=\frac{1}{1-q} & , & \left|q\right|<1\end{aligned}
 $$
 
+People who aren't used to that sometimes feel uneasy about treating an infinite sum as a number, but there are justifications. I will not give them here, but instead will point out that if we set $q=1/2$ in the formula above (and subtract $1$ from both sides) we get that
+
+$$
+\frac{1}{2} + \frac{1}{4} + \frac{1}{8} + \ldots = 1\text{,}
+$$
+
+a statement that admits this beautiful [proof without words](https://www.amazon.com/Proofs-without-Words-Exercises-Classroom/dp/0883857006):
+
+<figure><img src="../../../.gitbook/assets/image (1) (1) (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+
 When will we ever need such a formula? Well, say we want to compute the _total_ _supply_ of Bitcoin. Say that each _halving epoch_ contains $$N$$ blocks, and in the first epoch, each block emitted a reward of $$R$$. Then we have $$a=N\cdot R$$, so if in every halving the reward is multiplied by $$q$$ we get that the total supply is given by $$\frac{N\cdot R}{1-q}$$. In Bitcoin, we have $$R=50$$, $$N=210,000$$ and $$q=\frac{1}{2}$$, substituting into the formula we get the familiar figure
 
 $$
@@ -72,6 +82,6 @@ $$
 \lambda\cdot N\cdot\left\lceil \log_{1/q}\frac{R}{\varepsilon}\right\rceil
 $$
 
-In Bitcoin we have $$\lambda = 10\text{ min}$$, $$N=210,000$$, $$q=1/2$$, and $$R=50$$. The value $$\varepsilon$$ is the smallest representable Bitcoin value, a _staoshi_, that is worth one hundrendth of one millionth of a bitcoin. In other words, $$\varepsilon = 10^{-8}$$ qubits. We know that $$\lambda$$ and $$N$$ were chosen so that $$\lambda\cdot N = \text{ 4 years}$$. Finally, we can use a calculator to compute that $$\log_{1/q}\frac{R}{\varepsilon}=\log_{2}\left(50\cdot10^{8}\right)\approx32.2$$, so we get that $$n=33$$, so the emission will end after $$33\cdot 4 = 132$$ years. Since Bitcoin launched in 2009, we get that the emissions will end in 2041.
+In Bitcoin we have $$\lambda = 10\text{ min}$$, $$N=210,000$$, $$q=1/2$$, and $$R=50$$. The value $$\varepsilon$$ is the smallest representable Bitcoin value, a _staoshi_, that is worth one hundrendth of one millionth of a bitcoin. In other words, $$\varepsilon = 10^{-8}$$ qubits. We know that $$\lambda$$ and $$N$$ were chosen so that $$\lambda\cdot N = \text{ 4 years}$$. Finally, we can use a calculator to compute that $$\log_{1/q}\frac{R}{\varepsilon}=\log_{2}\left(50\cdot10^{8}\right)\approx32.2$$, so we get that $$n=33$$, so the emission will end after $$33\cdot 4 = 132$$ years. Since Bitcoin launched in 2009, we get that the emissions will end in 2141.
 
-But wait! Why is everyone saying it will end in 2040? Ahhh yes. This computation is only correct as long as $$\lambda$$ is correct. In practice, the [difficulty](../../../part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md#the-dumb-puzzle) of Bitcoin is constantly increasing, and in the time it takes the [difficulty adjustment](../../../part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md#difficulty-adjustment-in-bitcoin) to correct it, the block delays become ever so shorter. This difference is not very perceptible in our everyday usage of Bitcoin (it is far smaller than the [typical noisiness of block creation](../probability-theory/the-math-of-block-creation.md)), but it accumulates over time, reducing the estimate by a little bit.
+But wait! Why is everyone saying it will end in 2140? Ahhh yes. This computation is only correct as long as $$\lambda$$ is correct. In practice, the [difficulty](../../../part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md#the-dumb-puzzle) of Bitcoin is constantly increasing, and in the time it takes the [difficulty adjustment](../../../part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md#difficulty-adjustment-in-bitcoin) to correct it, the block delays become ever so shorter. This difference is not very perceptible in our everyday usage of Bitcoin (it is far smaller than the [typical noisiness of block creation](../probability-theory/the-math-of-block-creation.md)), but it accumulates over time, reducing the estimate by a little bit.

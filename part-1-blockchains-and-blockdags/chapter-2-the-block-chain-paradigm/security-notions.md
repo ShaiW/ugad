@@ -70,9 +70,9 @@ The reason we say "sufficiently unlikely" and not "impossible" is that in most c
 Of course, there is a layer of formalism that I skipped for the sake of exposition, and actually defining a security notion requires most work. But I maintain that the _gist_ is well captured in this description above, and the rest are technicalities. When we actually define concrete security notions, I will make some of the vague statements like "fast enough" more concrete. For those seeking a more formal treatment of security notions, see the cryptography appendix (TODO: write a section about security notions and link it here).
 {% endhint %}
 
-## Security Notions for Block Chains
+## Security Notions for BlockChains
 
-Let us go through the process of refining a security notion for block chains. In this discussion, I will deliberately break down many details that I will actually comfortably ignore for the rest of the book. The purpose is not that you remember each and every nook and cranny of the definition (though that definitely won't be bad for you!), but to demonstrate just how nuanced this process is, hoping that you keep it in mind, perhaps the next time the new project devs tell you that their protocol is secure because they "tested it".
+Let us go through the process of refining a security notion for blockchains. In this discussion, I will deliberately break down many details that I will comfortably ignore for the rest of the book. The purpose is not that you remember each and every nook and cranny of the definition (though that definitely won't be bad for you!), but to demonstrate just how nuanced this process is, hoping that you keep it in mind, perhaps the next time the new project devs tell you that their protocol is secure because they "tested it".
 
 So how can we define when a blockchain is secure? Let us first concentrate on double-spending. We do not want reverting transactions to be possible, so what about this security notion:
 
@@ -100,11 +100,31 @@ OK, that is starting to take shape, but consider this: what if the attacker find
 
 We _really_ want to avoid this. First of all, it just doesn't make much sense to amalgamate the security of the hash function into our definition, we would like to discuss it _separately_. Second, designing a block chain protocol and designing a hash function are two _very different tasks_ usually done by different people with different backgrounds. We want to find an approach that compartmentalizes away the problem of creating a good hash function. It's not that this problem is not important, it is in fact crucial, it's that we want our analysis to prove that the protocol is secure if you use _any_ "secure" hash function. We do so by assuming the underlying hash function is some _ideal and unrealistic_ machine called a [_random oracle_](../../supplementary-material/computer-science/page-3/random-oracles.md), and then leave it for the designer of a hash function to provide us with evidence that the hash indeed sufficiently resembles this mythical random oracle. This brings us to the following definition:
 
-> (Assuming the underlying hash is modeled as a random oracle,) for any $$\delta > 0$$, we can parameterize the network such that any if at least $$\frac{1}{2}+\delta$$ of the global hash is rational, then the probability a block created $$T$$ seconds ago is a negligible function of $$T$$
+> (Assuming the underlying hash is modeled as a random oracle,) for any $$\delta > 0$$, we can parameterize the network such that if at least $$\frac{1}{2}+\delta$$ of the global hash is rational, then the probability a block created $$T$$ seconds ago reverts is a negligible function of $$T$$
 
 There are obviously _many_ other details that actually need addressing, for example, how inefficient this things behaves as $$\delta$$ gets close to $$0$$, How does $$\delta$$ affect the function, and so on. But overlooking this detail, are we done? Is this a satisfactory security definition?
 
 Well, kind of... This definition only captures one way to disturb the consensus process. Another concern is attackers that _delay_ the consensus. This is the issue of [safety](safety.md) vs. [liveness](liveness.md), an interesting story that will occupy much of the remainder of this chapter. The bottom line, though, is that the definition above only captures the safety property, and the equally important liveness property _can_ be violated in networks that provide safety, as we will see in explicit examples.
 
 So OK, this safety property we kind of defined and the liveness property we did not define combine to what is usually called "security". Is a secure blockchain everything we could hope for? In the next section we will see that it is not quite the case. We will find that attackers can have _other goals_ besides harming the consensus, and that these goals could be achieved in secure blockchains. Actually, we will find something much more disturbing, that _rational_ miners will follow this "attack".
+
+## The Confidence Parameter
+
+One of the details we encoded into our sample security definition above is that the receiver of funds on a blockchain can never expect _complete_ confidence that a transaction will never revert, because of the probabilistic nature of proof-of-work. We implicitly stated that "the revert probability is a negligible function of $$T$$", but that's not a good way to go about this innate uncertainty. Especially not when we consider [confirmation times](confirmation-times.md).
+
+The _confidence parameter_ is some number $$\varepsilon > 0$$ that describes how much risk the receiver is willing to take: they would not consider a transaction accepted unless the probability it reverts is below $$\varepsilon$$.
+
+A linguistic source of many misunderstandings is that a lower $$\varepsilon$$ means _more confidence_. Much like the case of [difficulty](../chapter-1-bft-vs.-pow/how-pow-works.md#difficulty-adjustment), when we talk about "the confidence" we will usually mean our confidence that the bad thing does _not_ happen. That is, we _actually_ refer to $$1-\varepsilon$$.
+
+Sometimes, we will use $$\varepsilon$$ to denote the _effective_ confidence, not some expectation set by the receiver. I.e., we can use a notation like $$\varepsilon = O\left(e^{-T}\right)$$ to mean that "the confidence you get increases exponentially as time passes".
+
+{% hint style="info" %}
+This is a bit tricky. When we say that a number [_grows exponentially_ ](../../supplementary-material/math/stuff-you-should-know/asymptotics-growth-and-decay.md#exponentials)we mean that it _grows infinitely large very fast_. The number $$1-\varepsilon$$ can't grow exponentially. Indeed, it can't even be larger than $$1$$. What we actually mean when we say that "the confidence grows exponentially" is that its distance from $$1$$, which is just $$\varepsilon$$, _decays_ exponentially.
+
+It is one of these sorts of linguistic overloading that anyone who wants to dive into any established theory has to get used to.
+{% endhint %}
+
+
+
+
 

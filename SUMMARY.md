@@ -19,6 +19,7 @@
   * [Honesty and Rationality](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/honesty-and-rationality.md)
   * [Three Chain Selection Rules](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/three-chain-selection-rules.md)
   * [Security Notions](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/security-notions.md)
+  * [A Security Model for Blockchains](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/a-security-model-for-blockchains.md)
   * [Selfish Mining in Bitcoin](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/selfish-mining-in-bitcoin.md)
   * [Safety](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/safety.md)
   * [Liveness](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/liveness.md)

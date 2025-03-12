@@ -1,14 +1,16 @@
 # Probability Spaces
 
-A probability function $$\mathbb{P}$$ takes an event, and tells us how likely it is as a number from $$0$$ to $$1$$. For example, if I roll a (fair) die, the event $$A$$ that it came out four has probability $$\mathbb{P}[A] = \frac{1}{6}$$.
+A _probability function_ $$\mathbb{P}$$ takes an event, and tells us how likely it is as a number from $$0$$ to $$1$$. For example, if I roll a (fair) die, the event $$A$$ that it came out four has probability $$\mathbb{P}[A] = \frac{1}{6}$$.
 
-What is the probability that it will be _either_ three _or_ four? Let $$A$$ be the event that it is three, and $$B$$ the event that it is four, then the event that it is _either_ is denoted $$A\cup B$$. Note that it is impossible that die is _both_ three _and_ four, we call such events _disjoint_. Since $$A$$ and $$B$$ are disjoint, we get that the probability _either_ happens is the _sum of probabilities_ the do happen. There's a one in six chance to get three, and a one in six chance to get four, hence there's a _two_ in six chance to get either. Or in math:
+What is the probability that it will be _either_ three _or_ four? Let $$A$$ be the event that it is three, and $$B$$ the event that it is four, then the event that it is _either_ is denoted $$A\cup B$$. Note that it is impossible that die is _both_ three _and_ four, we call such events _disjoint_. Since $$A$$ and $$B$$ are disjoint, we get that the probability _either_ happens is the _sum of probabilities_ they do happen. There's a one in six chance to get three, and a one in six chance to get four, hence there's a _two_ in six chance to get either. Or in math:
 
 $$
 \mathbb{P}[A\cup B] = \mathbb{P}[A]+\mathbb{P}[B] = \frac{1}{6} + \frac{1}{6} = \frac{1}{3}\text{.}
 $$
 
-When events are not disjoint, we _cannot_ sum them up like this. For example, the probability that the result is _odd_ is three in six, or one half. The probability that the result is _at most three_ is also three in six, or one half. So the probability that the result is _either odd or at most three_ is half + half = one? Of course not, because four is _neither_. when summing the two we overlook the fact that a result can be _both_ odd _and_ at most three, making us count these events twice. We said that _three in six_ are odd and _three in six_ are at most three, but three and one are _both_. We _overcounted._
+When events are not disjoint, we _cannot_ sum them up like this. For example, the probability that the result is _odd_ is three in six, or one-half. The probability that the result is _at most three_ is also three in six, or one-half. So the probability that the result is _either odd or at most three_ is half + half = one? Of course not: there is a positive probability that we roll a four, which is _neither_ odd nor smaller than three.&#x20;
+
+when summing the two we overlook the fact that a result can be _both_ odd _and_ at most three, making us count these events twice. We said that _three in six_ are odd and _three in six_ are at most three, but three and one are _both_. We _overcounted._
 
 **Exercise**: Given two events $$A$$ and $$B$$, let $$A\cap B$$ be the event that they _both_ happen (if they are disjoint, then $$A\cap B$$ is the _empty event_ $$\emptyset$$ that satisfies $$\mathbb{P}[\emptyset]=0$$), convince yourself that
 
@@ -35,8 +37,6 @@ $$\mathbb{P}[A\cup B] = \mathbb{P}[A' ]  + \mathbb{P}[B] = \mathbb{P}[A]  + \mat
 as needed.
 
 </details>
-
-
 
 ## Atomic Events
 
@@ -74,9 +74,7 @@ $$
 \mathbb{P}[\omega_1] + \mathbb{P}[\omega_2] + \mathbb{P}[\omega_3] + \ldots = \frac{1}{2} +\frac{1}{4} + \frac{1}{8} + \ldots = 1
 $$
 
-I will not prove the last equality, but I can provide a beautiful visual intuition:
-
-<figure><img src="../../../.gitbook/assets/image (1) (1) (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+as we can easily compute with the [geometric sum formula](../stuff-you-should-know/geometric-series.md).
 
 We can now ask ourselves, say, what is the probability this would take _at most ten tries_, and compute that the result is
 

@@ -98,3 +98,7 @@ So for example, for the cube we have $$n=3$$, and indeed the number of $$k=2$$-d
 
 **Exercise**: Prove that the number of $$k$$-dimensional faces of an $$n$$ dimensional cube is $$\theta\left(2^{n-k}\cdot n^k\right)$$
 
+{% hint style="info" %}
+Another way to interpret the discussion above is that there are $${n \choose k}$$ ways to choose an _orientation_ for a $$k$$-dimensional side of an $n$-cube, and given an orientation, there are $$2^{n-k}$$ possible _positions/shifts_ for the same orientation.
+{% endhint %}
+
