@@ -74,6 +74,8 @@ Of course, there is a layer of formalism that I skipped for the sake of expositi
 
 Let us go through the process of refining a security notion for blockchains. In this discussion, I will deliberately break down many details that I will comfortably ignore for the rest of the book. The purpose is not that you remember each and every nook and cranny of the definition (though that definitely won't be bad for you!), but to demonstrate just how nuanced this process is, hoping that you keep it in mind, perhaps the next time the new project devs tell you that their protocol is secure because they "tested it".
 
+This part of the text is _not intended_ to introduce the definition, this would require more finesse and would happen a bit later in the chapter. The purpose of the current section is to guide you through a possible thought process of conceiving a definition.
+
 So how can we define when a blockchain is secure? Let us first concentrate on double-spending. We do not want reverting transactions to be possible, so what about this security notion:
 
 > A block chain is secure if it is _impossible_ to revert a transaction
@@ -107,24 +109,6 @@ There are obviously _many_ other details that actually need addressing, for exam
 Well, kind of... This definition only captures one way to disturb the consensus process. Another concern is attackers that _delay_ the consensus. This is the issue of [safety](safety.md) vs. [liveness](liveness.md), an interesting story that will occupy much of the remainder of this chapter. The bottom line, though, is that the definition above only captures the safety property, and the equally important liveness property _can_ be violated in networks that provide safety, as we will see in explicit examples.
 
 So OK, this safety property we kind of defined and the liveness property we did not define combine to what is usually called "security". Is a secure blockchain everything we could hope for? In the next section we will see that it is not quite the case. We will find that attackers can have _other goals_ besides harming the consensus, and that these goals could be achieved in secure blockchains. Actually, we will find something much more disturbing, that _rational_ miners will follow this "attack".
-
-## The Confidence Parameter
-
-One of the details we encoded into our sample security definition above is that the receiver of funds on a blockchain can never expect _complete_ confidence that a transaction will never revert, because of the probabilistic nature of proof-of-work. We implicitly stated that "the revert probability is a negligible function of $$T$$", but that's not a good way to go about this innate uncertainty. Especially not when we consider [confirmation times](confirmation-times.md).
-
-The _confidence parameter_ is some number $$\varepsilon > 0$$ that describes how much risk the receiver is willing to take: they would not consider a transaction accepted unless the probability it reverts is below $$\varepsilon$$.
-
-A linguistic source of many misunderstandings is that a lower $$\varepsilon$$ means _more confidence_. Much like the case of [difficulty](../chapter-1-bft-vs.-pow/how-pow-works.md#difficulty-adjustment), when we talk about "the confidence" we will usually mean our confidence that the bad thing does _not_ happen. That is, we _actually_ refer to $$1-\varepsilon$$.
-
-Sometimes, we will use $$\varepsilon$$ to denote the _effective_ confidence, not some expectation set by the receiver. I.e., we can use a notation like $$\varepsilon = O\left(e^{-T}\right)$$ to mean that "the confidence you get increases exponentially as time passes".
-
-{% hint style="info" %}
-This is a bit tricky. When we say that a number [_grows exponentially_ ](../../supplementary-material/math/stuff-you-should-know/asymptotics-growth-and-decay.md#exponentials)we mean that it _grows infinitely large very fast_. The number $$1-\varepsilon$$ can't grow exponentially. Indeed, it can't even be larger than $$1$$. What we actually mean when we say that "the confidence grows exponentially" is that its distance from $$1$$, which is just $$\varepsilon$$, _decays_ exponentially.
-
-It is one of these sorts of linguistic overloading that anyone who wants to dive into any established theory has to get used to.
-{% endhint %}
-
-
 
 
 
