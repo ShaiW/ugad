@@ -139,3 +139,8 @@ A good next question is how fast do the majority of blocks arrive. In other word
 So how bad is the problem? How short is short enough that, say, $$99\%$$ of the time, the block delay will be longer? To work this out we solve for $$b$$ the equation $$\mathbb{P}\left[Exp\left(\lambda\right)\le b\lambda\right]=\frac{1}{100}$$ to find that the answer is just above $$0.01$$ block delays, or six seconds! That's right, one in 100 Bitcoin blocks will be discovered within _six seconds_, despite the block delay being 10 minutes.
 
 There are many more things that can be worked out using these simple yet powerful formula, and it is always good to have them in your toolbox. I hope that I at least convinced you that there is a concrete reason why many people are concerned with reducing block times in Bitcoin.
+
+{% hint style="info" %}
+In this [lovely post](https://blog.lopp.net/bitcoin-block-time-variance/) by Jameson Lopp, you can see how well this theory holds in practice.
+{% endhint %}
+
