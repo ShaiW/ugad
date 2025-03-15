@@ -1,10 +1,20 @@
 # How PoW Works\*
 
+Our next goal is to understand the mechanics that govern proof-of-work block creation. First, we describe the so-called "complex mathematical puzzles miners solve to create blocks. The key takeaway is that the mathematical puzzle is not "complex". In fact, it is _incredibly dumb_: the only way to solve it is to bang your head against it by trying all possible solutions in no particular order until you find one that works.
+
+Don't get me wrong, it takes _exceptional cleverness_ to design such a dumb puzzle. A game that is impossible to cheat, where the smartest player has no advantage over the dumbest player. Cryptographers call such puzzles _cryptographic hash functions_.
+
+Building such a puzzle is not enough. To regulate the block creation rate to a prescribed length of time, we need to _parameterize_ it correctly. You might have heard the name of the relevant parameter, it is called the _difficulty target_.
+
+In the first part of this section, we will assume we can magically know what the difficulty target should be. In the real world, not only do we not have access to this parameter, but it doesn't even stay fixed. The difficulty target has to _adjust_ to changing hash rates. This is the responsibility of the _difficulty adjustment_ _algorithm_ (DAA). In the second part of this section, we will describe how difficulty adjustment is handled in Bitcoin.
+
+## The Dumb Puzzle
+
 You know, that proverbial "complex mathematical puzzle" that miners are trying to solve? Well, first of all, it is _not_ a "complex mathematical puzzle" in any way, it is actually the _dumbest_ possible puzzle, a puzzle that can only be solved by _trying all possible solutions one by one until we hit one that works_. In other words, puzzles that can only be solved with _brute force_.
 
 It takes a whole lot of cleverness to create such a dumb puzzle. Such a puzzle is expected to outsmart all attempts to cleverly solve it faster than a brute-force approach would. But the puzzle itself, the task given to miner, is _very dumb by design_, a magic 8-ball you keep shaking until you get the desired output. And that's a _good thing_. You _do not want_ miners to get clever and find all sorts of shortcuts that will undermine the security. The entire point of proof-of-_**work**_ is that _it proves_ that _you did the work_. If there are clever ways to shirk the work and still obtain the proof, then your [Sybil resistance](proof-of-work.md#sybil-resistance) is broken.
 
-## Hashes as Random Oracles
+### Hashes as Random Oracles
 
 As I said, it takes seriously smart people to design a sufficiently dumb "puzzle", so I will treat the problem like a cryptographer and assume someone already solved the problem for me. More formally, I will assume the existence of a [random oracle](../../supplementary-material/computer-science/page-3/random-oracles.md): a magic _random function_ that floats in the sky, accessible to anyone.
 
@@ -18,7 +28,7 @@ To simplify our notations, we call the hash function $$\mathsf{H}$$ and let $$\m
 
 To use a hash function for PoW we need one additional assumption beyond the random oracle model: that making a query _takes time_. More quantitatively, we assume we know some $$t$$ (that could be very small) such that the random oracle answers _exactly one query per_ $$t$$ _seconds_. Why can we assume such a $$t$$ exist? Because computation is not free. Why can we assume that _we know it_ or that it _remains fixed_? That question is a bit more... difficult (pun not-intended).
 
-## The "Dumb" Puzzle
+### The "Dumb" Puzzle
 
 As a warmup, consider the following problem: I choose an arbitrary number $$0\le n < 2^{256}$$ and ask you to find _any_ string $$s$$ such that $$\mathsf{H}(s) = n$$. This problem is called _finding a preimage_ or _reverting the hash._ How would you go about trying? One way would be to try to feed $$\mathsf{H}$$ different strings until you hit one that suits the bill. Is there a better way? Apparently (if we regard $$\mathsf{H}$$ as a random oracle) the answer is _no_. Proving this requires a bit of finesse but the intuition is clear: say I choose some string $$s'$$ and note that $$\mathsf{H}(s') \ne n$$, what can I learn from this? Well, I can learn that $$s'$$ is not a solution, but can I learn anything else? Not really. Since for any $$s'' \ne s'$$ we have that the outputs $$\mathsf{H}(s')$$ and $$\mathsf{H}(s'')$$ are _random_ and _uncorrelated_, it follows that $$\mathsf{H}(s')$$ tells us _nothing_ about $$\mathsf{H}(s'')$$. In other words, the output $$\mathsf{H}(s')$$ is the _only_ thing we learn, and that information is almost useless for finding a solution: it eliminates exactly _one_ option.
 
@@ -58,15 +68,80 @@ Let $$B$$ be a block header without the nonce set, and let $$B[n]$$ be that same
 
 So are we done? Not quite. The remaining question is: if we only hash the _header_, what does this say about the data? Can't we just change the data, and use the same header as proof? The "obvious" solution is to hash the entire block instead of just the header, but that will make mining much harder and more centralized. Instead, Satoshi had the foresight to use a cool construction called [Merkle trees](../../supplementary-material/computer-science/page-3/merkle-trees.md). For our current purposes, you don't have to understand exactly what a Merkle tree is (though you should, because they are _very useful_ and _very cool_), only that it allows us to take an _arbitrary amount of information_ and extract from it a 256 bit string called the _Merkle root_ such that it is impossible to manipulate the data without changing the Merkle root. By including the Merkle root in the block header, we get that the string $$B[n]$$ affirms the veracity of the block contents as well.
 
+### The Average Wait Time
+
+In a Twitter poll I made, I asked my followers the following question: given that the Bitcoin network produces a block once per ten minutes, if you start waiting for a block at some random time, how long will you wait for the next block on average? These are the results:
+
+<figure><img src="../../.gitbook/assets/138 (1).png" alt=""><figcaption></figcaption></figure>
+
+It is not surprising that most people will think that the answer is five minutes. After all, if you know that a bus arrives at the stop once every ten minutes then (under the unrealistic assumption that busses arrive on time) if you arrive at the station at a random time, you expect to wait five minutes. (People understand this so deeply on the intuitive level, that they aren't even bothered with the fact that to actually prove this you need to solve an integral).
+
+But block creation _does not_ behave like a bus line. The probability that a nonce is correct is independent of how many nonces you already tried, and the process is _memoryless_.
+
+Imagine rolling a fair day until you roll a 1. How many rolls, on average, should this take? The probability of rolling a 1 in a given try is one in six, and the result of each roll is not affected by whatever happened on previous rolls, so it should take six tries on average.
+
+{% hint style="info" %}
+More generally, if some experiment succeeds with probability $$p$$, it would take an average of $$1/p$$ attempts before the experiment is successful. This is not a trivial fact  (at least, I am not aware of any way to prove it that doesn't require a bit of tricky calculus) yet people seem comfortable accepting it at face value.
+{% endhint %}
+
+Now say that you rolled a die ten times, and annoyingly enough, none of the results were 1. How many _additional_ dice do you expect to roll? Emotionally, we are biased to feel that "I've failed so many times, _what are the chances_ that I fail again?" But, with some clarity, we realize that the die _does not remember_ how may times it was rolled. The expected number of rolls remains six, whether you just started, or failed a million times already.
+
+{% hint style="info" %}
+Mathematically, this can be notated as follows. If $$X$$ is the [random variable](../../supplementary-material/math/probability-theory/random-variables.md) that describes the number of attempts required, then the probability that we need $$n+k$$ attempts given that the first $$k$$ attempts failed is the same, regardless of $$k$$.&#x20;
+
+That is: $$\mathbb{P}[X=n+k\mid X>k] = \mathbb{P}[X=n]$$.
+{% endhint %}
+
+Now all we have to notice is that block creation is no different than rolling dice. More exactly, rolling $$T/N$$-sided dice at a rate of one roll per $$t$$ seconds, until our dice hits $1$. We expect $$N/T$$ attempts to succeed, taking a total of $$t\cdot N/T = \lambda$$ seconds.
+
+So the hard to swallow pill is the following: at _any point in time_ the expected time until the next block is _always_ $$\lambda$$. Yes, even if you have been waiting for a Bitcoin block for twenty minutes now, the average time _remaining_ to wait _remains_ ten minutes.
+
+People have a hard time coming to terms with this, so I took the time to complement the theoretical discussion above with some simulations. I simulated mining in a hash rate of one million blocks per block delay. Sampling a simple block delay like this is very easy: just sample uniformly random numbers between $$0$$ and $$1$$ and count how many attempts it took before you hit a number smaller than $$1/1000000$$. Repeating this process ten thousand times, I obtained a sample of ten thousand block intervals.
+
+I then did the following: I removed all intervals smaller than a minute, and reduced one minute from the remaining intervals. In other words, I removed all miners that waited less than one minute, and adjusted the remaining samples to represent how many _additional_ minutes miners waited. If my claims are correct, and how long you already waited doesn't matter, the new data and old data should distribute _the same_. However, if I am wrong, and _having waited_ does affect _how much longer_ it remains to wait, we will see a difference representing the effect of waiting.
+
+I also repeated the process above, this time for intervals more than _ten minutes_ long.
+
+The results are displayed in the following graph, and we can see quite clearly that the block creation process couldn't care less about how long you already waited:
+
+&#x20;
+
+<figure><img src="../../.gitbook/assets/139.png" alt=""><figcaption></figcaption></figure>
+
+The code that created this graph is very simple, feel free to experiment with it:
+
+```python
+from random import random
+import matplotlib.pyplot as plt
+
+HASHRATE = 10**6
+SAMPLES = 10**3
+
+def sample():
+    n = 1
+    while(random() > 1/HASHRATE):
+        n+=1
+    return n/HASHRATE
+
+data = [sample() for _ in range(SAMPLES)]
+trimmed = list(filter(lambda x: x> 0, [d - 0.1 for d in data]))
+very_trimmed = list(filter(lambda x: x> 0, [d - 1 for d in data]))
+
+plt.hist([data, trimmed, very_trimmed], bins=30, density=True)
+plt.show()
+```
+
+To conclude, I will point out that there is more to the theory of block creation. We know exactly what the distribution we see in the image is, and can explain very well why it is the distribution we expect to see. We can derive a formula for it and use it to analyze block creation in many ways. For a somewhat formal treatment, see [the appendix](../../supplementary-material/math/probability-theory/the-math-of-block-creation.md).
+
 ## Difficulty Adjustment
 
-So recall we said there is this number $$t$$ that measures how long a single hash takes? This is not a realistic assumption. The number $$t$$ represents, in a sense, how _hard_ it is to compute $$\mathsf{H}$$, and the _global amount of effort_ dedicated to solving the puzzle. The value of $$t$$ is not fixed, but time dependent. If the miner replaces their machine with a faster one, $$t$$ has decreased. If another miner joins the party, $$t$$ has decreased. If a miner went out of business or had a long-term technical failure, $$t$$ has _increased_. This value of $$t$$ that we so arrogantly took for obvious, not only does it depend on information that is not available to us, but it isn't even _fixed_.
+So remember we assumed there is this number $$t$$ that measures how long a single hash takes? This is not a realistic assumption. The number $$t$$ represents, in a sense, how _hard_ it is to compute $$\mathsf{H}$$, and the _global amount of effort_ dedicated to solving the puzzle. The value of $$t$$ is not fixed, but time dependent. If the miner replaces their machine with a faster one, $$t$$ has decreased. If another miner joins the party, $$t$$ has decreased. If a miner went out of business or had a long-term technical failure, $$t$$ has _increased_. This value of $$t$$ that we so arrogantly took for obvious, not only does it depend on information that is not available to us, but it isn't even _fixed_.
 
 In practice, instead of pretending we know $$t$$, we try to _estimate_ it from the information we _do_ have: the blocks themselves. If we see that blocks are created too fast or too slow, we try to adjust $$t$$ appropriately.
 
 As the person who designed Kaspa's difficulty adjustment, I can give you a first-hand testimony that designing difficulty adjustment is very intricate. There are many approaches to choosing how to _sample_ the blocks, and then a plethora of methods to evaluating the difficulty from the data. Later in the book I will describe Kaspa's difficulty adjustment algorithm, and maybe also provide a general discussion of the more common difficulty adjustment approaches (material that is unfortunately not covered in _any_ textbook or other unified source). For now, the task of understanding how difficulty adjustment works in Bitcoin is daunting enough.
 
-## Difficulty Adjustment in Bitcoin
+### Difficulty Adjustment in Bitcoin
 
 Bitcoin was naturally the first crypto to suggest _any_ form of difficulty adjustment. Up to a few tweaks, it was lifted almost verbatim from the original Bitcoin whitepaper, which was published before cryptocurrencies even existed. Many argue that Bitcoin's approach to difficulty adjustment is outdated, has many drawbacks, and can even be dangerous, while others argue that it is time-tested and its simplicity protects us from unexpected attacks. So basically, a carbon copy of _any_ _other argument_ about Bitcoin.
 
@@ -90,7 +165,7 @@ A comfortable way to state what we _observed_ is by using the ratio $$\alpha$$ s
 
 Recall that a _larger target_ means _easier blocks_, so to make mining $$1/\alpha$$ times harder, we choose $$\alpha\cdot T$$ as our new difficulty.
 
-## Handling Timestamps
+### Handling Timestamps
 
 This is all good and well, but there is one problem: how do we _know_ how long it took to create these $$N$$ blocks?
 
