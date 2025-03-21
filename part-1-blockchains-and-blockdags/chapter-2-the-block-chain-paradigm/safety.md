@@ -1,10 +1,10 @@
 # Safety
 
-The safety property is a statement about how long the transaction has to be on the selected chain before we have confidence $$\varepsilon$$ that it will not revert, assuming no $$\alpha$$-attackers. That is, with the [approval time](a-security-model-for-blockchain-consensus.md#inclusion-and-approval-times) $$S(\alpha,\varepsilon)$$.
+The _safety_ property is a statement about how long the transaction has to be on the selected chain before we have our confidence that a transaction won't revert is at least $$\varepsilon$$. That is, with the [approval time](a-security-model-for-blockchain-consensus.md#inclusion-and-approval-times) $$S(\alpha,\varepsilon)$$.
 
-We already agreed that there is hope to defend against a $$\frac{1}{2}$$-attacker, so we assume $$\alpha < \frac{1}{2}$$.
+We already agreed there is no hope to defend against a $$\frac{1}{2}$$-attacker, so we assume $$\alpha < \frac{1}{2}$$.
 
-For such an $$\alpha$$, we want the confidence to grow exponentially fast. In other words, if we make $$\varepsilon$$ twice as small, we _don't_ want $$S(\alpha,\varepsilon)$$ to be twice as large. In fact, we want something much stronger: that no matter how many time we halve $$\varepsilon$$, each time would add a _constant_ amount of time. If you have some background (say, from [reading about logarithms](../../supplementary-material/math/stuff-you-should-know/asymptotics-growth-and-decay.md#logarithms) in the appendix), you know that such a relationship between $$S$$ and $$\varepsilon$$ can be expressed [asymptotically](../../supplementary-material/computer-science/stuff-you-should-know/asymptotic-notation.md) by the following equation: $$S(\alpha,\varepsilon) = O\left(\log(1/\varepsilon)\right)$$
+For such $$\alpha$$, we want the confidence to grow exponentially fast. In other words, if we make $$\varepsilon$$ twice as small, we _don't_ want $$S(\alpha,\varepsilon)$$ to be twice as large. In fact, we want something much stronger: that no matter how many time we halve $$\varepsilon$$, each time would add a _constant_ amount of time. If you have some background (say, from [reading about logarithms](../../supplementary-material/math/stuff-you-should-know/asymptotics-growth-and-decay.md#logarithms) in the appendix), you know that such a relationship between $$S$$ and $$\varepsilon$$ can be expressed [asymptotically](../../supplementary-material/computer-science/stuff-you-should-know/asymptotic-notation.md) by the following equation:
 
 $$
 S(\alpha,\varepsilon) = O\left(\log(1/\varepsilon)\right)
