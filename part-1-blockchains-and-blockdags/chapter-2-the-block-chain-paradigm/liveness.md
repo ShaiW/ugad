@@ -64,9 +64,39 @@ Compiling this into a definition is a bit delicate, as it requires taking into a
 
 ## Liveness of GHOST
 
-TODO: describe balancing attack
+Imagine a blockchain that uses the GHOST protocol, and sets its block delays to be significantly smaller than the network delay, and assume the position of a $$10\%$$ attacker.
 
-What saves us from this attack is that if the block rate is _sufficiently low_, we will see long stretches where the network looks like a chain, prohibiting a balancing attack below that chain.
+Recall that we always assume the worst-case reasonable attacker. In particular, in decentralized consensus, we assume an all-powerful _byzantine_ attacker. In particular, the attacker is allowed to delay _any_ message by as much as the network delay.
+
+The attacker can use their ability to split the honest network into two chunks, such that each chunk contains about the same hash power (as long as the difference between them is smaller than the hash-rate of the attacker, the attack should work). She can then use her powers to delay any messages between the two chunks by as much as possible, effectively making them compete with each other.
+
+If we assume for now that the attacker does not create blocks, after a while the neetwork would look a bit like this:
+
+<figure><img src="../../.gitbook/assets/147 (1).png" alt=""><figcaption><p>A simple depiction of a balancing attack. Blue and red blocks represent the two isloated groups, and the blue curly bracket represents the network delay. Blocks that were created by one group but not yet arrived to the other groups have lighter colors.</p></figcaption></figure>
+
+Now recall that blocks aren't created in regular intervals and in fact, the block creation process is [incredibly noisy](../../supplementary-material/math/probability-theory/the-math-of-block-creation.md). So even if the two groups are perfectly balanced, at some point we will run into a situation similar to this:
+
+<figure><img src="../../.gitbook/assets/148.png" alt=""><figcaption></figcaption></figure>
+
+where one side of the conflict had a lucky burst large enough to look heavier even to the _other side_. In the example above, at this point the red group will switch to mine over the latest blue block, ending the split.
+
+But what if the attacker in the meantime uses her hashrate to sprinkle blocks on both sides of the split?
+
+<figure><img src="../../.gitbook/assets/149.png" alt=""><figcaption></figcaption></figure>
+
+If she has enough hash-rate (namely, her hashrate is bigger than the _difference_ between the hashrates of two groups), she could strategically release her blocks to prevent the two groups from reconciliating _indefinitely_, ruining the liveness of the network.
+
+Another variant of this strategy attempts a $$51\%$$ attack: instead of creating blocks on both sides, the attacker sends _transactions_ to the larger side, and mines blocks on the smaller side. After the network accepts her transactions as confirmed, she releases all the blocks on the lighter side, creating a reorg. The success probability of this attack _does_ decrease exponentially over time, but not fast enough, since the balance attack increases $$L$$ arbitrarily.
+
+Such attacks are called _balancing attacks_.
+
+{% hint style="info" %}
+In practice, such attackers do not exist. However, when operating in very high block rates, it is still the case that such "chunks" that are well connected among themselves but poorly connected with other chunks could naturally form. Identifying and responding to these chunks makes a balancing attack harder to pull off, but not impossible, as demonstrated in several simulations, most famously the [experiment by Natoli and Gramoli](https://arxiv.org/abs/1612.09426).
+{% endhint %}
+
+Note that balancing attacks work because the attacker blocks, despite not being on the longest chain, still add weight to one of the sides, making this attack very unique to GHOST.
+
+What saves us from this attack is that if the block rate is _sufficiently low_, we will see long stretches where the network looks like a chain, prohibiting a balance attack below that chain.
 
 &#x20;So if a typical HCR block tree looks like this:
 
@@ -78,4 +108,4 @@ GHOST allows moderately increasing block rates to obtain a block tree that looks
 
 The orphan rates increase without degrading safety, because their weight is counted into the chain, and without degrading liveness, because there are sufficiently common long stretches of orphanless chains, forcing the balancing adversary into a block race.
 
-One could say that GHOST sacrifices a bit of robustness to liveness attack to gain much more robustness against double-spending attacks in orphan-inducing rates. This is why GHOST chains furnish security similar to Bitcoin while furnishing block delays as much as twenty times shorter.
+It is fair to say that GHOST sacrifices a bit of robustness against liveness attacks to gain much more resiliency against double-spending attacks when operating in orphan-inducing rates. This is why GHOST chains furnish security similar to Bitcoin with block delays as much as twenty times shorter.
