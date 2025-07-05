@@ -27,10 +27,6 @@
   * [Proving Bitcoin's Security\*](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/proving-bitcoins-security.md)
   * [Exercises](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/exercises.md)
 
-## Part 2: The GHOSTDAG Protocol
-
-* [Page 2](part-2-the-ghostdag-protocol/page-2.md)
-
 ## Supplementary Material
 
 * [Math](supplementary-material/math/README.md)
