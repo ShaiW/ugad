@@ -1,7 +1,13 @@
 # Welcome!
 
-Welcome to my in-progress book _Proof-of-Work: the Book_. It is packed with observations of proof-of-work I have collected through years of research and development. I _can't wait_ to share them with you!
+This is the website of my in-progress book _Proof-of-Work_.
 
-If you are interested in my other content or want to support my work, you are more than invited to check out [my website](http://wybor.ski).
+I started this book with many aspirations in mind, but mostly to create a unified reference useful for everyone, from retailers who want to know how to ask the important questions to professional computer scientists looking for a gentle introduction into the world of probabilistic consensus.
+
+But mostly, I want this to be an enjoyable exposition of the beauty of proof-of-work in theory and practice.
+
+**Acknowledgments**:
+
+This book is currently sponsored by the&#x20;
 
 <figure><img src=".gitbook/assets/image (15).png" alt=""><figcaption></figcaption></figure>
