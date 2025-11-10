@@ -218,7 +218,7 @@ This protocol can be extended to $$n=3f+1$$ Beatles (or any other rhythmic coleo
 
 > <mark style="color:orange;">George</mark> said that <mark style="color:red;">Ringo</mark> said that said that <mark style="color:purple;">Paul</mark> said that <mark style="color:purple;background-color:green;">Yoko</mark> wants to call the album <mark style="background-color:purple;">Let it Be</mark>
 
-One can prove by induction that if at most $$f$$ of the nodes are faulty, then the protocol is _guaranteed_ to provide consensus within $$f$$ rounds, provided there are at least $$3f+1$$ nodes.
+One can prove by induction that if at most $$f$$ of the nodes are faulty, then the protocol is _guaranteed_ to provide consensus after $$f+1$$ rounds, provided there are at least $$3f+1$$ nodes.
 
 ## PSL Complexity\*
 
