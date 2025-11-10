@@ -18,16 +18,24 @@ Nicephorus and Martin are loyal to Byzantium and its protocols, so they broadcas
 
 This shows that majority voting lacks _fault tolerance_. A _faulty_ (or Byzantine) node is a general term for any node that deviates from the protocol, whether due to malice or an actual fault. When analyzing the protocol's security, we don't care what caused a deviation. We care about conditions assuring that no deviation can break the protocol.
 
-More formally, a _Byzantine Fault Tolerance_ (BFT) protocol guarantees that _all non-faulty nodes_ reach a _mutual agreement_ within some known number of rounds. We usually quantify the fault tolerance with a number $$0\le\alpha\le 1$$, indicating how many non-faulty nodes the protocol can handle. We call a consensus protocol $$\alpha$$-BFT if it remains correct as long as the fraction of faulty nodes is at most $$\alpha$$.
+More formally, a _Byzantine Fault Tolerance_ (BFT) protocol guarantees that _all non-faulty nodes_ reach a _mutual agreement_ within some known number of rounds. We usually quantify the fault tolerance with a number $$0\le\alpha\le 1$$, indicating how many faulty nodes the protocol can handle. We call a consensus protocol $$\alpha$$-BFT if it remains correct as long as the fraction of faulty nodes is at most $$\alpha$$.
 
 With this terminology, we can state the first major result of the field.
 
 > **The** $$3f+1$$ **Theorem** (Pease, Shostak, Lamport, 1980):
 >
-> * There exists a $$1/3$$-BFT protocol.
 > * There is no $$\alpha$$-BFT protocol for $$\alpha > 1/3$$.
+> * Under certian conditions, there exists a $$1/3$$-BFT protocol.
+
+{% hint style="info" %}
+I'm actually hiding a subtlety here. There are two variations of the impossibility part of PSL's theorem. One for $$\alpha > 1/3$$, assuming the existence of digital signatures, and one for $$\alpha \ge 1/3$$ without assuming the existence of digital signatures. In a world without cryptography, we need _strictly fewer_ than a third of nodes to be fault&#x79;_._ But if we presume digital signatures exist, we can handle a scenario in which _exactly_ a third of the nodes are faulty.
+
+This is a book about permissionless ledgers, so everything we do is deeply rooted in the assumption that cryptography exists. Hence, I chose to focus on the latter variant.
+{% endhint %}
 
 The name $$3f+1$$ comes from denoting the number of faulty nodes by $$f$$, and noting that assuming $$\alpha < 1/3$$ is the same as assuming that there are at least $$3f+1$$ nodes in total.
+
+We will provide a more accurate version shortly. To specify what the "certain conditions" are, we must first introduce _synchronicity models_.
 
 ## Safety and Liveness
 
@@ -96,11 +104,19 @@ It would definitely be terrific to have Byzantine agreement under such Spartan a
 >
 > For any $$\alpha>0$$, no consensus protocol is $$\alpha$$-BFT in the asynchhronous model.
 
-The proof is subtle, but the key insight is simple: we can always find a scenario where a single message changes the outcome. By delaying this one message sufficiently long, we can change the consensus. Hence, liveness is only guaranteed after such a message could not have been transmitted. But since we have no bound on the message length, this means no wait is long enough to provide liveness.
+{% hint style="info" %}
+FLP actually prove a subtler theorem that _implies_ the statement above. To fully state their original statement, we must foray into different types of faults and failures. This digression is unnecessary for our purposes, as most of the book pertains to proof-of-work, where such distinctions are unhelpful. I refer the curious to a series of [online lectures by Tim Roughgarden](https://www.youtube.com/watch?v=vJhm9uhd34E).
+{% endhint %}
+
+The proof is subtle, but the key insight is simple: we can always find a scenario where a single message changes the outcome. By delaying this one message sufficiently long, we can change the consensus. Hence, liveness is only guaranteed after such a message could not have been transmitted. But since we have no bound on the message delay, this means no wait is long enough to provide liveness.
 
 We need a model that is not unreasonably accommodating like the synchronous model, but not as harsh as the asynchronous model. A good compromise is the **partially synchronous model**, [proposed by Cynthia Dwork, Nancy Lynch, and Larry Stockmeyer in 1988](https://groups.csail.mit.edu/tds/papers/Lynch/jacm88.pdf).
 
 > In the **partly synchronous model** there is a delay $$\Delta$$ on the time it takes messages to arrive, but it is **not known**
+
+{% hint style="info" %}
+This is one of several equivalent formulations of this model. This variation is the simplest to understand, but not the simplest to work with. The _Global Stabilization Time_ (GST) formulation is arguably most commonly used in the literature. I again refer the studious reader to [Tim Roughgarden's lectures](https://www.youtube.com/watch?v=vJhm9uhd34E).
+{% endhint %}
 
 The idea of this model is to capture network conditions. In reality, delay bounds may change, but we assume such changes are not constant. For periods of minutes or even hours, $$\Delta$$ is usually constant. So instead of talking about an oxymoronic "constant that changes," we can talk about a "constant we don't know", which is exactly how this model works.
 
@@ -210,13 +226,13 @@ Security is important, but practicality is also important. Fault-tolerance isn't
 
 There are three benchmarks for the efficiency of a consensus protocol. The _communication complexity_ measures the number of rounds the protocol requires. The _space complexity_ measures how much RAM each participant needs. The _time complexity_ measures the amount of processing required to compute the result. The effect of the message length on complexity is baked into the time complexity, as we assume each non-faulty party, at the very least, reads valid messages in their entirety. Note that the space complexity might be smaller than the message length. There are protocols in which the messages can be read as a stream and do not need to be stored in their entirety at any point.
 
-In the PSL protocol, the number of required rounds is proportional to the number of nodes: we need at least $$f$$ rounds to obtain full $$1/3$$-BFT security for $$3f+1$$ nodes. That's already far from ideal. For example, the Ethereum network has more than 750,000 validators. Directly applying PSL would require 250,000 rounds per block.
+In the PSL protocol, the number of required rounds is proportional to the number of nodes: we need $$f+1$$ rounds to obtain full $$1/3$$-BFT security for $$3f+1$$ nodes. That's already far from ideal. For example, the Ethereum network has more than 750,000 validators. Directly applying PSL would require 250,000 rounds per block.
 
-What about time complexity? To answer this, first let us understand the message lengths.
+What about time complexity? We answer this by analyzing message lengths.
 
 Recall the Beatles. In the first round, John only stated his own preference. In the second round, in each message, John had to state the preferences he heard from $$n-1$$ other Beatles. In the third round, he has to state, for each of the $$n-1$$ other Beatles, the preference they claim for the remaining $$n-1$$ Beatles (including John himself). In the $$k$$th round, John has to list at least $$(n-1)^{k-1}$$ preferences. Note that each preference is a binary value (because we assumed only two voting options), so the number of bits John must transmit in the $$k$$th round is also at least $$(n-1)^{k-1}$$.
 
-Hence, in the final round, John must transmit $$(n-1)^{f-1}=\Omega\left((n-1)^{n/3}\right)$$ bits, which is exponentially large.
+The final round is $$k=f+1$$, in which John must transmit $$(n-1)^{f}=\Omega\left((n-1)^{n/3}\right)$$ bits, which is exponentially large.
 
 **Exercise**: How does having a different number of options affect this computation?
 
@@ -234,7 +250,7 @@ It is generally good advice to remember that $$\log_2(m)$$ is exactly the number
 
 Fortunately, PSL was just the first in a royal lineage of BFT protocols.
 
-In 1999, Miguel Castro and Barbara Liskov introduced the[ Parctical Byzantine Fault Tolerance](https://pmg.csail.mit.edu/papers/osdi99.pdf) (PBFT) protocol. PBFT's most significant contribution is in terms of the synchronicity model. Unlike PSL, it works in the partially synchronous model. But more than that, it reduces the time complexity to $$O(n^2)$$. An extreme improvement over the exponential complexity of PSL.
+In 1999, Miguel Castro and Barbara Liskov introduced the[ Parctical Byzantine Fault Tolerance](https://pmg.csail.mit.edu/papers/osdi99.pdf) (PBFT) protocol. PBFT's most significant contribution is in terms of the synchronicity model. It is one of the first protocols that works in the partially synchronous model. But more than that, it reduces the time complexity to $$O(n^2)$$. An extreme improvement over the exponential complexity of PSL.
 
 Several improvements of various sorts succeeded PBFT, such as Zyzzyva and ABsTRACTs, which provide improved performance, Aaardvark, which provides improved robustness, and Adapt, which switches between protocols to respond to changing conditions. More recent protocols, such as HotStuff and Marlin, further reduce the complexity to linear. Finally, we would be remiss not to mention a few protocols specifically crafted for proof-of-stake, such as Alphabet and Tendermint.
 
