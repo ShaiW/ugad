@@ -8,6 +8,6 @@ But mostly, I want this to be an enjoyable exposition of the beauty of proof-of-
 
 **Acknowledgments**:
 
-This book is currently sponsored by the&#x20;
+This book is currently sponsored by [Quai](https://qu.ai/), who generously offered to cover the costs of two weekly workdays while agreeing that I maintain complete creative control.
 
 <figure><img src=".gitbook/assets/image (15).png" alt=""><figcaption></figcaption></figure>
