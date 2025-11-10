@@ -237,3 +237,6 @@ Fortunately, PSL was just the first in a royal lineage of BFT protocols.
 In 1999, Miguel Castro and Barbara Liskov introduced the[ Parctical Byzantine Fault Tolerance](https://pmg.csail.mit.edu/papers/osdi99.pdf) (PBFT) protocol. PBFT's most significant contribution is in terms of the synchronicity model. Unlike PSL, it works in the partially synchronous model. But more than that, it reduces the time complexity to $$O(n^2)$$. An extreme improvement over the exponential complexity of PSL.
 
 Several improvements of various sorts succeeded PBFT, such as Zyzzyva and ABsTRACTs, which provide improved performance, Aaardvark, which provides improved robustness, and Adapt, which switches between protocols to respond to changing conditions. More recent protocols, such as HotStuff and Marlin, further reduce the complexity to linear. Finally, we would be remiss not to mention a few protocols specifically crafted for proof-of-stake, such as Alphabet and Tendermint.
+
+<figure><img src="../../.gitbook/assets/image (52).png" alt=""><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a>  for sponsoring this segment</p></figcaption></figure>
+
