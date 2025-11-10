@@ -238,5 +238,7 @@ In 1999, Miguel Castro and Barbara Liskov introduced the[ Parctical Byzantine Fa
 
 Several improvements of various sorts succeeded PBFT, such as Zyzzyva and ABsTRACTs, which provide improved performance, Aaardvark, which provides improved robustness, and Adapt, which switches between protocols to respond to changing conditions. More recent protocols, such as HotStuff and Marlin, further reduce the complexity to linear. Finally, we would be remiss not to mention a few protocols specifically crafted for proof-of-stake, such as Alphabet and Tendermint.
 
+***
+
 <figure><img src="../../.gitbook/assets/image (52).png" alt="" width="375"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a>  for sponsoring this segment</p></figcaption></figure>
 
