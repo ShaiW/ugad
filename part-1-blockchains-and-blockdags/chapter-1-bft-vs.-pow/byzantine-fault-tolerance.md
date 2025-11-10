@@ -104,11 +104,15 @@ It would definitely be terrific to have Byzantine agreement under such Spartan a
 >
 > For any $$\alpha>0$$, no consensus protocol is $$\alpha$$-BFT in the asynchhronous model.
 
+The proof is subtle, but the key insight is simple: we can always find a scenario where a single message changes the outcome. By delaying this one message sufficiently long, we can change the consensus. Hence, liveness is only guaranteed after such a message could not have been transmitted. But since we have no bound on the message delay, this means no wait is long enough to provide liveness.
+
 {% hint style="info" %}
 FLP actually prove a subtler theorem that _implies_ the statement above. To fully state their original statement, we must foray into different types of faults and failures. This digression is unnecessary for our purposes, as most of the book pertains to proof-of-work, where such distinctions are unhelpful. I refer the curious to a series of [online lectures by Tim Roughgarden](https://www.youtube.com/watch?v=vJhm9uhd34E).
 {% endhint %}
 
-The proof is subtle, but the key insight is simple: we can always find a scenario where a single message changes the outcome. By delaying this one message sufficiently long, we can change the consensus. Hence, liveness is only guaranteed after such a message could not have been transmitted. But since we have no bound on the message delay, this means no wait is long enough to provide liveness.
+{% hint style="info" %}
+This statement, and actually all statements we have made, only consider _deterministic finality_, in which you are _guaranteed_ that the protocol converges. As we will see later, more can be achieved by relaxing this to a _probabilistic_ consensus, where convergence is guaranteed _up to a small factor_. Most of the book is dedicated to probabilistic consensus, albeit in the somewhat different context of proof-of-work rather than BFT.
+{% endhint %}
 
 We need a model that is not unreasonably accommodating like the synchronous model, but not as harsh as the asynchronous model. A good compromise is the **partially synchronous model**, [proposed by Cynthia Dwork, Nancy Lynch, and Larry Stockmeyer in 1988](https://groups.csail.mit.edu/tds/papers/Lynch/jacm88.pdf).
 
