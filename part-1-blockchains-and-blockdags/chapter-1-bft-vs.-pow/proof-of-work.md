@@ -1,4 +1,4 @@
-# What Is Proof-of-Work (PoW)
+# Proof-of-Work (PoW)
 
 Before we get going, do me a solid and forget _anything_ you _ever_ heard about PoW. Forgive my insolence, but most likely most of it is wrong anyway.&#x20;
 
@@ -7,6 +7,12 @@ Oh, you find this objectionable? Fine, then let me test you. Answer this one que
 If you think you know the answer, then you have already lost. It was a trick question. _PoW is not a consensus protocol at all_. It is a _necessary building block_ for PoW protocols such as the longest-chain rule and GHOST. But in itself, it is something else, more fundamental, the stuff protocols are made of.
 
 So what is it? I'm getting there. Clear your mind and let us take this from the top.
+
+***
+
+<figure><img src="../../.gitbook/assets/image (54).png" alt="" width="212"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for sponsoring this segment of the book</p></figcaption></figure>
+
+***
 
 ## Distribution Vs. Decentralization
 

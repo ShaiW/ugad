@@ -6,7 +6,7 @@ _This_ is called the Byzantine fault tolerance problem.
 
 ***
 
-<figure><img src="../../.gitbook/assets/image (54).png" alt="" width="212"><figcaption><p>asdlkjfjasld;ksjafasdlkjfjasld;ksjafasdlkjfjasld;ksjafasdlkjfjasld;ksjafasdlkjfjasld;ksjaf</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (54).png" alt="" width="212"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for sponsoring this segment of the book</p></figcaption></figure>
 
 ***
 
