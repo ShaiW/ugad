@@ -12,7 +12,7 @@ A (directed) _graph_ is nothing but a bunch of circles called _nodes_ or _vertic
 
 We are usually interested in less whacky graphs, so we assume there are no _multiple arrows_ between _the two same vertices_, and no _loopy arrows_ going from a vertex to itself, for example:
 
-<figure><img src="../../.gitbook/assets/image (1) (1) (1) (1).png" alt=""><figcaption><p>a simple graph</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1) (1) (1) (1).png" alt=""><figcaption><p>a simple graph</p></figcaption></figure>
 
 This is called a _simple_ (directed) graph.
 
