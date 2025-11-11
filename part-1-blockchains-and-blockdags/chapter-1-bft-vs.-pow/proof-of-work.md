@@ -8,11 +8,9 @@ If you think you know the answer, then you have already lost. It was a trick que
 
 So what is it? I'm getting there. Clear your mind and let us take this from the top.
 
-***
 
-<figure><img src="../../.gitbook/assets/image (54).png" alt="" width="212"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for sponsoring this segment of the book</p></figcaption></figure>
 
-***
+<div align="right"><figure><img src="../../.gitbook/assets/image (54).png" alt="" width="106"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for<br>sponsoring this segment of the book</p></figcaption></figure></div>
 
 ## Distribution Vs. Decentralization
 
