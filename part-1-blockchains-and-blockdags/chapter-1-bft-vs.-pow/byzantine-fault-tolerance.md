@@ -4,11 +4,7 @@ Like many good stories, ours also begins with war. In the fifth century, the tit
 
 _This_ is called the Byzantine fault tolerance problem.
 
-***
-
-<figure><img src="../../.gitbook/assets/image (54).png" alt="" width="212"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for sponsoring this segment of the book</p></figcaption></figure>
-
-***
+<div align="right"><figure><img src="../../.gitbook/assets/image (54).png" alt="" width="106"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for<br>sponsoring this segment of the book</p></figcaption></figure></div>
 
 ## The Byzantine Generals Problem (BGP)
 

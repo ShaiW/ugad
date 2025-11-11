@@ -6,9 +6,7 @@ Oh, you find this objectionable? Fine, then let me test you. Answer this one que
 
 If you think you know the answer, then you have already lost. It was a trick question. _PoW is not a consensus protocol at all_. It is a _necessary building block_ for PoW protocols such as the longest-chain rule and GHOST. But in itself, it is something else, more fundamental, the stuff protocols are made of.
 
-So what is it? I'm getting there. Clear your mind and let us take this from the top.
-
-
+So if PoW is not a protocol, then what _is_ it? I'm getting there. Clear your mind and let us take this from the top.
 
 <div align="right"><figure><img src="../../.gitbook/assets/image (54).png" alt="" width="106"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for<br>sponsoring this segment of the book</p></figcaption></figure></div>
 
