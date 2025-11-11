@@ -116,25 +116,57 @@ Adding these 32 bits means Bitcoin can now handle hash rates that are $$2^{32}$$
 
 ## Isn't Difficulty About Counting Zeros?
 
-...
+Some of you may heard that the difficulty target counts "how many left zeros" there are in the hash, and  might be wondering what this has to do with all of the above.
+
+To answer this, we need to go into _how_ to interpret a string of bits as an integer. We do it in a very standard way many readers are probably already familiar with, it's called _right LSB_, where LSB stands for _least significant bit_.
+
+This just means that the rightmost bit is the smallest one, just like in the decimal system, where the rightmost digit represents units, the next digit represents tens, and so on. We are going to use both decimal and binary numbers in this explanation, so to make things readable, we introduce a common convention. A number written by its own is always considered decimal. A binary number will be prefixed by $$0b$$.
+
+In the decimal system, each digit represents a unit ten times larger. Incrementing the second right digit has ten times the effect as incrementing the first digit: $$27 = 17  + 10, 18 =  17+1$$.
+
+In binary, this is the same, except each digit becomes _twice_ as significant when we move right. For example, $$0b11=3$$. Why? Because the rightmost $$1$$ adds $$1$$, and the second rightmost $$1$$ adds _twice as much_, which is $$2$$, so we have a total of $$1+2=3$$.
+
+In decimal, a $$1$$ followed by $$n$$ zeros can be written as $$10^n$$.  For example, $$1000=10^3$$. Similarly, in binary, $$1$$ followed by $$n$$ zeros is equal $$2^n$$. So, for example, $$0b1000=2^3=8$$. We can use this to corroborate our computation from before: $$0b11  =  0b10  + 0b1  = 2^1 +  2^0 = 2+1 = 3$$.  This also gives us a general formula for converting binary to decimal. We can denote a general $$n+1$$ digit binary number as $$0bw_n\ldots w_0$$, where each digit $$w_i$$ is either $$0$$ or $$1$$. By breaking it up into digits and using the formula for a $$1$$ followed by zeros we get that
+
+$$
+0bw_{n}\ldots w_{0}=\sum_{k=0}^{n}w_{k}2^{k}=\sum_{k:w_{k}=1}2^{k}\text{.}
+$$
+
+To count digits, we use logarithms. You might know already that $$\log_2(1)=0$$ , and more generally that $$\log_2(2^k)=k$$. Saying a number $$n$$ has $$k$$ binary digits is equivalent to saying that $$2^{k-1} \le n < 2^k$$.  Why? Because $$2^{k-1}  =  0b10\ldots  0$$ is the _smallest_ number with $$k$$ digits, so $$n$$ must be at least that, and $$2^k$$ is the smallest number with $$k+1$$ digits, so $$n$$ must be smaller.
+
+Logarithms are _monotonically increasing_: if we put a larger number in the logarithm, we get a larger result. Hence
+
+$$
+k-1=\log_{2}2^{k-1}\le\log_{2}n<\log_{2}2^{k}=k\text{.}
+$$
+
+We now introduce the _floor notation_ $$\left\lfloor x\right\rfloor$$ to denote the largest _integer_ that is at most $$x$$. For example, $$\left\lfloor 1.4\right\rfloor =1,\left\lfloor -4.5\right\rfloor =-5,\left\lfloor \pi\right\rfloor =3$$. We have proven that the number of digits in the binary representation of _any_ number $$k$$ is exactly $$\left\lfloor \log_{2}k\right\rfloor +1$$.
+
+Why does this matter? Because now we can use this to count zeros! Say we represent our number as $$256$$ binary digits, no matter what. If it has fewer digits, we add zeros to the right. This is implicitly what we did above when interpreting a string as a number: we just ignored all left-trailing zeros. If our number $$k$$ has $$m$$ digits (not counting the trailing zeros), then there are $$256-m$$  trailing zeros. But we know that   $$m=\left\lfloor \log_{2}k\right\rfloor +1$$,  so the number of trailing zeros is $$255-\left\lfloor \log_{2}k\right\rfloor$$.
+
+So if we require that $$\textsf{H}(s)<T$$, we in particular require that it has at least  $$255-\left\lfloor \log_{2}T\right\rfloor=256+\left\lfloor \log_{2}\tau\right\rfloor$$ trailing zeros. (I'll leave it to you to figure out how the $$255$$ magically became $$256$$.)
+
+The trailing zeros approach is actually too coarse-grained for difficulty targets. The less zeros you have, the harder it becomes to add another zero. This is exactly the information lost when going from $$\log_2\tau$$ to $$\left\lfloor \log_{2}\tau\right\rfloor$$. With the full value $$\log_2\tau$$, one can implement a recursive version of the argument above to compute the accurate difficulty. This is a conceptually clunky representation, but some prefer it, because this is how difficulty is represented in Bitcoin.
 
 ## The Average Wait Time\*
 
-In a Twitter poll I made, I asked my followers the following question: given that the Bitcoin network produces a block once per ten minutes, if you start waiting for a block at some random time, how long will you wait for the next block on average? These are the results:
+This final segment is a detour. It is not pertinent to anything that follows. It describes an interesting experiment I ran on my followers that is relevant to the discussion, and might give you some food for thought, and emphasize how unintuitive the block creation process might get.
+
+In a Twitter poll I made, I asked my followers: given that the Bitcoin network produces a block every 10 minutes, if you start waiting for a block at some random time, how long will you wait for the next block on average? These are the results:
 
 <figure><img src="../../.gitbook/assets/138 (1).png" alt=""><figcaption></figcaption></figure>
 
-It is not surprising that most people will think that the answer is five minutes. After all, if you know that a bus arrives at the stop once every ten minutes then (under the unrealistic assumption that busses arrive on time) if you arrive at the station at a random time, you expect to wait five minutes. (People understand this so deeply on the intuitive level, that they aren't even bothered with the fact that to actually prove this you need to solve an integral).
+It is not surprising that most people will think that the answer is five minutes. After all, if you know that a bus arrives at the stop once every ten minutes, then (under the unrealistic assumption that buses arrive on time) if you arrive at the station at a random time, you expect to wait five minutes. (People understand this so deeply on the intuitive level, that they aren't even bothered with the fact that to actually prove this you need to solve an integral).
 
-But block creation _does not_ behave like a bus line. The probability that a nonce is correct is independent of how many nonces you already tried, and the process is _memoryless_.
+But block creation _does not_ behave like a bus line. The probability that a nonce is correct is independent of how many nonces you have already tried. The process is _memoryless_. (In contrast, I like to believe that as you wait longer for a bus, the chance that it'll arrive in the next minute increases.)
 
-Imagine rolling a fair day until you roll a 1. How many rolls, on average, should this take? The probability of rolling a 1 in a given try is one in six, and the result of each roll is not affected by whatever happened on previous rolls, so it should take six tries on average.
+Imagine repeatedly rolling a fair die until you roll a 1. How many rolls, on average, should this take? The probability of rolling a 1 in a given try is one in six, and the result of each roll is not affected by whatever happened on previous rolls, so it should take six tries on average.
 
 {% hint style="info" %}
-More generally, if some experiment succeeds with probability $$p$$, it would take an average of $$1/p$$ attempts before the experiment is successful. This is not a trivial fact  (at least, I am not aware of any way to prove it that doesn't require a bit of tricky calculus) yet people seem comfortable accepting it at face value.
+More generally, if an experiment succeeds with probability $$p$$, it would take an average of $$1/p$$ attempts before the experiment is successful. This is not a trivial fact  (at least, I am not aware of any way to prove it that doesn't require a bit of tricky calculus), yet people seem comfortable accepting it at face value. In fact, I used it several times throughout this section!
 {% endhint %}
 
-Now say that you rolled a die ten times, and annoyingly enough, none of the results were 1. How many _additional_ dice do you expect to roll? Emotionally, we are biased to feel that "I've failed so many times, _what are the chances_ that I fail again?" But, with some clarity, we realize that the die _does not remember_ how may times it was rolled. The expected number of rolls remains six, whether you just started, or failed a million times already.
+Now say that you rolled a die ten times, and annoyingly enough, none of the results were 1. How many _additional_ dice do you expect to roll? Emotionally, we are biased to feel that "I've failed so many times, _what are the chances_ that I fail again?" But, with some clarity, we realize that the die _does not remember_ how many times it was rolled. The expected number of rolls remains six, whether you just started or have already failed a million times.
 
 {% hint style="info" %}
 Mathematically, this can be notated as follows. If $$X$$ is the [random variable](../../supplementary-material/math/probability-theory/random-variables.md) that describes the number of attempts required, then the probability that we need $$n+k$$ attempts given that the first $$k$$ attempts failed is the same, regardless of $$k$$.&#x20;
@@ -144,9 +176,9 @@ That is: $$\mathbb{P}[X=n+k\mid X>k] = \mathbb{P}[X=n]$$.
 
 Now all we have to notice is that block creation is no different than rolling dice. More exactly, rolling $$T/N$$-sided dice at a rate of one roll per $$t$$ seconds, until our dice hits $1$. We expect $$N/T$$ attempts to succeed, taking a total of $$t\cdot N/T = \lambda$$ seconds.
 
-So the hard to swallow pill is the following: at _any point in time_ the expected time until the next block is _always_ $$\lambda$$. Yes, even if you have been waiting for a Bitcoin block for twenty minutes now, the average time _remaining_ to wait _remains_ ten minutes.
+The immediate but hard-to-swallow consequence is the following: at _any point in time,_ the expected time until the next block is _always_ $$\lambda$$. Yes, even if you have been waiting for a Bitcoin block for 20 minutes now, the average time remaining is still 10 minutes!
 
-People have a hard time coming to terms with this, so I took the time to complement the theoretical discussion above with some simulations. I simulated mining in a hash rate of one million blocks per block delay. Sampling a simple block delay like this is very easy: just sample uniformly random numbers between $$0$$ and $$1$$ and count how many attempts it took before you hit a number smaller than $$1/1000000$$. Repeating this process ten thousand times, I obtained a sample of ten thousand block intervals.
+People have a hard time coming to terms with this, so I took the time to complement the theoretical discussion above with some simulations. I simulated mining at a hash rate of one million blocks per block delay. Sampling a simple block delay like this is very easy: just sample uniformly random numbers between $$0$$ and $$1$$ and count how many attempts it took before you hit a number smaller than $$1/1000000$$. Repeating this process ten thousand times, I obtained a sample of ten thousand block intervals.
 
 I then did the following: I removed all intervals smaller than a minute, and reduced one minute from the remaining intervals. In other words, I removed all miners that waited less than one minute, and adjusted the remaining samples to represent how many _additional_ minutes miners waited. If my claims are correct, and how long you already waited doesn't matter, the new data and old data should distribute _the same_. However, if I am wrong, and _having waited_ does affect _how much longer_ it remains to wait, we will see a difference representing the effect of waiting.
 
@@ -181,7 +213,7 @@ plt.hist([data, trimmed, very_trimmed], bins=30, density=True)
 plt.show()
 ```
 
-To conclude, I will point out that there is more to the theory of block creation. We know exactly what the distribution we see in the image is, and can explain very well why it is the distribution we expect to see. We can derive a formula for it and use it to analyze block creation in many ways. For a somewhat formal treatment, see [the appendix](../../supplementary-material/math/probability-theory/the-math-of-block-creation.md).
+To conclude, I will remind you once again that there is a rich probability theory of so-called _Poisson processes_. Poisson processes describe many things, including radioactive decay, typing mistakes in long texts, and PoW block creation. It tells us much more than just the _average_ time we will need to wait. It allows us to precisely compute the probability that the time we have to wait falls within any range of interest. The theory is not too deep and accessible to any patient reader with a bit of background. Using it, one can easily derive powerful formulas to examine the nature of block creation. I did my best to provide a self-contained exposition in [the appendix](../../supplementary-material/math/probability-theory/the-math-of-block-creation.md).
 
 
 
