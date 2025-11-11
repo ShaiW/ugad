@@ -6,11 +6,7 @@ _This_ is called the Byzantine fault tolerance problem.
 
 ***
 
-
-
-<figure><img src="../../.gitbook/assets/image (53).png" alt="" width="212"><figcaption></figcaption></figure>
-
-
+<figure><img src="../../.gitbook/assets/image (54).png" alt="" width="212"><figcaption><p>asdlkjfjasld;ksjafasdlkjfjasld;ksjafasdlkjfjasld;ksjafasdlkjfjasld;ksjafasdlkjfjasld;ksjaf</p></figcaption></figure>
 
 ***
 
