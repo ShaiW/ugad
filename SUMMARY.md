@@ -11,6 +11,7 @@
   * [Byzantine Fault Tolerance (BFT)](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/byzantine-fault-tolerance.md)
   * [What PoW does](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/proof-of-work.md)
   * [How PoW Works](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md)
+  * [Difficulty Adjustment\*](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/difficulty-adjustment.md)
   * [PoS Vs. PoW](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/bft-vs.-pow.md)
   * [Exercises](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/exercises.md)
 * [Chapter 2: the Block Chain Paradigm](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/README.md)

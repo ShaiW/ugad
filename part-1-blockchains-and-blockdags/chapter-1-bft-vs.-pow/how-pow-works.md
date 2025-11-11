@@ -1,78 +1,124 @@
 # How PoW Works
 
-In&#x20;
+In the previous section, we explained what PoW _does_. In this segment, we dive into the details of how it _works_. This section also marks our first encounter with math. The level of formality will steadily increase as we make our presentation more precise. If you find math unsavory, the descriptive parts alone should be enough to take you through the other descriptive parts throughout the book. Even if you do have some math mileage under your belt, be sure to read deliberately and let the details sink in. If you desire to understand the mathematics underlying the descriptive discussions to follow, they are essential.
 
-Our next goal is to understand the mechanics that govern proof-of-work block creation. First, we describe the so-called "complex mathematical puzzles miners solve to create blocks. The key takeaway is that the mathematical puzzle is not "complex". In fact, it is _incredibly dumb_: the only way to solve it is to bang your head against it by trying all possible solutions in no particular order until you find one that works.
+You might have heard that PoW works by posing the miners with "complex mathematical puzzles". I argue that these mathematical puzzles are not "complex" at all. In fact, they are _designed_ to be _incredibly dumb_: there is no better way to solve them than banging your head against them by trying out all possible solutions in no particular order until you find one that works. It takes _exceptional cleverness_ to design a puzzle this dumb. A game so impossible to strategise that the dumbest and smartest players have exactly the same odds.
 
-Don't get me wrong, it takes _exceptional cleverness_ to design such a dumb puzzle. A game that is impossible to cheat, where the smartest player has no advantage over the dumbest player. Cryptographers call such puzzles _cryptographic hash functions_.
-
-Building such a puzzle is not enough. To regulate the block creation rate to a prescribed length of time, we need to _parameterize_ it correctly. You might have heard the name of the relevant parameter, it is called the _difficulty target_.
-
-In the first part of this section, we will assume we can magically know what the difficulty target should be. In the real world, not only do we not have access to this parameter, but it doesn't even stay fixed. The difficulty target has to _adjust_ to changing hash rates. This is the responsibility of the _difficulty adjustment_ _algorithm_ (DAA). In the second part of this section, we will describe how difficulty adjustment is handled in Bitcoin.
+When constructing a dumb puzzle, there is a tunable parameter called the _difficulty target_ that adjusts how hard the puzzle is. By correctly adjusting the difficulty target, we determine how long we should expect to wait before a solution emerges. In this section, we assume that the correct difficulty target is given to us by divine inspiration. In the next segment, we explain how Bitcoin adjusts the difficulty target in practice.
 
 <div align="right"><figure><img src="../../.gitbook/assets/image (54).png" alt="" width="106"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for<br>sponsoring this segment of the book</p></figcaption></figure></div>
 
-## The Dumb Puzzle
+## Hashes as Random Oracles
 
-You know, that proverbial "complex mathematical puzzle" that miners are trying to solve? Well, first of all, it is _not_ a "complex mathematical puzzle" in any way, it is actually the _dumbest_ possible puzzle, a puzzle that can only be solved by _trying all possible solutions one by one until we hit one that works_. In other words, puzzles that can only be solved with _brute force_.
+The cryptographic building block of PoW is something called a _cryptographic hash function_ (CH). Even those of you who have never heard about CHs can name some that are used in practice. This includes  the $$\textsf{SHA-256}$$ hash used in Bitcoin, and many other hashes you might have heard of, such as $$\textsf{Keccak}$$, $$\textsf{Blake}$$, $$\textsf{Ethash}$$, and $$\textsf{Scrypt}$$.
 
-It takes a whole lot of cleverness to create such a dumb puzzle. Such a puzzle is expected to outsmart all attempts to cleverly solve it faster than a brute-force approach would. But the puzzle itself, the task given to miner, is _very dumb by design_, a magic 8-ball you keep shaking until you get the desired output. And that's a _good thing_. You _do not want_ miners to get clever and find all sorts of shortcuts that will undermine the security. The entire point of proof-of-_**work**_ is that _it proves_ that _you did the work_. If there are clever ways to shirk the work and still obtain the proof, then your [Sybil resistance](proof-of-work.md#sybil-resistance) is broken.
+Each of these hash functions is a universe within itself, packing many clever ideas. But they all have the same goal: to appear _random_ on previously untested inputs. Let us choose an arbitrary CH and denote it $$\textsf{H}$$. The property that a CH is trying to emulate is that it is impossible to _predict_ the outcome of $$\textsf{H}$$. We will carefully define what that means in a moment.
 
-### Hashes as Random Oracles
+In cryptography, we like to have neat formalism to streamline a division of labor. We do so by assuming we have an _ideal_ $$\textsf{H}$$, and leaving it to others to figure out how to implement $$\textsf{H}$$ in a way that is sufficiently close to our ideal description. Such an ideal hash is called a _random oracle_, and assuming it exists means we are working in something called the _random oracle model_ (ROM).
 
-As I said, it takes seriously smart people to design a sufficiently dumb "puzzle", so I will treat the problem like a cryptographer and assume someone already solved the problem for me. More formally, I will assume the existence of a [random oracle](../../supplementary-material/computer-science/page-3/random-oracles.md): a magic _random function_ that floats in the sky, accessible to anyone.
+I provide a more substantial survey of random oracles in [the appendix](../../supplementary-material/computer-science/page-3/random-oracles.md). But for now, all you need to know is that a random oracle is a _magic box_ floating in the sky. Anyone can approach the box and give it any string $$s$$ they want as an input. The box replies with a string of 256 bits we call $$\textsf{H}(s)$$. We call this _querying the oracle on_ $$s$$. We are promised that when the universe was created, the reply for each input was chosen _uniformly_ and _independently_. That is, the value of $$\textsf{H}(s)$$ for each $$s$$ was seleccted at the dawn of time by a series of 256 coin flips.
 
-I survey random oracles to some extent in [the appendix](../../supplementary-material/computer-science/page-3/random-oracles.md), but all you should know about it is that it transforms arbitrary strings (such as block headers) into strings of 256 bits, such that if you input a _new_ string, you get a _completely random_ output, but if you input the same string again, you will get the _same_ output. Crucially, the output is _completely different_ no matter how similar the inputs are. Changing the input by as much as a _single bit_ will provide outputs that seem _completely uncorrelated_.
+Random oracles cannot exist in reality. They are too ideal. Hash functions are attempts to provide clever substitutes. Efficient functions that are not really random, but scramble the input so thoroughly that it becomes infeasible to predict the function without a galactic-scale computer.
 
-Obviously, random oracles do not exist in reality. But we can create things that are pretty darn close. _Hash functions_ attempt to do just that. We compartmentalize the details of _designing_ a hash function by _modeling it as a random oracle_ and ignoring the details of how this is actually achieved (or rather, delegating them to hash designers).
+{% hint style="info" %}
+The reason random oracles can't exist is simply because of storage. A random oracle provides for each possible value of $$s$$ a truly random string $$\textsf{H}(s)$$, of which there are infinitely many.
 
-To simplify our notations, we call the hash function $$\mathsf{H}$$ and let $$\mathsf{H}(s)$$ denote the string it outputs on input $$s$$. For even more simplicity, we will _not_ think of $$\mathsf{H}(s)$$ as a bit string, but as an integer $$0\le \mathsf{H}(s) < N$$, where $$N$$ is usually some power of two, most commonly (at least in the context of proof-of-work mining), $$N = 2^{256} \approx 1.158 \times 10^{77}$$. If you want to get some bearing on how hyper-astronomically huge this number is, check out this cool video:
+Even if we limit the length of $$s$$ to say $$100$$ bits (which is _much much smaller_ from what we actually need), we will find that there are $$2^{100}$$ possible inputs, requiring a storage of $$2^{100} \cdot 256$$ bits, which is more than one petabyte _for each star in the universe_.
+
+The crux is that random data is not compressible. If it admits a more compact representation, then it is not truly random. Compression requires strong patterns, which are the opposite of randomness.
+
+Knowing this, I find CHs that much more impressive. Emulating an inherently inefficient phenomenon with fiendishly light and fast circuits, so well that no one has ever managed to distinguish the two, is truly a marvel. How it is actually done, and why we feel comfortable using these "mere" approximations, is a topic for an entirely different book.
+{% endhint %}
+
+A consequence of the independence is that it is hard to find a _preimage_. Given some output $$y$$, there is no better way to find an $$s$$ such that $$\textsf{H}(s)=y$$ then guessing different values of $$s$$ until you find one that works. For any $$s$$, there are $$2^{256}$$  equally likely possibilities for $$\textsf{H}(s)$$. This implies that, on average, finding a correct $$s$$ should take about $$2^{256}$$ attempts. To understand how fantastically large this number is, check out this video:
 
 {% embed url="https://www.youtube.com/watch?v=S9JGmA5_unY" %}
 
-To use a hash function for PoW we need one additional assumption beyond the random oracle model: that making a query _takes time_. More quantitatively, we assume we know some $$t$$ (that could be very small) such that the random oracle answers _exactly one query per_ $$t$$ _seconds_. Why can we assume such a $$t$$ exist? Because computation is not free. Why can we assume that _we know it_ or that it _remains fixed_? That question is a bit more... difficult (pun not-intended).
-
-### The "Dumb" Puzzle
-
-As a warmup, consider the following problem: I choose an arbitrary number $$0\le n < 2^{256}$$ and ask you to find _any_ string $$s$$ such that $$\mathsf{H}(s) = n$$. This problem is called _finding a preimage_ or _reverting the hash._ How would you go about trying? One way would be to try to feed $$\mathsf{H}$$ different strings until you hit one that suits the bill. Is there a better way? Apparently (if we regard $$\mathsf{H}$$ as a random oracle) the answer is _no_. Proving this requires a bit of finesse but the intuition is clear: say I choose some string $$s'$$ and note that $$\mathsf{H}(s') \ne n$$, what can I learn from this? Well, I can learn that $$s'$$ is not a solution, but can I learn anything else? Not really. Since for any $$s'' \ne s'$$ we have that the outputs $$\mathsf{H}(s')$$ and $$\mathsf{H}(s'')$$ are _random_ and _uncorrelated_, it follows that $$\mathsf{H}(s')$$ tells us _nothing_ about $$\mathsf{H}(s'')$$. In other words, the output $$\mathsf{H}(s')$$ is the _only_ thing we learn, and that information is almost useless for finding a solution: it eliminates exactly _one_ option.
-
 {% hint style="info" %}
-There are stronger security properties that are also crucial. One of them is _collision resistance_: the inability to find two inputs $$s\ne s'$$ such that $$\mathsf{H}(s) = \mathsf{H}(s')$$. This is the property commonly required of hash functions (though for some applications even _that_ is not enough). Collision resistance is strictly _stronger_ than _reverting resistance_. That is, we can conceive a hash that is preimage resistant but not collision resistant, but not the other way around.
+This form of security is called _preimage resistance_. This is a useful property but in itself, not strong enough to call a function a CH.
 
-Random oracles _are_ collision-resistant, and hashes used for proof-of-work are also believed to be collision-resistant. However, there are _even stronger_ properties that hold for random oracles, but we _know_ do not hold for some of the known hash functions. For that reason, extreme caution should be exercised when analyzing a hash as a random oracle.
+There are other important security properties that you might encounter. For example, _collision resistance_: the infeasibility of finding two inputs $$s\ne s'$$ such that $$\mathsf{H}(s) = \mathsf{H}(s')$$. A function that satisfies this is called a _collision-resistant hash_ (CRH).
 
-See the exercises for more details.
+It turns out that being a CRH is strictly stronger than being preimage resistance. And even that is not strong enough for some applications.
+
+A random oracle satisfies any property we could dream of. But hashes don't always follow suit. Sometimes, hashes are known to deviate from behaving like random oracles in certain scenarios, but are still assumed to be close enough in other scenarios. Interestingly, $$\textsf{SHA-256}$$ is such a function. There are known cryptographic schemes that are provably secure with respect to a random oracle, but break down when this oracle is replaced with $$\textsf{SHA-256}$$. See the exercises for more information.
+
+For that reason, handling hash functions should be done with utmost care. Using a hash function outside its recommended scope, or rolling out home-brewed hashes, can be _very_ dangerous.
 {% endhint %}
 
-So if we accept that spamming inputs is the only way to solve the problem, how long should it take? Each such attempt has a probability of one in $$N$$ to succeed, so it will take (on average) $$t\cdot N$$ seconds to find a solution. For $$N=2^{256}$$, If $$t$$ is a trillionth of a second, this would only take just over three billion trillion trillion trillion trillion years. Grab a coffee while you wait.
+To streamline the notation a bit further, we set $$N=2^{256}$$ and think of $$\textsf{H}(s)$$ as a natural number $$0\le n  < N$$. This is just a convenient way to order all possible outcomes. This will allow us to easily specify more general tasks, such as "finding an $$s$$ such that $$\textsf{H}(s) < 42$$".
 
-That's a bit too long to wait, so let us make the problem easier: I choose _two_ arbitrary numbers $$n_1$$ and $$n_2$$ and ask you to find $$s$$ such that _either_ $$\mathsf{H}(s)=n_1$$ or $$\mathsf{H}(s) = n_2$$? The logic above still convinces us that a brute-force approach is the only approach. But now, each attempt has _twice_ the probability to be successful, cutting our total running time in half, to $$t\cdot N / 2$$.
+We need just one more quantity before we can continue. Something that will bridge oracle queries with clock times. We define $$t$$ such that the oracle is queried exactly once per $$t$$ seconds. For example, if the oracle is queried once a minute, we set $$t=60$$. If the oracle is queried ten times a second, we set $$t=0.1$$. In practice, we are more likely to encounter values such as $$t=10^{-80}$$. The value $$t$$ is called the _global hash delay_, and its reciprocal $$1/t$$ is called the _global hash rate_.
 
-Now, since the random oracle is, well, random, it doesn't actually matter what $$n$$ is in the first problem. We can just replace it with $$0$$. And in the second problem, we could have similarly replaced $$n_1$$ and $$n_2$$ by $$0$$ and $$1$$. More generally, we can choose some number $$T$$, called the _difficulty target_, and ask you to find an input $$s$$ such that $$\mathsf{H}(s) < T$$. The two examples we've seen are the special cases where the target is set to $$T=1$$ or $$T=2$$ respectively. The number $$T$$ is exactly the number of outputs that are considered _small enough_.
+Approximating the value of $$t$$ and maintaining it over time is the difficulty adjustment problem that we consider in the next chapter. For now, we assume that $$t$$ is fixed and known. Knowing this $$t$$, we can say things like "the expected _time_ it would take to find $$s$$ is  $$t\cdot  N$$ _seconds_".
 
-For a general $$T$$, how long will we wait? Well, whenever we input a fresh string $$s$$, there are $$N$$ possible, equally likely values for $$\mathsf{H}(s)$$, and exactly $$T$$ of them are sufficiently small. So an attempt will succeed $$T$$ out of $$N$$ times, meaning that we will need around $$T/N$$ attempts, taking a total of $$t\cdot N / T$$ seconds. So if we want that, on average, it would take $$\lambda$$ seconds to solve the puzzle, we want to choose $$T$$ such that $$t\cdot N/T = \lambda$$, or after rearranging:
+## Tuning the Difficulty
+
+We already considered the problem of a preimage of $$y$$. Since the outputs are equally likely, we go ahead and assume that $$y=0$$. The problem can be restated a bit awkwardly as "find $$s$$ such that  $$\textsf{H}(s)  < 1$$".
+
+Why is it useful? Because we can now talk about a more general problem: find $$s$$ such that $$\textsf{H}(s) < T$$.  That is, we don't require a specific output, but one out of $$n$$ specific outputs. (Again, since all outputs are uniformly likely and independent, it does not matter _what_ $$n$$ values are allowed, so we choose $$0,\ldots,n-1$$  out of convenience).
+
+We call $$T$$ the _target_, and our first task is to figure out how to set it. To do that, we work out the expected time to solve the puzzle, and how it is affected by $$T$$.
+
+This is a simple computation. For any $$s$$, there is a one in $$N$$ chance that $$\textsf{H}(s)  = 0$$ and a one in $$N$$ chance that $$\textsf{H}(s)=1$$. Note that it is impossible that $$\textsf{H}(s)  = 0$$ _and_ that $$\textsf{H}  (s)=1$$. In probability theory, two events that cannot happen are called _disjoint_.  A basic property of disjoint events is that the probability that _either_ of them happens is the _sum_ of their probabilities. In other words, the probability that $$\textsf{H}(s)=0$$ _or_ $$\textsf{H}(s)=1$$ is two (= one + one) in $$N$$. So we expect it should take about $$N/2$$ queries, or $$t\cdot  N/2$$ seconds, to find such an $$s$$ such that $$\textsf{H}(s)<2$$.
+
+This argument generalizes directly to show that we expect it would take $$t\cdot N/T$$ seconds to find $$s$$ such  that $$\textsf{H}(s)  <  T$$.
+
+With this insight, we can control how long it would take to solve the puzzle by adjusting  $$T$$. If we want it to be $$\lambda$$ seconds, we need $$t\cdot N/T = \lambda$$. Isolating $$T$$, we arrive at an all important formula:
 
 $$
 T = t\cdot N/ \lambda
 $$
 
-For example, say that $$t$$ is one trillionth of a second, $$t=10^{-12}$$, and that we want to have a block delay of ten minutes, so $$\lambda = 600$$ (because we are working in units of seconds), then we get that the appropriate difficulty target is $$T=10^{-12}\cdot2^{256}/600\approx1.876\times2^{206}$$.
+Let's see an example. Say that the global hashrate is one trillion queries per second. In other words,$$t=10^{12}$$. Say we want a block delay of ten minutes. Since we are working in units of seconds, we set $$\lambda = 600$$ and plug everything into the equation to get
+
+$$
+T=10^{-12}\cdot2^{256}/600\approx1.876\times2^{206}\text{.}
+$$
 
 {% hint style="info" %}
-You might be concerned that the solution is generally not an integer. This concern is much more valid than most people expect. Yes, rounding is obviously the solution, but how do you assure different implementations — or even the same implementation running on different architectures — all handle rounding errors _exactly_ the same way? Even a slight incompatibility, including a round-off bug in a future popular CPU, can split the network and cause vicious complications. For that reason, cryptocurrencies apply measures that ensure that roundoff error handling remains uniform and platform-independent.
+You might be concerned that the solution is generally not an integer. This concern is much more valid than most people expect. Yes, rounding is obviously the solution, but how do you ensure different implementations — or even the same implementation running on different architectures — all handle rounding errors _exactly_ the same way? Even a slight incompatibility, including a round-off bug in a future popular CPU, can split the network and cause vicious complications. For that reason, cryptocurrencies apply measures that ensure that roundoff error handling remains uniform and platform-independent.
 {% endhint %}
 
-One peculiarity with the difficulty target is that _lower targets make for harder blocks_. This makes sense, as hitting a number below one million is harder than hitting a number below one trillion. But we have to be mindful of this if we ever want to use $$T$$ as a measure of _how hard_ solving the puzzle was. For that reason, it is common to define _the difficulty_ of the puzzle as $$1/T$$, so we would have that a _higher difficulty means a harder puzzle_. Despite the similar names, the terms _difficulty_ and _difficulty target_ refer to inverse quantities, and that these terms are commonly used interchangeably does not help resolve the confusion. The best advice I can give you is that whenever anyone uses the terms _difficulty_ or _target_ in a context where these details are important, be sure to ask them explicitly what they mean.
+One peculiarity with the difficulty target is that _lower targets make for harder puzzles_. This makes sense, as hitting a number below one million is harder than hitting a number below one trillion. But we have to be mindful of this when using  $$T$$ as a measure of difficulty.&#x20;
 
-OK, so now we have a grasp of how "dumb puzzles" are constructed, is our problem solved? Can we just require a miner to find some $$s$$ such that $$\mathsf{H}(s)$$ is sufficiently small knowing this would delay them? Well, obviously not. If the puzzle is just to find some $$s$$ such that $$\mathsf{H}(s) < T$$ then a miner could just find this number _once_, and use it as "proof" for all their future blocks.
+To circumvent this, the _difficulty_ is often defined as the reciprocal of the target, $$\tau = 1/T$$. That way, the hardness of the puzzle _grows_ with $$\tau$$. Unfortunately, the terms "difficulty" and "target" are sometimes used interchangeably. If that's not confusing enough, sometimes when people say "the difficulty" they actually mean $$\log_2\tau$$.  There is a perfectly good reason for that, which I will soon explain.
 
-The next step is to modify the puzzle such that the string $$s$$ _depends on the block_. That's why we say that the miner is mining _a block_. The idea is this: we can separate a block into two parts, header and data. The header of the block contains a few fields of information that depend on the data therein, and an important field called _nonce_ that can be _any number_. Why is the nonce field there? For the miner to set it to arbitrary values over and over until the has of the block header is sufficiently low. The nonce is where there is _room for brute force_.
+The best advice I can give is that whenever anyone uses the terms _difficulty_ or _target_ in a context where these details are important, be sure to ask them explicitly what they mean.
 
-Let $$B$$ be a block header without the nonce set, and let $$B[n]$$ be that same block with the nonce set to $$n$$. When a miner mines for the block $$B$$, what they actually do is compute $$\mathsf{H}(B[n])$$ for different values of $$n$$ until they find $$n$$ for which $$\mathsf{H}(B[n]) < T$$.
+## Header Coupling
 
-So are we done? Not quite. The remaining question is: if we only hash the _header_, what does this say about the data? Can't we just change the data, and use the same header as proof? The "obvious" solution is to hash the entire block instead of just the header, but that will make mining much harder and more centralized. Instead, Satoshi had the foresight to use a cool construction called [Merkle trees](../../supplementary-material/computer-science/page-3/merkle-trees.md). For our current purposes, you don't have to understand exactly what a Merkle tree is (though you should, because they are _very useful_ and _very cool_), only that it allows us to take an _arbitrary amount of information_ and extract from it a 256 bit string called the _Merkle root_ such that it is impossible to manipulate the data without changing the Merkle root. By including the Merkle root in the block header, we get that the string $$B[n]$$ affirms the veracity of the block contents as well.
+How do we use the puzzle above to space out Bitcoin blocks?
 
-### The Average Wait Time
+Requiring a block to contain a solution to the puzzle, an $$s$$ such that $$\textsf{H}(s)<T$$, is not enough. Why? Because there is nothing preventing the miner from using the same solution for several blocks. To solve this, we need the problem to depend on the _block itself_.
+
+For technical reasons I won't get into, we don't actually want to feed entire blocks into the hash function. We need a smaller piece of information that still completely defines the block. This piece of information is called the _block header_. The header contains all sorts of metadata about the block. Importantly, it contains a pointer to the previous block (so whenever the chain progresses, the header necessarily channge), and some magic trick called a _Merkle transaction root_ which is much smaller than the content of the block, but is cleverly built such that you can't change the content of the block without changing the transaction root. Even though the header does not _contain_ the transactions, it is _committed to them_. It is impossible to find a _different_ set of transactions with _the same_ Merkle root. We explain how this magic works in [an appendix](../../supplementary-material/computer-science/page-3/merkle-trees.md).
+
+To accommodate the "dumb puzzle", another field called the _nonce_ is added. Importantly, the nonce field can be set to _anything_. To make our lives easy, we will use $$B[n]$$ to denote the header of the block $$B$$  when the nonce is set to $$n$$. And here is the crux: instead  an $$s$$ such that $$\textsf{H}(s)  < T$$, we require the nonce  value $$n$$ to satisfy that $$\textsf{H}(B[n])<T$$. Unlike the string $$s$$, the nonce is _only good for the block_ $$B$$!
+
+{% hint style="info" %}
+The expression $$\textsf{H}(B[n])$$ might cause some distress.  We described query input as "strings", in what sense is the header "a string"? There are many different ways to spell out the header information in a string, and each will yield different results!
+
+The truth is the input is not even general "strings" like English messages, it is _binary_ strings, a list of ones and zeros. So how can $$\textsf{H}(B[n])$$ ever be well defined?
+
+The keyword is _serialization_. Serialization is the process of encoding abstract data in a binary string. There are _many_ ways to serialize data, and the specific serialization doesn't particularly matter. (Some serializations are preferred to others in terms of rooted conventions or particular optimizations, but mathematically, it is all the same.) But it is of utmost importance that everyone use the same serialization. That way, everyone agrees on $$\textsf{H}(B[n])$$.
+{% endhint %}
+
+{% hint style="info" %}
+The nonce field in Bitcoin has a length of $$32$$ bits. When it was defined, it seemed absurd to even imagine that we would ever need a larger space. (ChatGPT estimates the $$\textsf{SHA-256}$$ hashrate of an average CPU in 2010 to be "several millions". You are invited to do the math and see how many CPUs need to be mining to have more  than $$2^{32}$$ hashes per ten minutes.)
+
+However, reality struck, Bitcoin exploded, ASICs hit the mining market, and the hashrate exceeded everyone's expectations by orders of magnitude.
+
+To compensate, Bitcoin miners use several tricks to add more entropy. One popular trick is the "coinbase extrahash". It just means injecting a nonce into the first transaction on the block. This will change the Merkle root tree, hence the hash of the block.
+
+Adding these 32 bits means Bitcoin can now handle hash rates that are $$2^{32}$$ (about 4.3 billion) _times_ larger.
+{% endhint %}
+
+## Isn't Difficulty About Counting Zeros?
+
+...
+
+## The Average Wait Time\*
 
 In a Twitter poll I made, I asked my followers the following question: given that the Bitcoin network produces a block once per ten minutes, if you start waiting for a block at some random time, how long will you wait for the next block on average? These are the results:
 
@@ -137,73 +183,5 @@ plt.show()
 
 To conclude, I will point out that there is more to the theory of block creation. We know exactly what the distribution we see in the image is, and can explain very well why it is the distribution we expect to see. We can derive a formula for it and use it to analyze block creation in many ways. For a somewhat formal treatment, see [the appendix](../../supplementary-material/math/probability-theory/the-math-of-block-creation.md).
 
-## Difficulty Adjustment
 
-So remember we assumed there is this number $$t$$ that measures how long a single hash takes? This is not a realistic assumption. The number $$t$$ represents, in a sense, how _hard_ it is to compute $$\mathsf{H}$$, and the _global amount of effort_ dedicated to solving the puzzle. The value of $$t$$ is not fixed, but time dependent. If the miner replaces their machine with a faster one, $$t$$ has decreased. If another miner joins the party, $$t$$ has decreased. If a miner went out of business or had a long-term technical failure, $$t$$ has _increased_. This value of $$t$$ that we so arrogantly took for obvious, not only does it depend on information that is not available to us, but it isn't even _fixed_.
-
-In practice, instead of pretending we know $$t$$, we try to _estimate_ it from the information we _do_ have: the blocks themselves. If we see that blocks are created too fast or too slow, we try to adjust $$t$$ appropriately.
-
-As the person who designed Kaspa's difficulty adjustment, I can give you a first-hand testimony that designing difficulty adjustment is very intricate. There are many approaches to choosing how to _sample_ the blocks, and then a plethora of methods to evaluating the difficulty from the data. Later in the book I will describe Kaspa's difficulty adjustment algorithm, and maybe also provide a general discussion of the more common difficulty adjustment approaches (material that is unfortunately not covered in _any_ textbook or other unified source). For now, the task of understanding how difficulty adjustment works in Bitcoin is daunting enough.
-
-### Difficulty Adjustment in Bitcoin
-
-Bitcoin was naturally the first crypto to suggest _any_ form of difficulty adjustment. Up to a few tweaks, it was lifted almost verbatim from the original Bitcoin whitepaper, which was published before cryptocurrencies even existed. Many argue that Bitcoin's approach to difficulty adjustment is outdated, has many drawbacks, and can even be dangerous, while others argue that it is time-tested and its simplicity protects us from unexpected attacks. So basically, a carbon copy of _any_ _other argument_ about Bitcoin.
-
-Bitcoin uses a _fixed difficulty window_. A difficulty _epoch_ (or window) lasts $$N=2016$$ blocks (or approximately two weeks), and at the end of each epoch, the difficulty is adjusted according to the blocks within that epoch.
-
-{% hint style="info" %}
-The alternative is a _sliding window_ approach, where the difficulty is recalculated for _each block_ according to the $$N$$ blocks that preceded it.
-
-The advantage of a sliding window approach is that it is _more responsive_, making the network quickly react to changes in the global hashing power instead of waiting for the end of the epoch. Note that in cataclysmic circumstances, waiting for the _end of the epoch_ could be a very long time, as less mining means longer block delays, delaying the end of the epoch, and possibly causing more miners to jettison, making the end of the epoch even more distant. I know of exactly one example of a small chain that had more than 80% of its mining on a single private pool. One day the pool decided to switch to another coin, making the hashrate instantly drop to 20%, increasing the block delays five times over. Displeased miners hopped as well, dropping the hashrate to about 1% of what it was, effectively halting the chain. For a two weeks long difficulty epoch, the network would have to wait _literal years_ for such a drop to be properly adjusted. The stall was resolved by a hard fork, manually increasing the target, while implementing a sliding window difficulty adjustment.
-
-The disadvantage of a sliding window approach is that it is, well, _more responsive_. Responsiveness is a double-edged sword and a difficulty adjustment mechanism that is too sensitive can be abused to manipulate the network in ways that the robust difficulty epoch would not allow. Moreover, sliding windows are naturally more complex, and have complicated and not completely understood dynamics, such as _difficulty fluctuations_ that create new vectors for opportunistic mining, further disrupting block creation rate consistency.
-
-TODO: find references, I remember a series of posts explaining this problem in BCH or BSV's attempts to use ASERT and in [Zawy's posts](https://github.com/zawy12/difficulty-algorithms/issues), I need to dig for it
-{% endhint %}
-
-So given a window of $$N$$ blocks, and the times they were created, how do we adjust $$T$$? Quite simply, compare how long it was _supposed_ to take with how long it _actually_ took, and adjust $$T$$ accordingly.
-
-If the block delay is $$\lambda$$, then the expected length of an epoch is $$\lambda \cdot N$$. For example, in Bitcoin we have $$\lambda = 10\text{ min}$$ and $$N=2016$$ so the length of a difficulty epoch is expected to be $$20160$$ minutes which are exactly two weeks.
-
-A comfortable way to state what we _observed_ is by using the ratio $$\alpha$$ satisfying that the epoch lasted $$\alpha \cdot \lambda \cdot N$$. For example, $$\alpha = 1/2$$ means the epoch was twice shorter than expected, while $$\alpha = 2$$ means it was twice longer. For reasonably large values of $$N$$ ($$2016$$ is more than enough) we can deduce from this that the _average_ block time is extremely close to $$\alpha\cdot \lambda$$ (to understand why using a small $$N$$ is too noisy, you can review the discussion on [the math of block creation](../../supplementary-material/math/probability-theory/the-math-of-block-creation.md)). We want to adjust this to the desired $$\lambda$$, which means that we want to make mining $$1/\alpha$$ times harder: if $$\alpha = 1/2$$ we want to make it twice harder, if $$\alpha=2$$ we want to make it twice _easier_.
-
-Recall that a _larger target_ means _easier blocks_, so to make mining $$1/\alpha$$ times harder, we choose $$\alpha\cdot T$$ as our new difficulty.
-
-### Handling Timestamps
-
-This is all good and well, but there is one problem: how do we _know_ how long it took to create these $$N$$ blocks?
-
-Each block includes a timestamp that allegedly reports when it was discovered, but it cannot be _authenticated_. It could be that the miner's clock is out of sync, or worse, that she is deliberately trying to interfere with the network by messing with the difficulty adjustment.
-
-As a first line of defense, Bitcoin bounds the difficulty change to a factor of four. No matter what the timestamps look like, if the old and new targets are $$T$$ and $$T'$$, then we will always have that $$\frac{1}{4} \le \frac{T}{T'} \le 4$$. But that's obviously not enough.
-
-So how can we avoid timestamp manipulations? If we just take the first and last timestamp of the epoch and check their difference, and the malfeasant miner happens to create the first or last block, she essentially gets a carte blanche to set the difficulty to whatever she wants. The adjustment cannot depend just on two blocks.&#x20;
-
-One might be tempted to tackle this by analyzing the timestamps within the epoch better, and trying to isolate the "true" ones. Indeed, one can _improve_ the robustness using such approaches, but _any_ such mechanism would be exploitable if it can be fed arbitrary timestamps.
-
-Instead, the solution is to impose smart limitations on the block's timestamp when it is _processed_.
-
-The idea is not to allow a timestamp to be more than two hours off the mark. If we can guarantee that, then the worse an attacker can do is to compress/stretch the difficulty window by four hours, which are about $$1\%$$ of two weeks. But how can we guarantee it?
-
-The first observation is that we can verify that a timestamp is not too deep into the _past_ from the _consensus data_. Since a block delay is ten minutes, we expect $$12$$ blocks to be created in two hours. So what should we do? Should we go 12 blocks back from the candidate block, and check that it has an earlier timestamp? That happens to be exploitable. If the miner happens to have created that block too, and the block 12 blocks before that one, and the blocks 12 blocks before that one, and so on. Each block in this chain allows _two more hours_ of manipulation. This attack might not seem practical, but if we let an adversary try it consistently, it _will_ succeed at some point, and it only requires less than $$10\%$$of the hashing power, a _far cry_ from thee honest majority security we were promised. Bitcoin overcomes this by taking the timestamps of the last $$23$$ blocks, and picking the _median_. This is a great idea because highly irregular timestamps will not be the median, but in the fringes.
-
-So say we want to enforce a timestamp deviation of at most $$N$$ block delays. Say that the block $$B$$ has a timestamp $$S$$, and let $$M$$ be the _median_ timestamp of the $$2N-1$$ blocks preceding it, the we have the following rule
-
-**Rule I**: if $$S<M$$ then the block is invalid.
-
-OK, but what about blocks whose timestamp deviates into the future? Now we don't have any blocks to rely on. We can't have the validity of a block depend on the blocks succeeding it!
-
-The idea is to use the _actual system clock_. Let $$C$$ be the system clock while validating the block. The length of time $$S-M$$ is an approximation of $$N$$ _actual_ block delays (that is, according to the current, possibly inaccurate difficulty target). We would like to invalidate blocks whose timestamps are more than $$S-M$$ later than $$C$$, and it is easy to check this just means that $$M>C$$. The problem is that $$C$$, unlike $$M$$, is not in consensus, and can vary from miner to miner. If we tell miners to _invalidate_ such blocks we are practically begging for a net split. The correct solution is to _delay_ the block:
-
-**Rule II**: if $$M>C$$, _wait_ until $$C=M$$ before including the block, if while waiting a new valid block arrived, prefer it over the delayed block.
-
-Note that miners are incentivized to follow this validation rule, as it gives them more time to create a competing block.
-
-This does not _prohibit_ blocks with timestamps set to the far future, but it strongly _discourages_ them by _degrading their probability to be in the chain_. The later the timestamp is, the more miners will delay mining over it, increasing the probability that the block will be orphaned.
-
-With these two rules in place, we can finally enforce the very simple policy: at the end of an epoch, find the earliest and latest time stamps $$S, S'$$ in the epoch, set $$\alpha = \frac{S'-S}{\lambda}$$, and adjust the difficulty as explained in the previous section. The timestamp deviation rules we outlined strongly limit the ability to abuse this mechanism through timestamp manipulation.
-
-{% hint style="info" %}
-One might be curious why we look for the earliest and latest timestamps and not just take the first and last one. The answer is that timestamps in Bitcoin are not always monotone. There are known examples of later blocks with earlier timestamps. Amusingly enough, I found that out from a 2014 paper that quotes a paper from 2015.
-{% endhint %}
 
