@@ -4,7 +4,9 @@ Before we get going, do me a solid and forget _anything_ you _ever_ heard about 
 
 Oh, you find this objectionable? Fine, then let me test you. Answer this one question: what are the security properties of the PoW protocol?&#x20;
 
-If you think you know the answer, then you have already lost. It was a trick question. _PoW is not a consensus protocol at all_. So please, just clear your mind and let us take this from the top.
+If you think you know the answer, then you have already lost. It was a trick question. _PoW is not a consensus protocol at all_. It is a _necessary building block_ for PoW protocols such as the longest-chain rule and GHOST. But in itself, it is something else, more fundamental, the stuff protocols are made of.
+
+So what is it? I'm getting there. Clear your mind and let us take this from the top.
 
 ## Distribution Vs. Decentralization
 
