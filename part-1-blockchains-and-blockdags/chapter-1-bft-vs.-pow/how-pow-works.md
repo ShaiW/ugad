@@ -1,4 +1,6 @@
-# How PoW Works\*
+# How PoW Works
+
+In&#x20;
 
 Our next goal is to understand the mechanics that govern proof-of-work block creation. First, we describe the so-called "complex mathematical puzzles miners solve to create blocks. The key takeaway is that the mathematical puzzle is not "complex". In fact, it is _incredibly dumb_: the only way to solve it is to bang your head against it by trying all possible solutions in no particular order until you find one that works.
 
@@ -7,6 +9,8 @@ Don't get me wrong, it takes _exceptional cleverness_ to design such a dumb puzz
 Building such a puzzle is not enough. To regulate the block creation rate to a prescribed length of time, we need to _parameterize_ it correctly. You might have heard the name of the relevant parameter, it is called the _difficulty target_.
 
 In the first part of this section, we will assume we can magically know what the difficulty target should be. In the real world, not only do we not have access to this parameter, but it doesn't even stay fixed. The difficulty target has to _adjust_ to changing hash rates. This is the responsibility of the _difficulty adjustment_ _algorithm_ (DAA). In the second part of this section, we will describe how difficulty adjustment is handled in Bitcoin.
+
+<div align="right"><figure><img src="../../.gitbook/assets/image (54).png" alt="" width="106"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for<br>sponsoring this segment of the book</p></figcaption></figure></div>
 
 ## The Dumb Puzzle
 

@@ -1,4 +1,6 @@
-# Chapter 1: From BFT to PoW
+# Chapter 1: Proof-of-Work (PoW)
+
+\[everything below should be rewritten]
 
 We start our story at the "birthplace" of distributed consensus theory, the 1980 seminal paper [Reaching Agreement in the Presence of Faults](https://lamport.azurewebsites.net/pubs/reaching.pdf) by Pease, Shostak and Lamport (PSL).
 
