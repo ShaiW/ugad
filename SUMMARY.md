@@ -8,8 +8,8 @@
 
 * [Introduction](part-1-blockchains-and-blockdags/introduction.md)
 * [Chapter 1: From BFT to PoW](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/README.md)
-  * [Byzantine Fault Tolerance](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/byzantine-fault-tolerance.md)
-  * [What Is Proof-of-Work (PoW)](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/proof-of-work.md)
+  * [Byzantine Fault Tolerance (BFT)](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/byzantine-fault-tolerance.md)
+  * [Proof-of-Work (PoW)](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/proof-of-work.md)
   * [How PoW Works\*](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md)
   * [PoS Vs. PoW](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/bft-vs.-pow.md)
   * [Exercises](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/exercises.md)

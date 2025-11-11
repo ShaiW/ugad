@@ -1,8 +1,18 @@
-# Byzantine Fault Tolerance
+# Byzantine Fault Tolerance (BFT)
 
 Like many good stories, ours also begins with war. In the fifth century, the titular city-state of Byzantium was expanding. In one particular excursion, several Byzantine legions all surrounded the same fortress. Knowing their only chance to topple its impregnable walls is if _all_ generals work together, they need to somehow agree among themselves whether to attack or retreat. Most crucially, they must all reach _the same_ decision. But here is the crux: generals are _far too important_ to allow more than two of them to be in the same place. Arranging for all generals to convene and reach a decision together is far too dangerous. The decision _must_ rely on one-on-one conversations between two generals. Of course, this is simple if all generals are honest. But what if some generals are compromised and are trying to manipulate our protocol to get some, but not all, generals to attack?
 
 _This_ is called the Byzantine fault tolerance problem.
+
+***
+
+
+
+<figure><img src="../../.gitbook/assets/image (53).png" alt="" width="212"><figcaption></figcaption></figure>
+
+
+
+***
 
 ## The Byzantine Generals Problem (BGP)
 
@@ -257,8 +267,4 @@ Fortunately, PSL was just the first in a royal lineage of BFT protocols.
 In 1999, Miguel Castro and Barbara Liskov introduced the[ Parctical Byzantine Fault Tolerance](https://pmg.csail.mit.edu/papers/osdi99.pdf) (PBFT) protocol. PBFT's most significant contribution is in terms of the synchronicity model. It is one of the first protocols that works in the partially synchronous model. But more than that, it reduces the time complexity to $$O(n^2)$$. An extreme improvement over the exponential complexity of PSL.
 
 Several improvements of various sorts succeeded PBFT, such as Zyzzyva and ABsTRACTs, which provide improved performance, Aaardvark, which provides improved robustness, and Adapt, which switches between protocols to respond to changing conditions. More recent protocols, such as HotStuff and Marlin, further reduce the complexity to linear. Finally, we would be remiss not to mention a few protocols specifically crafted for proof-of-stake, such as Alphabet and Tendermint.
-
-***
-
-<figure><img src="../../.gitbook/assets/image (52).png" alt="" width="375"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a>  for sponsoring this segment</p></figcaption></figure>
 
