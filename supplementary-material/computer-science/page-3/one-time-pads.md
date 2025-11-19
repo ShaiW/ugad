@@ -12,11 +12,11 @@ Such a picture is called a _one-time pad_. We both keep a copy of this image, so
 
 How do we do so? Well, say I drew this circle:
 
-<figure><img src="../../../.gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 and it made me feel accomplished and excited, so I want to share it with you. But given how perfect this circle is, I don't want anyone else to see it yet. I can take our one time pad and do the following: for any _black_ pixel in the pad, _change the color_ of the corresponding pixel in my drawing, and send the result. In our case it would look like this:
 
-<figure><img src="../../../.gitbook/assets/image (2) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (2) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 As you can see, it does not look extremely different than the secret-key, and for a good reason. Recall that the original key was _random_. So essentially, what I did is _exactly the same_ as flipping a coin ten-thousand times on the spot to choose what pixels to flip. Now here's the gist: doing this will result in _completely random noise_ regardless of what the initial image was. It doesn't matter. Each pixel is still equally likely to be either black or white.
 

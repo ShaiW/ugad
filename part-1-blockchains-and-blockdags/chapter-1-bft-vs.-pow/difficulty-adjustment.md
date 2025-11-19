@@ -1,12 +1,62 @@
-# Difficulty Adjustment\*
+# Difficulty Adjustment
 
-## Difficulty Adjustment
+In the previous section, we defined the quantity $$t$$ as the expected number of seconds between two consecutive hashes. In this section, we complete the picture by introducing the notion of a difficulty adjustment algorithm (DAA) — the mechanism responsible for estimating $$t$$. As the name "adjustment" implies, $$t$$ is not a constant value, but rather changes over time as mining hardware is activated or deactivated. The DAA has to balance being sensitive enough to respond to organic changes in hashrate while remaining robust enough to perform as expected in unexpected scenarios, including malicious interference.
 
-So remember we assumed there is this number $$t$$ that measures how long a single hash takes? This is not a realistic assumption. The number $$t$$ represents, in a sense, how _hard_ it is to compute $$\mathsf{H}$$, and the _global amount of effort_ dedicated to solving the puzzle. The value of $$t$$ is not fixed, but time dependent. If the miner replaces their machine with a faster one, $$t$$ has decreased. If another miner joins the party, $$t$$ has decreased. If a miner went out of business or had a long-term technical failure, $$t$$ has _increased_. This value of $$t$$ that we so arrogantly took for obvious, not only does it depend on information that is not available to us, but it isn't even _fixed_.
+The difficulty affects which blocks are valid, and thus must be determined in consensus and agreed upon by all. The only consensus data we have that connects blocks to real-world time is their _timestamps_. Unfortunately, timestamps cannot be authenticated. There is nothing stopping miners from reporting false values. One aspect of designing a DAA is providing sufficient protection against timestamp tampering.
 
-In practice, instead of pretending we know $$t$$, we try to _estimate_ it from the information we _do_ have: the blocks themselves. If we see that blocks are created too fast or too slow, we try to adjust $$t$$ appropriately.
+In this section, we first provide a _naive_ version of Bitcoin's DAA, that works perfectly _assuming all clocks are synchronized and all timestamps are authentic_. After that, we will explain how Bitcoin handles timestamp tampering threats.
 
-As the person who designed Kaspa's difficulty adjustment, I can give you a first-hand testimony that designing difficulty adjustment is very intricate. There are many approaches to choosing how to _sample_ the blocks, and then a plethora of methods to evaluating the difficulty from the data. Later in the book I will describe Kaspa's difficulty adjustment algorithm, and maybe also provide a general discussion of the more common difficulty adjustment approaches (material that is unfortunately not covered in _any_ textbook or other unified source). For now, the task of understanding how difficulty adjustment works in Bitcoin is daunting enough.
+The quantity $$t$$ is a bit conceptually awkward. We used it in the previous section because it was more comfortable for the math. In the current context, it makes more sense to consider the global hashrate $$R$$, which is simply thhe reciprocal: $$R=1/t$$. As $$t$$ is measured in seconds per hash, $$R$$ is measured in hashes per second.
+
+## Fixed Vs. Sliding Windows\*
+
+The core computation of a DAA is estimating $$R$$ from pervious blocks. This calculation is called a _difficulty aggregation heuristic_. There are many ways to do difficulty aggregation, but before we can do that, we need to consider how we choose what blocks to aggregate and when. There are two competing approaches for that.
+
+The original, conceptually simpler approach is _fixed windows_. In fixed windows, the chain is divided into fixed-length successions called _difficulty epochs_. When a new epoch starts, a new difficulty target is computed by aggregating the difficulty of the blocks in the previous epochs. The _window_ is the set of blocks used for aggregating difficulty. Bitcoin uses a fixed-window DAA with an epoch length of 2016 blocks, or approximately 2 weeks, and the window is simply the epoch that just ended.  There are a few variations of fixed windows — such as using different heuristics, epoch lengths, and window lengths — but they all follow the same principles. We will learn these principles shortly when case-studying Bitcoin's DAA.
+
+Bitcoin, and other fixed window DAAs, use _extremal difference_ to aggregate difficulty. This is arguably the simplest imaginable mode of aggregation: compare the earliest and latest timestamps in the window to the expected window length.
+
+As the landscape of cryptocurrency evolved, the limitations of fixed windows became apparent. The relatively long windows make responses to sharp difficulty shifts unreasonably slow. For example, imagine the global hashrate of Bitcoin instantly dropping by 90% just after an epoch started. How long will it take the difficulty to readjust? If your answer is "two weeks," you have not been paying attention. The length of the epoch is 2016, which is _supposed to approximate_ two weeks, and the quality of this approximation is directly proportional to the quality of approximation of $$t$$. Since the global hashrate $$R$$ dropped by 90%, it is now _ten times smaller_ than our approximation, making $$t$$ ten times too big. Consequently, until the difficulty target is adjusted, it is ten times smaller than needed, making the average block time _one hundred minutes_, and the entire epoch length _20 weeks_.
+
+Such scenarios are far-fetched for an established coin like Bitcoin, but pose a genuine concern to younger, less mined proof-of-work chains. There are recorded instances of a large mining pool leaving a small project, causing its block times to skyrocket. When happening in reality, the situation naturally spirals as other miners also turn off their rigs until difficulty increases, grinding the chain to a halt as block times stretch to weeks and difficulty epochs to years. At this point, the only remaining solution is to manually readjust the difficulty via a hard-fork.
+
+To increase reactivity, shorter difficulty windows were considered. But there were good reasons to have long difficulty windows to begin with. With shorter windows, it becomes easier to exploit the DAA to manipulate the system. There is a sharp reactiveness-robustness tradeoff that does not seem to have a sweet spot appropriate to upcoming chains with a low global hashrate.
+
+To obtain better trade-offs, protocol designers naturally turned to _sliding windows_. In this approach, there are no difficulty epochs. The difficulty is recalculated for each block based on a window of blocks preceding it. This allowed for maintaining a large window while responding quickly.
+
+Initially, sliding windows used the same simple aggregation method used in Bitcoin. We will describe it in full soon, but the idea is to compare the expected length of the epoch with the difference between the earliest and latest timestamp therein to approximate how off the difficulty is.
+
+This approach works well for chains with high block rates, like Kaspa, where it is adopted. But this is because such networks have the privilege of accumulating thousands of samples within a few hours. For more typical proof-of-work chains, where block delays are minutes long, this approach is inappropriate.&#x20;
+
+The reasons for that are subtle, and I cannot fully explain them here. But I can shed some light with a nice analogy. This is a variation of an analogy I heard from the pseudonymous Zawy12, a thought leader in the DAA world, whose notes (given as a [list of GitHub issues](https://github.com/zawy12/difficulty-algorithms/issues), in a true cypherpunk fashion) are practically the only technical source on sliding windows. Imagine the difficulty in sliding windows to a long and thin rod, made of a slightly elastic metal. The rod is fixed to the floor at the bottom and has a target at its top. Changing the difficulty is like hitting the target. It causes the top of the rod to oscillate back and forth. The oscillations are dampened by the bottom of the rod being fixed to the floor, but typically, this force is too minimal compared to natural fluctuations in hashrate.
+
+This analogy demonstrates that a sliding window DAA has a sort of natural _inner frequency_. And this is actually what we observe in reality. For example, consider the Kaspa difficulty curve:
+
+<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption><p>Screenshot from <a href="https://2miners.com/kas-network-hashrate">2miners.com</a></p></figcaption></figure>
+
+We can see fluctuations of around 6-8% in the global hashrate with a consistent frequency of about once oscillation per 40 minutes, which is (by no pure chance) about the window length of Kaspa's difficulty adjustment.
+
+Zawy further noticed that by properly timing a "switch attack" where a relatively small rig is turned on during increases and off during decreases, the oscillations can constructively interfere, causing higher spikes, deeper troughs, and much less stability. Worse yet, these switching attacks emulate what rational coin-hoppers — miners that constantly redirect their rigs to coins based on value and difficulty — would naturally do in many cases.
+
+Unfortunately, this analogy doesn't only hint at a problem, but also at a solution. If you want to have a better-controlled oscillator, you _dampen it_. That is, you add something that _resists_ the movement, but the strength of the resistance is _proportional_ to the strength of the movement. Mechanically, this could be accomplished by using a spring that connects the target to its stationary location, like so:
+
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+
+So the idea is to implement a sort of "digital spring" that will dampen the oscillations around the displacement. The problem here is that to implement such a spring directly, we need to _know_ the actual hashrate, but figuring that out is exactly why we need DAA to begin with!
+
+Fortunately, there are ways to approximate such a spring. I will not go into the math, but the idea is that if you use the entire history of difficulty targets, but give higher weight to more recent blocks, you get a dampening effect that is somewhat similar to the simple spring dampening above.
+
+There are two common ways to do this:
+
+* LWMA (Linear Weighted Moving Average). The weight of each block is decreased by a _fixed amount_ compared to the previous block. The graph of influence as a function of depth becomes a linear function, hence the name. This approach is usually accredited to Zawy.\
+  There are several versions of LWMA, and they are used by Litecoin, Monero, Zcash, and more.
+* ASERT (Adjusted Service Rate). There are two key differences. One is that the weighting decreases _exponentially_, and the other is that the weight is not determined by the depth (in terms of block count) but the distance between timestamps.\
+  ASERT is developed and used mainly by Bitcoin Cash.
+
+There are various trade offs between the two. For example, ASERT is considered more responsive, while LWMA is considered more robust to timestamp manipulation.\
+
+
+
 
 ### Difficulty Adjustment in Bitcoin
 
@@ -69,3 +119,4 @@ With these two rules in place, we can finally enforce the very simple policy: at
 {% hint style="info" %}
 One might be curious why we look for the earliest and latest timestamps and not just take the first and last one. The answer is that timestamps in Bitcoin are not always monotone. There are known examples of later blocks with earlier timestamps. Amusingly enough, I found that out from a 2014 paper that quotes a paper from 2015.
 {% endhint %}
+

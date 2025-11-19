@@ -52,7 +52,7 @@ $$
 
 a statement that admits this beautiful [proof without words](https://www.amazon.com/Proofs-without-Words-Exercises-Classroom/dp/0883857006):
 
-<figure><img src="../../../.gitbook/assets/image (1) (1) (1) (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (1) (1) (1) (1) (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 When will we ever need such a formula? Well, say we want to compute the _total_ _supply_ of Bitcoin. Say that each _halving epoch_ contains $$N$$ blocks, and in the first epoch, each block emitted a reward of $$R$$. Then we have $$a=N\cdot R$$, so if in every halving the reward is multiplied by $$q$$ we get that the total supply is given by $$\frac{N\cdot R}{1-q}$$. In Bitcoin, we have $$R=50$$, $$N=210,000$$ and $$q=\frac{1}{2}$$, substituting into the formula we get the familiar figure
 

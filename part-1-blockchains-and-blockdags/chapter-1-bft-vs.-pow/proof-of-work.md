@@ -1,4 +1,4 @@
-# Proof-of-Work (PoW)
+# What PoW does
 
 Before we get going, do me a solid and forget _anything_ you _ever_ heard about PoW. Forgive my insolence, but most likely most of it is wrong anyway.&#x20;
 
@@ -36,7 +36,7 @@ This is arguably very different than the Sybil resistance you get for, say, onli
 
 "But can't we just charge 0.1 cents per vote?" one might ask, "This will definitely make costs rise linearly". But then we realize that to actually do that, we need some authority that will process charges, maintain a list of paying voters, and so on. In the words of a celebrated scientist:
 
-<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 But just because that idea doesn't work, it doesn't mean that it is not in the right direction! Increasing the "per-vote" cost is exactly what we are looking to do. We just have to be a bit clever about it. Using money means adhering to an administrative system. Validating and processing payments requires centralized resources. Generally speaking, if you have to get a permit from any entity for your vote, then you've already lost. So we cannot use money. We need to find some _other way_ to make voting costly. A way that can be verified without requiring access to any centralized records.
 
