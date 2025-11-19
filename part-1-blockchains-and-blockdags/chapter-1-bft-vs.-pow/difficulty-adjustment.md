@@ -8,6 +8,8 @@ In this section, we first provide a _naive_ version of Bitcoin's DAA, that works
 
 The quantity $$t$$ is a bit conceptually awkward. We used it in the previous section because it was more comfortable for the math. In the current context, it makes more sense to consider the global hashrate $$R$$, which is simply the reciprocal: $$R=1/t$$. As $$t$$ is measured in seconds per hash, $$R$$ is measured in hashes per second.
 
+<div align="right"><figure><img src="../../.gitbook/assets/image (54).png" alt="" width="106"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for<br>sponsoring this segment of the book</p></figcaption></figure></div>
+
 ## Fixed Vs. Sliding Windows\*
 
 The core computation of a DAA is estimating $$R$$ from pervious blocks. This calculation is called a _difficulty aggregation heuristic_. There are many ways to do difficulty aggregation, but before we can do that, we need to consider how we choose what blocks to aggregate and when. There are two competing approaches for that.
