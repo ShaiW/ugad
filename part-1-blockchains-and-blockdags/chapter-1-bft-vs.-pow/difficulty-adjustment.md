@@ -6,7 +6,7 @@ The difficulty affects which blocks are valid, and thus must be determined in co
 
 In this section, we first provide a _naive_ version of Bitcoin's DAA, that works perfectly _assuming all clocks are synchronized and all timestamps are authentic_. After that, we will explain how Bitcoin handles timestamp tampering threats.
 
-The quantity $$t$$ is a bit conceptually awkward. We used it in the previous section because it was more comfortable for the math. In the current context, it makes more sense to consider the global hashrate $$R$$, which is simply thhe reciprocal: $$R=1/t$$. As $$t$$ is measured in seconds per hash, $$R$$ is measured in hashes per second.
+The quantity $$t$$ is a bit conceptually awkward. We used it in the previous section because it was more comfortable for the math. In the current context, it makes more sense to consider the global hashrate $$R$$, which is simply the reciprocal: $$R=1/t$$. As $$t$$ is measured in seconds per hash, $$R$$ is measured in hashes per second.
 
 ## Fixed Vs. Sliding Windows\*
 
@@ -53,70 +53,143 @@ There are two common ways to do this:
 * ASERT (Adjusted Service Rate). There are two key differences. One is that the weighting decreases _exponentially_, and the other is that the weight is not determined by the depth (in terms of block count) but the distance between timestamps.\
   ASERT is developed and used mainly by Bitcoin Cash.
 
-There are various trade offs between the two. For example, ASERT is considered more responsive, while LWMA is considered more robust to timestamp manipulation.\
+There are various trade offs between the two. For example, ASERT is considered more responsive, while LWMA is considered more robust to timestamp manipulation.
 
+## Difficulty Adjustment in Bitcoin
 
+Bitcoin's DAA is _very simple_. But it will get noticeably more complicated once this assumption is removed. To streamline the discussion, we introduce some notations. Let $$\lambda$$ be the desired block delay, and $$N$$ be the number of blocks per window. Let $$T^-$$ to denote the difficulty target of the ending epoch. We want a formula for the difficulty of the new epoch, which we denote $$T$$. Crucially, we never use the value $$R$$ directly.
 
+Since we expect an average block delay of $$\lambda$$, we expect that creating the entire window should take $$\lambda\cdot N$$. For example, in Bitcoin we have $$\lambda = 10 \mbox{ min}$$ and $$N = 2016$$, so we get $$\lambda\cdot N = 20160\text { min} = 2\text{ weeks}$$.
 
-### Difficulty Adjustment in Bitcoin
+To find the difficulty adjustment factor, we simply compare the expected epoch length with the observed length. If the epoch lasted twice as long as expected, we need to make block creation twice as easy. If it were three times shorter than expected, we would need to make block creation three times harder, and so on. Generally speaking, if $$\Delta$$ is the observed length, then we set:
 
-Bitcoin was naturally the first crypto to suggest _any_ form of difficulty adjustment. Up to a few tweaks, it was lifted almost verbatim from the original Bitcoin whitepaper, which was published before cryptocurrencies even existed. Many argue that Bitcoin's approach to difficulty adjustment is outdated, has many drawbacks, and can even be dangerous, while others argue that it is time-tested and its simplicity protects us from unexpected attacks. So basically, a carbon copy of _any_ _other argument_ about Bitcoin.
+$$
+T = \left(\frac{\Delta}{\lambda\cdot N}\right)T^-\text{.}
+$$
 
-Bitcoin uses a _fixed difficulty window_. A difficulty _epoch_ (or window) lasts $$N=2016$$ blocks (or approximately two weeks), and at the end of each epoch, the difficulty is adjusted according to the blocks within that epoch.
+Note that in the formula above, larger $$\Delta$$ means larger $$T$$. For a sanity check, note that the directionality of this formula makes sense: large $$\Delta$$ means that the difficulty is too high, so we expect $$T$$ to be large as well, as a larger difficulty target means creating blocks is _easier_.
 
-{% hint style="info" %}
-The alternative is a _sliding window_ approach, where the difficulty is recalculated for _each block_ according to the $$N$$ blocks that preceded it.
+<details>
 
-The advantage of a sliding window approach is that it is _more responsive_, making the network quickly react to changes in the global hashing power instead of waiting for the end of the epoch. Note that in cataclysmic circumstances, waiting for the _end of the epoch_ could be a very long time, as less mining means longer block delays, delaying the end of the epoch, and possibly causing more miners to jettison, making the end of the epoch even more distant. I know of exactly one example of a small chain that had more than 80% of its mining on a single private pool. One day the pool decided to switch to another coin, making the hashrate instantly drop to 20%, increasing the block delays five times over. Displeased miners hopped as well, dropping the hashrate to about 1% of what it was, effectively halting the chain. For a two weeks long difficulty epoch, the network would have to wait _literal years_ for such a drop to be properly adjusted. The stall was resolved by a hard fork, manually increasing the target, while implementing a sliding window difficulty adjustment.
+<summary>How do we choose <span class="math">N</span> and why is it so large?</summary>
 
-The disadvantage of a sliding window approach is that it is, well, _more responsive_. Responsiveness is a double-edged sword and a difficulty adjustment mechanism that is too sensitive can be abused to manipulate the network in ways that the robust difficulty epoch would not allow. Moreover, sliding windows are naturally more complex, and have complicated and not completely understood dynamics, such as _difficulty fluctuations_ that create new vectors for opportunistic mining, further disrupting block creation rate consistency.
+Recall that $$\lambda\cdot N$$ is just the _expected_ value, which means that this is what we will see _on average_. In reality, we only get one sample, so we need to understand how much it could deviate from the actual value.
 
-TODO: find references, I remember a series of posts explaining this problem in BCH or BSV's attempts to use ASERT and in [Zawy's posts](https://github.com/zawy12/difficulty-algorithms/issues), I need to dig for it
-{% endhint %}
+For $$N=1$$ this is just a single block delay. Those who understand the [math of block creation](../../supplementary-material/math/probability-theory/the-math-of-block-creation.md) know that the next block delay follows an _exponential distribution_ with parameter $$\lambda$$. This distribution is notoriously noisy, with a standard deviation of $$\lambda$$. This means that more than 10% of the blocks will have a delay of more than $$2\lambda$$ minutes, that is, _twice as large_ as expected. Similarly, we can show that more than 10% will take less than $$\lambda/2$$. The bottom line is that if we use $$N=1$$ as our window, more than 20% of the time our estimation will be incorrect by a factor of at least two!
 
-So given a window of $$N$$ blocks, and the times they were created, how do we adjust $$T$$? Quite simply, compare how long it was _supposed_ to take with how long it _actually_ took, and adjust $$T$$ accordingly.
+Say that we are willing to disregard the possibility that the observation we see is wrong by more than $$d$$ standard deviations. As we choose a larger $$d$$, the chances of this happening drops sharply. For example, setting $$d=5$$ is considered the gold standard in particle physics, the most accurate experimental science in human history. The probability of observing a deviation of more than $$5$$ standard deviations is approximately one in 3.5 million.
 
-If the block delay is $$\lambda$$, then the expected length of an epoch is $$\lambda \cdot N$$. For example, in Bitcoin we have $$\lambda = 10\text{ min}$$ and $$N=2016$$ so the length of a difficulty epoch is expected to be $$20160$$ minutes which are exactly two weeks.
+When $$N=1$$, $$d$$ standard deviations is $$d\cdot \lambda$$. We know that even for $$d=1$$ (which is way to small) we get a deviation of up to $$\lambda$$, which is much too large. How can increasing $$N$$ improve the situation? Well, we know that the expected length of the window increases as $$\lambda\cdot N$$. However, the marvelous _central limit theorem_ tells us that the standard deviation only grows like $$\lambda \cdot \sqrt{N}$$!
 
-A comfortable way to state what we _observed_ is by using the ratio $$\alpha$$ satisfying that the epoch lasted $$\alpha \cdot \lambda \cdot N$$. For example, $$\alpha = 1/2$$ means the epoch was twice shorter than expected, while $$\alpha = 2$$ means it was twice longer. For reasonably large values of $$N$$ ($$2016$$ is more than enough) we can deduce from this that the _average_ block time is extremely close to $$\alpha\cdot \lambda$$ (to understand why using a small $$N$$ is too noisy, you can review the discussion on [the math of block creation](../../supplementary-material/math/probability-theory/the-math-of-block-creation.md)). We want to adjust this to the desired $$\lambda$$, which means that we want to make mining $$1/\alpha$$ times harder: if $$\alpha = 1/2$$ we want to make it twice harder, if $$\alpha=2$$ we want to make it twice _easier_.
+If we assume that observations are always within $$d$$ standard deviations, we get an error of at most $$d\cdot \lambda\cdot \sqrt{N}$$. If we look at the ratio of this with the expected value $$N\cdot \lambda$$ we get that the noise can only account to a fraction of $$d\cdot \lambda \cdot \sqrt{N}/\lambda\cdot N = d/\sqrt{N}$$ of the correction. For example, for $$d=3$$ and $$N=2016$$ we get an error of about $$7\%$$.  The probability that the sample we see deviates by more than $$3$$ standard deviations is about $$0.135\%$$. All of this combines to the following conclusion:
 
-Recall that a _larger target_ means _easier blocks_, so to make mining $$1/\alpha$$ times harder, we choose $$\alpha\cdot T$$ as our new difficulty.
+> In Bitcoin, in $$99.87\%$$ of the epochs the observed window length reflects the true hashrate up to a mistake of $$7\%$$
+
+We can also solve these equations the other way around, if we want to guarantee some confidence within some probability. Say, we want a mistake of at most $$1\%$$ in $$99\%$$ of the time. Note that we increased the accuracy, but decreased the confidence. Referring to a [Z-table](https://math.arizona.edu/~rsims/ma464/standardnormaltable.pdf), we find that the correct $$d$$ to ensure an error of less than $$d$$ deviations $$99\%$$ of the time is $$d=2.33$$. We want $$d/\sqrt{N}\le 1\%$$. Solving for $$N$$ we get $$N\ge (100d)^2\approx 54289$$. So this accuracy requires a window of around $$55$$ thohusand blocks. With Bitcoins $$\lambda = 10\text{ min}$$ this makes each epoch about a year long.
+
+</details>
+
+The only remaining problem is estimating $$\Delta$$. The only tool we have for this is timestamps. This makes things exceedingly tricky, since there is no way to authenticate timestamps. If miners are allowed to put whatever timestamps they want on their blocks, then the DAA is completely broken.
+
+Before we go into how Bitcoin really handles timestamps, let us assume that all timestamps are _accurate_: the clocks used by all miners are perfectly synchronized, and the timestamps reported in blocks are all truthful.
+
+In this case, we can just set $$\Delta$$ to be the difference between the earliest and latest timestamps in the epoch, and everything fits perfectly into place.
+
+### Limited Correction
+
+Before going into timestamp calculus, I want to point out a first line of defense that also exists in Bitcoin: limiting the correction between two consecutive epochs.
+
+In Bitcoin, no matter what happens, the difficulty cannot be corrected by a factor of more than $$4$$. That is: $$\frac{1}{4} \le \frac{T^-}{T} \le 4$$. This provision is hardwired into the code, and _always_ applies, regardless of what was observed.
+
+<details>
+
+<summary>Bitcoin DAA Summary</summary>
+
+Let $$\Delta$$ be the difference between the earliest and latest timestamps in the epoch.
+
+Set:
+
+$$\alpha_0 = \frac{\Delta}{\lambda\cdot N}$$
+
+$$\alpha=\begin{cases} 1/4 & \alpha_{0}<1/4\\ 4 & \alpha_{0}>4\\ \alpha_{0} & \text{else} \end{cases}$$
+
+New difficulty: $$\alpha\cdot T^{-}$$
+
+</details>
 
 ### Handling Timestamps
 
-This is all good and well, but there is one problem: how do we _know_ how long it took to create these $$N$$ blocks?
+The remaining piece is to find a non-exploitable way to set $$\Delta$$. You might have expected this to be dealt with by coming up with fancier formulae for $$\Delta$$, that somehow aggregate all the timestamps to yield a non-gameable approximation. Unfortunately, no matter how you estimate $$\Delta$$, as long as you allow arbitrary timestamps, this approach is doomed to fail in one way or another. It is necessary to impose rules on what timestamps are _allowed_.
 
-Each block includes a timestamp that allegedly reports when it was discovered, but it cannot be _authenticated_. It could be that the miner's clock is out of sync, or worse, that she is deliberately trying to interfere with the network by messing with the difficulty adjustment.
+To get a clue how to proceed, first note a tiny detail that I snuck into the description of $$\Delta$$. I said that it contains the _earliest and latest_ timestamps, _not_ the _first and last_ timestamps. Under the assumption of authentic timestamps, these two turn out to be the same. But in general, they are not.
 
-As a first line of defense, Bitcoin bounds the difficulty change to a factor of four. No matter what the timestamps look like, if the old and new targets are $$T$$ and $$T'$$, then we will always have that $$\frac{1}{4} \le \frac{T}{T'} \le 4$$. But that's obviously not enough.
-
-So how can we avoid timestamp manipulations? If we just take the first and last timestamp of the epoch and check their difference, and the malfeasant miner happens to create the first or last block, she essentially gets a carte blanche to set the difficulty to whatever she wants. The adjustment cannot depend just on two blocks.&#x20;
-
-One might be tempted to tackle this by analyzing the timestamps within the epoch better, and trying to isolate the "true" ones. Indeed, one can _improve_ the robustness using such approaches, but _any_ such mechanism would be exploitable if it can be fed arbitrary timestamps.
-
-Instead, the solution is to impose smart limitations on the block's timestamp when it is _processed_.
-
-The idea is not to allow a timestamp to be more than two hours off the mark. If we can guarantee that, then the worse an attacker can do is to compress/stretch the difficulty window by four hours, which are about $$1\%$$ of two weeks. But how can we guarantee it?
-
-The first observation is that we can verify that a timestamp is not too deep into the _past_ from the _consensus data_. Since a block delay is ten minutes, we expect $$12$$ blocks to be created in two hours. So what should we do? Should we go 12 blocks back from the candidate block, and check that it has an earlier timestamp? That happens to be exploitable. If the miner happens to have created that block too, and the block 12 blocks before that one, and the blocks 12 blocks before that one, and so on. Each block in this chain allows _two more hours_ of manipulation. This attack might not seem practical, but if we let an adversary try it consistently, it _will_ succeed at some point, and it only requires less than $$10\%$$of the hashing power, a _far cry_ from thee honest majority security we were promised. Bitcoin overcomes this by taking the timestamps of the last $$23$$ blocks, and picking the _median_. This is a great idea because highly irregular timestamps will not be the median, but in the fringes.
-
-So say we want to enforce a timestamp deviation of at most $$N$$ block delays. Say that the block $$B$$ has a timestamp $$S$$, and let $$M$$ be the _median_ timestamp of the $$2N-1$$ blocks preceding it, the we have the following rule
-
-**Rule I**: if $$S<M$$ then the block is invalid.
-
-OK, but what about blocks whose timestamp deviates into the future? Now we don't have any blocks to rely on. We can't have the validity of a block depend on the blocks succeeding it!
-
-The idea is to use the _actual system clock_. Let $$C$$ be the system clock while validating the block. The length of time $$S-M$$ is an approximation of $$N$$ _actual_ block delays (that is, according to the current, possibly inaccurate difficulty target). We would like to invalidate blocks whose timestamps are more than $$S-M$$ later than $$C$$, and it is easy to check this just means that $$M>C$$. The problem is that $$C$$, unlike $$M$$, is not in consensus, and can vary from miner to miner. If we tell miners to _invalidate_ such blocks we are practically begging for a net split. The correct solution is to _delay_ the block:
-
-**Rule II**: if $$M>C$$, _wait_ until $$C=M$$ before including the block, if while waiting a new valid block arrived, prefer it over the delayed block.
-
-Note that miners are incentivized to follow this validation rule, as it gives them more time to create a competing block.
-
-This does not _prohibit_ blocks with timestamps set to the far future, but it strongly _discourages_ them by _degrading their probability to be in the chain_. The later the timestamp is, the more miners will delay mining over it, increasing the probability that the block will be orphaned.
-
-With these two rules in place, we can finally enforce the very simple policy: at the end of an epoch, find the earliest and latest time stamps $$S, S'$$ in the epoch, set $$\alpha = \frac{S'-S}{\lambda}$$, and adjust the difficulty as explained in the previous section. The timestamp deviation rules we outlined strongly limit the ability to abuse this mechanism through timestamp manipulation.
+For example, consider an adversarial setting, and say the adversary was lucky enough to create the first block, and set it a week into the future. By tampering with just _one block_, the adversary made the next epoch _twice as difficult_. If we instead use the earliest and latest timestamps, this attack will no longer work.
 
 {% hint style="info" %}
-One might be curious why we look for the earliest and latest timestamps and not just take the first and last one. The answer is that timestamps in Bitcoin are not always monotone. There are known examples of later blocks with earlier timestamps. Amusingly enough, I found that out from a 2014 paper that quotes a paper from 2015.
+In fact, this happens organically as well. There _are_ Bitcoin blocks that refer to blocks with a _later_ timestamp. Amusingly enough, I learned about this from a 2014 paper that refers to a 2015 paper.
 {% endhint %}
 
+Using extremal timestamps means that, for a successful attack, the adversary must create a timestamp that is either considerably earlier than the earliest timestamp or considerably later than the latest timestamp. These two cases might sound symmetric, but they are actually handled very differently.
+
+Before we can even begin, we must set a tolerance for timestamp deviation. Setting it too large can enable an attack, while setting it too small can result in valid blocks being dropped, and other undesired coupling between consensus and clock accuracy and synchronization.
+
+Bitcoin set the tolerance to a comfortable 2 hours, far shorter than an epoch yet large enough to generously accommodate all reasonable organic deviations. If we can guarantee that, we will get that the adversary can affect the difficulty by at most four hours, which is less than $$1\%$$ of the two weeks length of an epoch.
+
+#### Preventing Past Timestamps
+
+It is tempting to make the limitation simply: do not allow a block whose timestamp is more than two hours earlier than its parent.
+
+To see the problem, recall that we allow blocks to be two hours _too early_ as well. If the latest block happens to be two hours into the future, all blocks that are even _slightly_ into the past will be invalidated by our policy. This is another example of _losing robustness_ by giving too much credence to a _single block_. And the solution, as usual, is to aggregate many blocks.
+
+It becomes clear that we need to consider the timestamps. The first idea might be to consider the timestamp of the block at depth $$12$$. After all, it should take about $$10$$ minutes to create each block, so $$12$$ blocks should approximate two hours. This still doesn't quite cut it, as the $$12$$ blocks could _also_ be an outlier that stretches the allowed leeway, and relying on this block alone propagates its deviation and makes everything difficult.
+
+To improve this idea, we note that we need to look not just at the $$12$$thh block, but also at the few blocks in its near past and present. How many blocks? Since the allowed deviation is two hours, it makes sense to look in an interval of approximately two hours in each direction.
+
+After some reflection, it seems that the most reasonable lower bound (and the one used by Bitcoin) is to consider the last $$23$$ blocks, and take the _median timestamps_. That is, we only look at the block ordering to take a window of approximate length of four hours, and then we discard the order and focus on the timestamp, taking the one that is chronologically smack in the middle.
+
+More generally, if we want a leeway of $$\lambda\cdot D$$ minutes, we set $$L$$ to be the median timestamp of the last $$2D-1$$ blocks (this also ensures that the number of blocks in the window is necessarily odd, making the median well defined). We also let $$TS=B.timestamp$$ be the timestamp of the block $$B$$ under consideration. We then get the first rule:
+
+**Rule I**: If $$TS<L$$ then $$B$$ is invalid.
+
+#### Preventing Future Timestamps
+
+When trying to _upper_-bound the allowed timestamp, we realize that we can't repeat this trick. For that, we need to know the timestamps of blocks that do not exist yet!
+
+The brilliant solution to this is to use the _actual system clock_! Let $$C$$ denote the clock time.
+
+We might be tempted to state the policy: if $$TS-C$$ is more than two hours, reject the block.
+
+There are two huge problems with this.
+
+The first is that when lower bounding the timestamp, we read off what "two hours" look like by looking at the timestamps. In particular, we can say that $$C-L$$ should be this approximation. To avoid lopsided constraints, we want the exact same leeway into the future. That is, we do not want the timestamp to exceed $$C$$ by more than our approximation of what two hours are. In other words, we reject a block if we see that $$TS-C > C - L$$.
+
+This brings us to the second problem: the value $$C$$ is _not in consensus_! Every node sees a different $$C$$, which could result in disagreements about block validity and eventually split the network.
+
+The next key observation is that if we wait long enough, the inequality $$TS-C > C - L$$ will eventually no longer hold. As $$C$$ increases, $$TS-C$$ becomes smaller while $$C-L$$ becomes larger. So we can just _delay_ the block until this happens. The crux is that if, while we wait, we learn of another block that doesn't require delay, we will prefer that block. Putting all of this together, we get:
+
+**Rule II**: Prefer the first block you learn of that satisfies $$TS-C \le C - L$$, including delayed blocks.
+
+This is a game-theoretic solution. It does not prohibit blocks with timestamps in the future, but strongly discourages them by reducing their probability of being included. Moreover, this probability drops exponentially as the timestamp increases.
+
+<details>
+
+<summary>Summary of Timestamp Rules</summary>
+
+Variables:
+
+* $$B$$ — block under consideration
+* $$TS=B.timestamp$$
+* $$C$$ — System clock
+* $$D$$ — Deviation tolerance measured in block delays (in Bitcoin $$D=12$$)
+
+Compute lower bound: Let $$L$$ be the median timestamps of the latest $$2D-1$$ blocks.
+
+Compute upper bound: Let $$U=2C-L$$
+
+**Lower bound rule**: If $$TS<L$$, reject the block.
+
+**Upper bound rule**: If $$TS>U$$, delay the block. The selected tip is the first encountered valid block that needs no (further) delay.
+
+
+
+</details>
