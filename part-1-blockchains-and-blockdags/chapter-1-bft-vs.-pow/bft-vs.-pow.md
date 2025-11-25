@@ -1,41 +1,32 @@
-# PoS Vs. PoW
+# What About Proof-of-Stake?
 
-We conclude this section with some _opinions_ about how PoW compares to other, _intrinsic_ anti Sybil countermeasures. I chose to focus on the most ubiquitous one, proof-of-stake (PoS), but the criticism generaliz&#x65;_&#x73;_ to any form of BFT that relies on intrinsic scarcity (coin share, reputation, etc.). In PoS, the scarcity is of the coin itself. There are many constellations for PoS Sybilness, but the common ground is that the influence of any participant, and their compensation, is proportional to the amount of coin staked.
+Proof-of-work is not the only form of sybil resistance proposed for blockchains. In fact, there are more proof-of-X variants than reasonable to count. But the most popular contender to rival PoW is _proof-of-stake_ (PoS).
 
-I will now list some unsavory properties of PoS. For me, these are more than enough to conclude that PoS is _unsuitable_ for a decentralized network. However, I stress that while the phenomenon I describe are a matter of objective fact, the latter _interpretation_ is _not_. Many people see things differently and have interesting arguments to back their interpretations (though none that I personally found convincing).
+PoS and PoW roughly divide the world of decentralized Sybilness into two categories. PoW _extrinsic_: the influence of participants relies on their ability to obtain _external resources_ such as hardware and energy.  PoS is _intrinsic_: the influence of a participant is directly proportional to a resource _generated_ _by the protocol,_ such as coins. Practically any other form of decentralized Sybilness falls into one of these two categories. For example, proof-of-time-and-space is extrinsic, while the many forms of proof of reputation/observation/participation are all intrinsic.
 
-## Security Thresholds
+The benefit of PoS is straightforward: it does not waste resources to secure itself. It is therefore the obligation of any good PoW book to explain why PoS does not make PoW obsolete. So I want to take the  time to present some unsavory properties of PoS (and intrinsic anti-Sybil in general).
 
-The first observation is that PoS just provides a _weaker level of security_.
+The intention is not a condemnation of PoS, just a list of problems that have to be addressed by any PoS  protocol. These problems are unique to PoS, so each of them is an advantage of PoW, showing that  there is no unambiguously better form of Sybilness.
 
-As we will see in the following chapters, PoW can provide _security_ assuming a rational majority. If $$51\%$$ of the miners work to maximize their profits, then we are guaranteed two properties:
-
-* Safety: the probability that a transaction reverts decreases exponentially with the number of blocks mined above it
-* Liveness: the number of blocks increases with time, no adversary can _stall_ the network
-
-BFT does not have probabilistic finality, but deterministic finality. This means that on one hand it can provide a slightly better safety: if a transaction is accepted, it is guaranteed never to revert. But the slight improvement in safety incurs a meaningful concession in liveness. It follows directly from the [$$3f+1$$ theorem](./) that any collusion of $$34\%$$ can stall the network.
-
-PoS networks typically deal with this using a technique called _slashing_: if a collusion of more than $$34\%$$ and less than $$50\%$$ attempts to disrupt the network, it could be detected, and a fine could be taken from the staked fund. This _decentivizes_ such an attack, but does not _prevent_ it.&#x20;
-
-To be honest, I consider this a completely reasonable security model. Yeah, it is in a sense weaker than that of PoW, but _that_ is not where the bones I want to pick are buried.
+The million-dollar question is whether it is possible to create a protocol that successfully overrides these risks. From my familiarity with the landscape, there is no such protocol today. My personal conviction is that these problems pose an insurmountable conceptual barrier to decentralized PoS protocols.
 
 ## Long Live the King
 
-Imagine a PoW miner that has $$90\%$$ of the global hash rate. Obviously, they have complete control over what happens on the network, but how costly it is to maintain this control?
+Imagine a PoW miner that controls $$90\%$$ of the global hash rate. Obviously, they have the power to censor the network completely. But how costly is it to maintain this control?
 
-If it is a popular network, the answer is _a lot_. Maintaining the mining operation requires huge utility costs in terms of electricity, network, hosting, and so on. And that's only where it starts. Because to maintain the advantage, the miner doesn't need just to keep mining, but to keep up with the hardware availability. The have to procure a majority of the newly manufactured hardware, or their advantage will eventually erode. This becomes even more pressing as new hardware becomes more performant, making the miner's current proportion shrink even faster.
+If it is a popular network, the answer is _a lot_. Maintaining the mining operation requires huge utility costs in terms of electricity, network, hosting, and so on. And that's just first-order expenses. To keep their advantage from eroding, they must procure a majority of all newly manufactured hardware. This effect becomes heavier as new hardware becomes more efficient, making the ruler's influence shrink even faster.
 
-In contrast, a PoS entity with $$51\%$$ of the coin could maintain their advantage practically for free. All they have to do is to keep staking. The only loss here is lost-opportunity, but even that's arguable since first, they are still earning staking fees, second, if only a fraction of the coin is staked (as _should_ happen in networks that are actually used for things other than staking), then they only have to stake a similar fraction of their own share and third, they could use the opportunity to earn more and then using this money to buy more coin.
+In contrast, a PoS entity with $$51\%$$ of the coin can maintain an advantage practically for free. All they have to do is keep staking. One might argue that this is not free, as they are paying lost opportunity costs as long as they keep staking. That's not true at all. If they can make more coin some other way, they will. The key observation is that the staking fees ensure that the _minimal_ increase in their fraction is always positive. It makes even the _worst-case scenario_ more profitable for large holders.
 
-The bottom line here is this: in PoW networks, maintaining control is ever-costly, since it requires holding the majority of a physical, external resource, that could increase in supply. In contrast, in PoS there is no way to force a majority holder to relinquish control.
+In PoW networks, maintaining control is ever-costly, since it requires holding the majority of a physical, external resource.  This resource is costly to maintain, and the protocol does not regulate its supply. In contrast, in PoS, there is no way to force a majority holder to relinquish control.
 
 ## The Rich Get Richer
 
-But why does someone accruing $$51\%$$ of the coin is even a concern? If the coin is sufficiently spread around, wouldn't this make it unreasonably expensive to purchase such a large portion, just like trying to buy all the mining machines for a PoW network will spike the price through the roof?
+By isn't this scenario unrealistic? If the coin is sufficiently spread, wouldn't accruing this much be unreasonably expensive? Isn't this exactly like trying to buy so much mining hardware that you jack the price through the roof?
 
-The problem in PoS is that staking more means earning more. Let's see how the math works out.
+The problem is that in PoS, _staking more means earning more_. Excluding a completely unutilized network where 100% of the coin is perpetually staked, the freshly minted coins always go to stakers. This means that the fraction each staker holds of the total supply gradually increases.
 
-What makes the analysis a bit confusing is that the total supply _changes_ each round. We will focus on a single round, and call the supply at the start of the round the _old_ supply, and the supply at the end of the round the _new_ supply.
+To understand this subtle effect, let's work through the math.
 
 Say that the staking fee provides growth by $$\iota$$. That is, if you stake a fraction of $$f$$ of the coin, then after the round, the amount of coin you have is $$\iota\cdot f$$ of the _old_ supply. How much is this of the _new_ supply?
 
@@ -59,4 +50,4 @@ Assuming these conditions remain constant (not a very realistic assumption, but 
 
 <figure><img src="../../.gitbook/assets/image (11).png" alt=""><figcaption><p>Growth of a stake-holder staking their entire bag for 50 years assuming the parameters above</p></figcaption></figure>
 
-Now, 50 years is a _long_ time to stake _all_ your money. Nevertheless, this growth is still alarming business. After all, we _are_ talking about systems with presumptions to replace at least a part of the backbone of global economy. Who can tell how much money it will be worth to coerce such a system in the future.
+Now, 50 years is a _long_ time to stake _all_ your money. Nevertheless, this growth is still an alarming business. After all, we _are_ talking about systems with presumptions to replace at least a part of the backbone of the global economy. Who can tell how much money it will be worth to coerce such a system in the future?

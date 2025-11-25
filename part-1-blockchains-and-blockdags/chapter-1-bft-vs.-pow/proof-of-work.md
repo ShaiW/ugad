@@ -1,8 +1,12 @@
-# What PoW does
+# What PoW does?
 
-Before we get going, do me a solid and forget _anything_ you _ever_ heard about PoW. Forgive my insolence, but most likely most of it is wrong anyway.&#x20;
+> _There were sixteen of us, all living inside the mind of Sybil_
+>
+> Flora Rheta Schreiber, _Sybil_ (1973)
 
-Oh, you find this objectionable? Fine, then let me test you. Answer this one question: what are the security properties of the PoW protocol?&#x20;
+Before we get going, please do me a solid and forget anything you ever heard about PoW. Forgive my insolence, but most likely most of it is wrong anyway.
+
+Oh, you find this objectionable? Fine, then let me test you. Answer this one question: What are the security properties of the PoW protocol?&#x20;
 
 If you think you know the answer, then you have already lost. It was a trick question. _PoW is not a consensus protocol at all_. It is a _necessary building block_ for PoW protocols such as the longest-chain rule and GHOST. But in itself, it is something else, more fundamental, the stuff protocols are made of.
 
