@@ -2,11 +2,11 @@
 
 In the previous section, we explained what PoW _does_. In this segment, we dive into the details of how it _works_. This section also marks our first encounter with math. The level of formality will steadily increase as we make our presentation more precise. If you find math unsavory, the descriptive parts alone should be enough to take you through the other descriptive parts throughout the book. Even if you do have some math mileage under your belt, be sure to read deliberately and let the details sink in. If you desire to understand the mathematics underlying the descriptive discussions to follow, they are essential.
 
+<div align="right"><figure><img src="../../.gitbook/assets/image (54).png" alt="" width="106"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for<br>sponsoring this segment of the book</p></figcaption></figure></div>
+
 You might have heard that PoW works by posing the miners with "complex mathematical puzzles". I argue that these mathematical puzzles are not "complex" at all. In fact, they are _designed_ to be _incredibly dumb_: there is no better way to solve them than banging your head against them by trying out all possible solutions in no particular order until you find one that works. It takes _exceptional cleverness_ to design a puzzle this dumb. A game so impossible to strategise that the dumbest and smartest players have exactly the same odds.
 
 When constructing a dumb puzzle, there is a tunable parameter called the _difficulty target_ that adjusts how hard the puzzle is. By correctly adjusting the difficulty target, we determine how long we should expect to wait before a solution emerges. In this section, we assume that the correct difficulty target is given to us by divine inspiration. In the next segment, we explain how Bitcoin adjusts the difficulty target in practice.
-
-<div align="right"><figure><img src="../../.gitbook/assets/image (54).png" alt="" width="106"><figcaption><p>My gratitude to <a href="https://qu.ai/">Quai network</a> for<br>sponsoring this segment of the book</p></figcaption></figure></div>
 
 ## Hashes as Random Oracles
 
