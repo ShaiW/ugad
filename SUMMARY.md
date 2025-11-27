@@ -13,7 +13,7 @@
   * [What About Proof-of-Stake?](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/bft-vs.-pow.md)
   * [How PoW Works](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/how-pow-works.md)
   * [Difficulty Adjustment](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/difficulty-adjustment.md)
-  * [Merged Mining](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/merged-mining.md)
+  * [Merged Mining and Multi-Mining](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/merged-mining-and-multi-mining.md)
   * [Exercises](part-1-blockchains-and-blockdags/chapter-1-bft-vs.-pow/exercises.md)
 * [Chapter 2: the Block Chain Paradigm](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/README.md)
   * [A Graph Theory Primer](part-1-blockchains-and-blockdags/chapter-2-the-block-chain-paradigm/a-graph-theory-primer.md)

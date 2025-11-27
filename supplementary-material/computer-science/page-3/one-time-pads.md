@@ -12,7 +12,7 @@ Such a picture is called a _one-time pad_. We both keep a copy of this image, so
 
 How do we do so? Well, say I drew this circle:
 
-<figure><img src="../../../.gitbook/assets/image (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (1) (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 and it made me feel accomplished and excited, so I want to share it with you. But given how perfect this circle is, I don't want anyone else to see it yet. I can take our one time pad and do the following: for any _black_ pixel in the pad, _change the color_ of the corresponding pixel in my drawing, and send the result. In our case it would look like this:
 

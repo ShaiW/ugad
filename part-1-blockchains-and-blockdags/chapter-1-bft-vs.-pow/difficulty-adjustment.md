@@ -171,7 +171,7 @@ The reasons for that are subtle, and I cannot fully explain them here. But I can
 
 This analogy demonstrates that a sliding window DAA has a sort of natural _inner frequency_. And this is actually what we observe in reality. For example, consider the Kaspa difficulty curve:
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption><p>Screenshot from <a href="https://2miners.com/kas-network-hashrate">2miners.com</a></p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption><p>Screenshot from <a href="https://2miners.com/kas-network-hashrate">2miners.com</a></p></figcaption></figure>
 
 We can see fluctuations of around 6-8% in the global hashrate with a consistent frequency of about once oscillation per 40 minutes, which is (by no pure chance) about the window length of Kaspa's difficulty adjustment.
 
@@ -179,7 +179,7 @@ Zawy further noticed that by properly timing a "switch attack" where a relativel
 
 Fortunately, this analogy doesn't only hint at a problem, but also at a solution. If you want to have a better-controlled oscillator, you _dampen it_. That is, you add something that _resists_ the movement, but the strength of the resistance is _proportional_ to the strength of the movement. Mechanically, this could be accomplished by using a spring that connects the target to its stationary location, like so:
 
-<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 So the idea is to implement a sort of "digital spring" that will dampen the oscillations around the displacement. The problem here is that to implement such a spring directly, we need to _know_ the actual hashrate, but figuring that out is exactly why we need DAA to begin with!
 

@@ -21,8 +21,7 @@ Given a selected tip $$B$$ we call $$B.chain$$ _the selected chain_ or just _the
 <figure><img src="../../.gitbook/assets/image (12).png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
-"But wait," you ask, "shouldn't a chain selection rule be able to choose a chain that is _not_ starting from a tip? Aren't you harming generality this way?"\
-
+"But wait," you ask, "shouldn't a chain selection rule be able to choose a chain that is _not_ starting from a tip? Aren't you harming generality this way?"<br>
 
 Well yes, yes I am. When defining a chain selection rule this way ("return any chain you see fit as long as it ends in genesis") the full generality allows for weird and unsavory chain rules, like only allowing chains of even length. Or what about the "chain selection rule" that always returns the genesis block? Surely, our definition must prohibit these somehow.
 

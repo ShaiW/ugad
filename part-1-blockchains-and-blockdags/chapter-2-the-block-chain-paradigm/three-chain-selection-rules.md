@@ -34,7 +34,7 @@ While in HCR you find the selected tip by starting from the tips and looking _ba
 
 More concretely, for any block $$B$$, we can define the _subtree rooted at_ $$B$$ to contain $$B$$ and all blocks from which $$B$$ is reachable (when we switch to DAG parlance, we will simply call this $$B.\overline{Future}$$):
 
-<figure><img src="../../.gitbook/assets/image (1) (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1) (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 We can define the _weight_ of each tree like we did in HCR, as the sum of difficulties.
 

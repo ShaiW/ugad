@@ -73,12 +73,10 @@ In their paper, Eyal and Sirer analyzed a particular strategy. This strategy is 
 * If the honest network mined the next block, you are at an impasse:\
   ![](<../../.gitbook/assets/image (25).png>)\
   Release your block to the wild, and hope for the best. For future reference, let $$\gamma$$ be the probability you win in this situation (in a sense, $$\gamma$$ encodes how _well connected_ you are)
-*   Otherwise, you are already leading by two blocks, good job! Keep going!\
-
+*   Otherwise, you are already leading by two blocks, good job! Keep going!<br>
 
     <figure><img src="../../.gitbook/assets/image (26).png" alt=""><figcaption></figcaption></figure>
-*   Assuming that you have _less than half_ of the total hashing power, at some point the honest network will start to catch up, and your advantage will have shrunk to one block!\
-
+*   Assuming that you have _less than half_ of the total hashing power, at some point the honest network will start to catch up, and your advantage will have shrunk to one block!<br>
 
     <figure><img src="../../.gitbook/assets/image (27).png" alt=""><figcaption></figcaption></figure>
 

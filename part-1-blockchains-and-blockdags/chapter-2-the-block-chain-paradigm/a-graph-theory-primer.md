@@ -12,12 +12,11 @@ A (directed) _graph_ is nothing but a bunch of circles called _nodes_ or _vertic
 
 We are usually interested in less whacky graphs, so we assume there are no _multiple arrows_ between _the two same vertices_, and no _loopy arrows_ going from a vertex to itself, for example:
 
-<figure><img src="../../.gitbook/assets/image (1) (1) (1) (1) (1) (1).png" alt=""><figcaption><p>a simple graph</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1) (1) (1) (1) (1) (1).png" alt=""><figcaption><p>a simple graph</p></figcaption></figure>
 
 This is called a _simple_ (directed) graph.
 
-In most textbooks, directed graphs are considered an intermediate topic, and the discussions start from _u&#x6E;_&#x64;irected graphs. These are graphs where for any two vertices $$A$$, $$B$$ there is an arrow from $$A$$ to $$B$$ if and only if there is an arrow from $$B$$ to $$A$$. In this case, the two arrows are compressed into a single, arrowless line. For example:\
-
+In most textbooks, directed graphs are considered an intermediate topic, and the discussions start from _u&#x6E;_&#x64;irected graphs. These are graphs where for any two vertices $$A$$, $$B$$ there is an arrow from $$A$$ to $$B$$ if and only if there is an arrow from $$B$$ to $$A$$. In this case, the two arrows are compressed into a single, arrowless line. For example:<br>
 
 <figure><img src="../../.gitbook/assets/image (3) (1) (1) (1).png" alt=""><figcaption><p>an undirected graph</p></figcaption></figure>
 

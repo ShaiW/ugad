@@ -23,8 +23,7 @@ Say we have an event that happens on average $$k$$ times an hour. We split the h
 
 The upshot is that $$Poi(k)=n$$ is the limit (for an appropriate sense of the word) of $$\mathcal{Bin}(n,k/n)$$ as $$n$$ approaches infinity. One can compute explicitly this leads to the formula above, or you can just take my word for it.
 
-**Exercise\***: Prove that for any $$m$$ we have that\
-
+**Exercise\***: Prove that for any $$m$$ we have that<br>
 
 $$
 \lim_{n\to\infty}\mathbb{P}\left[\mathcal{Bin}(n,k/n)=m\right]=\frac{k^{m}}{m!}e^{-k}
