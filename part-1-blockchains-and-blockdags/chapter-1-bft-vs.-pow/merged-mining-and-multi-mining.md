@@ -76,10 +76,35 @@ This solution assumes there is only one primary chain. If several primary chains
 I guide the reader through this construction in the exercises. \[No I don't lol, but I will get to this when I rewrite the exercises section]
 {% endhint %}
 
-### Problems and Limitations
+## Problems and Limitations
 
-Merged mining a la Namecoin has many unsavoury properties. Still, all come from the same source: the security of the chain depends entirely on _another chain_. Being at the mercy of the auxiliary chain means that any issues with the auxiliary chain, or protocol upgrades that change the structure of a header, can instantly cut off the mining for the primary chain entirely. If the auxiliary chain happens to die, it can take down the primary chain with it.
+As stated at the top of this section, merged mining is not a magic solution for obtaining Bitcoin-level security. Two main divergences merit a discussion.
 
-The security inherited from the auxiliary chain is also limited because the primary chain doesn't actually validate auxiliary blocks. It can't tell true auxiliary blocks apart from ones created just to fool it. Even though it piggybacks on a much more heavily mined chain, it could be mined directly. Hence, its security is only proportional to _the number of miners who merge mine_, regardless of the total hashrate of the auxiliary chain. If, for whatever reason, merged mining falls out of favor, the primary chain may become defenseless.
+### Reorg Security
 
-Merged mining also tends to skew incentives toward centralization. While it is true that merged mining is "free" in terms of computational resources, it still presents an engineering challenge with non-negligible friction. Typically, the auxiliary chain is not active enough to support an active fee market. In this situation, auxiliary miners have no reason to maintain a full node of the primary chain and validate transactions, when just tracking the headers is enough to merge-mine _empty_ blocks. The upshot is that most of the chain is unoccupied, making censorship much easier. In practice, projects try to overcome this by providing merged mining pools, but this has the price of sharply centralizing the mining.
+It is tempting to imagine the reorg security of the auxiliary chain protecting the main chain from reorgs, but it is not the case. To see this, recall that the auxiliary chain does not validate anything regarding the primary chain. In fact, it is impossible to tell from the auxiliary chain header whether a block was merge-mined at all.
+
+This does not prevent a situation where the auxiliary chain first merge-mines the primary chain like so:
+
+<figure><img src="../../.gitbook/assets/image (55).png" alt=""><figcaption></figcaption></figure>
+
+but then decide to pivot to another branch, like so:
+
+<figure><img src="../../.gitbook/assets/image (56).png" alt=""><figcaption></figcaption></figure>
+
+The key feature to notice here is that the primary chain was reorged, while the auxiliary chain wasn't. You can ask why a miner would do such a thing. As we will discuss in depth in the next chapter, a more appropriate question when discussing security is why the miner _wouldn't_. We can't know what could motivate anyone to interfere with a chain. We can only reason what they have to lose if they do interfere, and hope it's enough to prevent any monkey business.
+
+When considering the auxiliary chain, there is a clear answer: reorg attempts directly decrease expected profit. But is it the case for the primary chain too? As the picture above shows, not so much.
+
+The key here is that if mining is practically free, then attacks are practically free. It could be that 10% of the auxiliary coin miners actually merge their mining with the primary coin. It could also be that the very next day, the primary coin X community got on the wrong side of a 20% miner of the auxiliary chain. If merged mining is "for free", then the 20% miner has no incentive _not to_ use that free mining for grievance attacks.
+
+### Incentive Alignment
+
+We have not discussed incentives formally yet, as this discussion is more natural in the context of the next chapter. On an intuitive level, incentive alignment means that the way we want miners to behave aligns with how they will want to behave under some condition (most commonly, how a miner that seeks to maximize their profit will behave if a majority of the miners are honest).
+
+Even in the "simplest" case of Bitcoin, alignments are a highly delicate subject. But we don't need to thoroughly understand the alignments in depth to notice that the primary chain doesn't inherit them.
+
+One example that pops to mind is transaction fees. We usually assume that miners are incentivized to include transactions in their blocks. But even if this does hold for the auxiliary chain, merged mining can skew this alignment for the primary chain.
+
+While it is true that merged mining is "free" in terms of computational resources, it still presents an engineering challenge with non-negligible friction. Typically, the auxiliary chain is not active enough to support an active fee market. In this situation, auxiliary miners have no reason to maintain a full node of the primary chain and validate transactions, when just tracking the headers is enough to merge-mine _empty_ blocks. The upshot is that most of the chain is unoccupied, making censorship much easier. In practice, projects try to overcome this by providing merged mining pools, but this has the price of sharply centralizing the mining.
+
