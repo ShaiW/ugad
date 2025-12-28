@@ -6,7 +6,7 @@ This segment is in a **pre-alpha** phase. None of what you read below is guarant
 
 ***
 
-_Merged mining_ is a technique that allows a _primary_ PoW chain (typically a small chain) to piggyback on the mining efforts of an _auxiliary_ chain (typically a large chain, most commonly Bitcoin). The idea is to accept attempts at mining the auxiliary chain as valid headers to the main chain. Since auxiliary miners are already doing this work anyway, they get to participate in the main chain "for free". This benefits both chains, as mining the main chain becomes more profitable.
+_Merged mining_ is a technique that allows a _primary_ PoW chain (typically a small chain) to piggyback on the mining efforts of an _auxiliary_ chain (typically a large chain, most commonly Bitcoin). The idea is to accept attempts  the main chain. Since auxiliary miners are already doing this work anyway, they get to participate in the main chain "for free". This benefits both chains, as mining the main chain becomes more profitable.
 
 On paper, this seems like a great idea, but in practice, it has limitations and even risks.
 
@@ -18,7 +18,7 @@ Future incarnations of merged mining proposed a more holistic approach called _m
 
 In this section, after explaining in more detail how merged mining works, we consider its consequences for the main chain.
 
-## Bitcoin AuxPoW in Namecoin
+## The Pioneer — Bitcoin AuxPoW in Namecoin
 
 We start with the simplest form of merged mining: Namecoin's original approach. We need a way for the main chain to accept work from auxiliary chain miners without interfering with their auxiliary chain mining. Such a form of mining is often called _auxiliary-proof-of-work_ (AuxPoW).
 
@@ -40,10 +40,6 @@ Fortunately, there's a standard solution for that: embed the information you nee
 ### The Bitcoin AuxPoW Recipe
 
 The previous section gives us enough to put together a recipe for converting any PoW chain into a Bitcoin AuxPoW chain. There are other recipes, but they are all very similar to this one.
-
-{% hint style="info" %}
-This recipe is a simplified version of what's used in practice. The reason for that is another issue that merged mining needs to address, which I did not discuss: ambiguity. In essence, it means that if _several_ prime chains use the same auxiliary chain, we need to be able to easily and unambiguously tell which of the coins is merge mined. I will discuss this some more after I describe the recipe.
-{% endhint %}
 
 Consider a standard PoW chain. A new incoming block $$B$$ is comprised of two parts: $$B_\text{header}$$ and $$B_\text{data}$$. We keep the standard structural assumptions: validating the validity of the chain only requires examining the headers, and given $$B_\text{data}$$, we can validate that it indeed contains the data expected by $$B_\text{header}$$. In particular, we expect $$B_\text{header}$$ to contain a difficulty target $$T_\text{prim}$$. We don't particularly care how the chain works. We only presume that it follows this general structure.
 
@@ -75,10 +71,14 @@ I maintain the Namecoin version for ease of presentation, but modern chains larg
 {% endhint %}
 
 {% hint style="info" %}
-This solution assumes there is only one primary chain. If several primary chains use this recipe, each block can merge mine into only _one_ of them. It is possible to extend this approach to allow _each_ block to merge mine into _many_ primary chains, but some subtle tricks are required to keep everything coordinated. The rough idea is to use a _huge_ but _mostly empty_ Merkle tree of commitments (the professional term is a sparse Merkle tree), and use the header data to choose a leaf for each merged chain in an unpredictable manner. That way, we naturally avoid different chains using the same leaf, without requiring any coordination.
+This solution assumes there is only one primary chain. If several primary chains use this recipe, each block can merge mine into only _one_ of them. It is possible to extend this approach to allow _each_ block to merge mine into _many_ primary chains, but some subtle tricks are required to keep everything coordinated. The rough idea is to use a _huge_ but _mostly empty_ Merkle tree of commitments (the professional term is a _sparse Merkle tree_), and use the header data to choose a leaf for each merged chain in an unpredictable manner. That way, we naturally avoid different primary chains accidentally using the same leaf, without requiring any coordination.
 
 I guide the reader through this construction in the exercises. \[No I don't lol, but I will get to this when I rewrite the exercises section]
 {% endhint %}
 
+### Problems and Limitations
 
+Merged mining a la Namecoin has many unsavoury properties. Still, all come from the same source: the security of the chain depends entirely on _another chain_. The primary chain does not have its own incentives. Being at the mercy of the auxiliary chain means that any issues with the auxiliary chain, or protocol upgrades that change the structure of a header, can instantly cut off the mining for the primary chain entirely.
+
+The security inherited from the auxiliary chain is also limited because the primary chain doesn't actually validate auxiliary blocks. It can't tell true auxiliary blocks apart from ones created just to fool it. Even though it piggybacks on a much more heavily mined chain, it could be mined directly. Hence, its security is only proportional to _the number of miners who merge mine_, regardless of the total hashrate of the auxiliary chain.
 
